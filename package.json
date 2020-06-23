@@ -1,0 +1,33 @@
+{
+  "name": "@lsos/donation-reminder",
+  "version": "0.1.0",
+  "//": "No dependencies.",
+  "dependencies": {},
+  "main": "dist/donation-reminder/printDonationReminder.js",
+  "bin": {
+    "lsos": "dist/scripts/cli.js"
+  },
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "yarn build:prepare && yarn build:dev",
+    "prod": "yarn build:prepare && yarn build:prod",
+    "build:dev": "tsc --watch",
+    "build:prod": "tsc",
+    "build:prepare": "yarn build:clean && yarn build:permissions",
+    "build:clean": "rm -rf dist/",
+    "build:permissions": "(mkdir -p dist/scripts/ && cd dist/scripts/ && touch cli.js postinstall.js && chmod 775 cli.js postinstall.js)",
+    "postinstall": "dist/scripts/postinstall.js",
+    "prepublishOnly": "yarn prod"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.23",
+    "typescript": "^3.9.6"
+  },
+  "files": [
+    "/dist/"
+  ],
+  "repository": "github:lsos/donation-reminder",
+  "publishConfig": {
+    "access": "public"
+  }
+}
