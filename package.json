@@ -1,0 +1,12 @@
+{
+  "name": "@lsos/donation-fund",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "github:lsos/donation-fund",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "template-colors-web": "^1.0.0"
+  }
+}
