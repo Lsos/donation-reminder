@@ -80,6 +80,20 @@ function main() {
       .flat(),
     */
     "\n\n",
+    "by donating $10 per month/user.",
+    "\n\n",
+    "Donate and remove this note by running ",
+    {
+      text: "npm run lsos",
+      style: codeStyle,
+    },
+    " / ",
+    {
+      text: "yarn lsos",
+      style: codeStyle,
+    },
+    ".",
+    /*
     "by donating $10 per month/user, see https://lsos.org/donation-fund/donate.",
     "\n\n",
     {
@@ -102,6 +116,7 @@ function main() {
       text: ".",
       style: noteStyle,
     },
+    */
   ];
 
   styledLog(strings, { defaultStyle });
