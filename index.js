@@ -3,6 +3,25 @@ if (typeof window !== "undefined") {
 }
 
 function main() {
+  //*
+  const projectNames = [
+    "awesome-bundler",
+    "awesome-transpiler",
+    "a-polyfill-collection",
+    "awesome-dev-tool-1",
+    "lovely-dev-tool-2",
+    "lovely-dev-tool-3",
+    "neat-markdown-tool-1",
+    "neat-markdown-tool-2",
+    "javascript-utility-library-1",
+    "javascript-utility-library-2",
+    "javascript-utility-library-3",
+    "react-awesome-component-1",
+    "react-awesome-component-2",
+    "react-awesome-component-3",
+    "react-awesome-component-4",
+  ];
+  /*/
   const projectNames = [
     "react-flip-move",
     "core-js",
@@ -24,6 +43,7 @@ function main() {
     "glob",
     "json-s",
   ];
+  //*/
 
   const noteSize = "font-size: 0.99em;";
   const noteStyle = "color: #666; " + noteSize;
@@ -60,7 +80,7 @@ function main() {
       .flat(),
     */
     "\n\n",
-    "by donating $10 per month/user, see https://lsos.org/donation-fund.",
+    "by donating $10 per month/user, see https://lsos.org/donation-fund/donate.",
     "\n\n",
     {
       text: "You can remove this note by running ",
