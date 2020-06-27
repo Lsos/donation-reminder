@@ -82,7 +82,7 @@ function main() {
     "\n\n",
     "by donating $10 per month/user.",
     "\n\n",
-    "Donate and remove this note by running ",
+    "Donate and/or remove this note by running ",
     {
       text: "npm run lsos",
       style: codeStyle,
