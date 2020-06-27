@@ -87,7 +87,7 @@ function main() {
       text: "npm run lsos",
       style: codeStyle,
     },
-    " / ",
+    "/",
     {
       text: "yarn lsos",
       style: codeStyle,
