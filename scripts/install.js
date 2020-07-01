@@ -4,17 +4,44 @@ const pify = require("pify");
 const readPackageTree = pify(require("read-package-tree"));
 const assert = require("assert");
 const stringify = require("json-stringify-safe");
+const path = require("path");
 
 postinstall();
 
 async function postinstall() {
   await findPackagesWithFunding();
+  console.log();
   console.log("lsos postinstall ran");
+  console.log();
 }
 
 async function findPackagesWithFunding() {
-  const packages = await getPackages();
+  const userProjectPath = process.env.INIT_CWD || process.cwd();
 
+  const packages = await getPackages(userProjectPath);
+
+  print_packages_with_funding(packages);
+  console.log("dir", userProjectPath);
+
+  //const userPackageJson = getUserPackageJson(userProjectPath);
+  Object.values(packages).forEach((pkg) => {
+    return;
+    if (pkg.package && pkg.package.funding) {
+      console.log(pkg.name);
+      console.log(pkg.dependencyAncestors.length);
+      console.log(pkg.dependencyAncestors.join(" "));
+    }
+  });
+}
+
+/*
+function getUserPackageJson(userProjectPath) {
+  const userPackageJson = require(path.join(userProjectPath, "package.json"));
+  return userPackageJson;
+}
+*/
+
+function print_packages_with_funding(packages) {
   const packages_with_funding = Object.values(packages).filter((pkg) => {
     if (pkg.notInstalledInNodeModulesDirectory) {
       return false;
@@ -57,35 +84,45 @@ async function findPackagesWithFunding() {
   console.log("with funding: " + packages_with_funding.length);
 }
 
-async function getPackages() {
-  const userProjectPath = process.env.INIT_CWD || process.cwd();
-  console.log("dir", userProjectPath);
-
+async function getPackages(userProjectPath) {
   const packages = {};
 
   const packages_in_node_modules = traverse(
     await readPackageTree(userProjectPath),
     "children"
-  );
-  packages_in_node_modules.forEach(({ node: pkg }) => {
-    let id;
-    {
-      const { name } = pkg;
-      assert(name);
-      const { version } = pkg.package;
-      assert(version);
-      id = name + "@" + version;
-    }
+  )
+    .map(({ node }) => node)
+    .filter((pkg) => {
+      const { name, version } = pkg.package;
+      warning(name && version);
+      return !!name && !!version;
+    })
+    .map((pkg) => {
+      const { name, version } = pkg.package;
+      warning(pkg.name === name);
+      pkg.name = name;
+      pkg.version = version;
+      pkg.id = name + "@" + version;
+      pkg.dependencyPaths = [];
+      return pkg;
+    });
 
-    pkg.id = id;
-    pkg.dependencyPaths = [];
-    /*
-    if (packages[id]) {
-      console.log(packages[id].path, pkg.path, id);
-    }
-    assert(!packages[id]);
+  packages_in_node_modules.forEach((pkg) => {
+    /* It can happen that a module is installed at two different paths, when linking modules while developing.
+    assert(!packages[pkg.id]);
     */
-    packages[id] = pkg;
+
+    packages[pkg.id] = pkg;
+  });
+
+  const { parents, ancestors } = getDependenciesParents(
+    packages_in_node_modules
+  );
+  const rootPackage = getRootPackage(packages_in_node_modules, userProjectPath);
+  Object.values(packages).forEach((pkg) => {
+    const pkg_ancestors = ancestors[pkg.package.name];
+    assert(pkg_ancestors);
+    pkg.dependencyAncestors = pkg_ancestors;
   });
 
   /*
@@ -264,4 +301,97 @@ async function npmls(cwd) {
     resolve({});
   });
   return p;
+}
+
+function warning(...args) {
+  if (!isDev()) {
+    return;
+  }
+  assert(...args);
+}
+function isDev() {
+  return process.cwd().startsWith("/home/romu");
+}
+
+function getRootPackage(packages_in_node_modules, userProjectPath) {
+  const rootPackage = packages_in_node_modules[0];
+  warning(rootPackage.path === userProjectPath);
+  return rootPackage;
+}
+
+function getDependenciesParents(packages_in_node_modules) {
+  const parents = {};
+
+  packages_in_node_modules.forEach((pkg) => {
+    const { name } = pkg;
+    assert(name);
+    parents[name] = [];
+  });
+
+  packages_in_node_modules.forEach((pkg) => {
+    const deps = getDependencies(pkg);
+    deps.forEach((dep_name) => {
+      assert(parents[pkg.name]);
+      if (!parents[dep_name]) {
+        //warning(false, dep_name);
+        return;
+      }
+      parents[dep_name].push(pkg.name);
+    });
+  });
+
+  const ancestors = transitiveClosure(parents);
+
+  return { parents, ancestors };
+
+  function getDependencies(pkg) {
+    let dependencies = [];
+    const pkgJson = pkg.package;
+    Object.keys(pkgJson).forEach((packageProp) => {
+      if (packageProp.toLowerCase().endsWith("dependencies")) {
+        dependencies.push(...Object.keys(pkgJson[packageProp]));
+      }
+    });
+    dependencies = unique(dependencies);
+    return dependencies;
+  }
+}
+
+function transitiveClosure(parents) {
+  validateParents();
+
+  return getAncestors();
+
+  function validateParents() {
+    Object.entries(parents).forEach(([node, node_parents]) => {
+      assert(node.constructor === String);
+      node_parents.forEach((parent) => {
+        assert(parent.constructor === String);
+        assert(parents[parent]);
+      });
+    });
+  }
+
+  function getAncestors() {
+    const ancestors = {};
+    Object.keys(parents).forEach((node) => {
+      const node_ancestors = [];
+      const visited_nodes = {};
+      add_parents(node, visited_nodes, node_ancestors);
+      ancestors[node] = node_ancestors;
+    });
+    console.log("a", ancestors);
+    console.log("p", parents);
+    return ancestors;
+  }
+
+  function add_parents(node, visited_nodes, node_ancestors) {
+    visited_nodes[node] = true;
+    const node_parents = parents[node];
+    node_parents.forEach((parent) => {
+      if (visited_nodes[parent]) return;
+      node_ancestors.push(parent);
+      add_parents(parent, visited_nodes, node_ancestors);
+    });
+  }
 }
