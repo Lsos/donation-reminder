@@ -4,7 +4,6 @@ const pify = require("pify");
 const readPackageTree = pify(require("read-package-tree"));
 const assert = require("assert");
 const stringify = require("json-stringify-safe");
-const path = require("path");
 
 postinstall();
 
@@ -24,16 +23,50 @@ async function findPackagesWithFunding() {
   console.log("dir", userProjectPath);
 
   //const userPackageJson = getUserPackageJson(userProjectPath);
+  //
 
-  packages.forEach((pkg) => {
-    if (pkg.funding && pkg.dependencyAncestors.includes(rootPackage.name)) {
-      console.log("rr", pkg.name);
-    }
-  });
+  const rootPackageName = rootPackage.name;
+  const rootPackageDependencies = packages
+    .filter((pkg) => !pkg.notInstalledInNodeModulesDirectory)
+    .filter((pkg) => pkg.dependencyParents.includes(rootPackageName))
+    .map((pkg) => pkg.name);
+
+  const fundingDependencies = {};
+  packages
+    .filter((pkg) => !pkg.notInstalledInNodeModulesDirectory)
+    .forEach((pkg) => {
+      if (!pkg.funding) {
+        return;
+      }
+      if (!pkg.dependencyAncestors.includes(rootPackageName)) {
+        return;
+      }
+      const fundingDeps = intersect(
+        pkg.dependencyAncestors,
+        rootPackageDependencies
+      );
+      warning(
+        fundingDeps.length > 0 ||
+          pkg.dependencyParents.includes(rootPackageName)
+      );
+      if (fundingDeps.length === 0) {
+        fundingDeps.push(rootPackageName);
+      }
+      fundingDeps.forEach((fundingDep) => {
+        fundingDependencies[fundingDep] = fundingDependencies[fundingDep] || [];
+        fundingDependencies[fundingDep].push(pkg.name);
+      });
+    });
+
+  console.log(
+    "Funding dependencies:",
+    JSON.stringify(fundingDependencies, null, 2)
+  );
 }
 
 /*
 function getUserPackageJson(userProjectPath) {
+  const path = require("path");
   const userPackageJson = require(path.join(userProjectPath, "package.json"));
   return userPackageJson;
 }
@@ -230,6 +263,10 @@ async function getPackages(userProjectPath) {
 function unique(arr) {
   return Array.from(new Set(arr));
 }
+function intersect(array1, array2) {
+  return array1.filter((value) => array2.includes(value));
+}
+
 function findFundingUrls(thing) {
   const str = stringify(thing);
   const pathnames = [
