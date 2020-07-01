@@ -2,6 +2,9 @@
   "name": "lsos",
   "version": "0.0.1",
   "main": "index.js",
+  "lsos": {
+    "skipDonationFund": true
+  },
   "scripts": {
     "postinstall": "scripts/install.js"
   },

@@ -22,25 +22,32 @@ async function findPackagesWithFunding() {
     if (!pkg.package.funding) {
       return false;
     }
-    /*
+    if (pkg.dependencyPaths.length === 0) {
+      return false;
+    }
     if (
       pkg.dependencyPaths.every((depPath) =>
-        depPath.some((pkg) => pkg.name === "lsos")
+        depPath.some((pkg) => (pkg.package.lsos || {}).skipDonationFund)
       )
     ) {
       return false;
     }
-    */
     return true;
   });
   packages_with_funding.forEach((pkg) => {
-    const { name, dependencyPaths } = pkg;
-    assert(name);
+    const { id, dependencyPaths } = pkg;
+    assert(id);
     assert(dependencyPaths);
-    console.log(name);
+    console.log(id);
     console.log(
       dependencyPaths
-        .map((depPath) => depPath.map((dep) => dep.name).join(" -> "))
+        .map((dependencyPath) =>
+          dependencyPath
+            .map((pkg) => {
+              return pkg.id;
+            })
+            .join(" -> ")
+        )
         .join("\n")
     );
     console.log(findFundingUrls(pkg.package.funding).join(", "));
@@ -56,41 +63,109 @@ async function getPackages() {
 
   const packages = {};
 
-  traverse(await readPackageTree(userProjectPath), "children").forEach(
-    ({ node: pkg }) => {
+  const packages_in_node_modules = traverse(
+    await readPackageTree(userProjectPath),
+    "children"
+  );
+  packages_in_node_modules.forEach(({ node: pkg }) => {
+    let id;
+    {
       const { name } = pkg;
       assert(name);
-      assert(pkg.package, pkg);
-      pkg.dependencyPaths = [];
-      packages[name] = pkg;
+      const { version } = pkg.package;
+      assert(version);
+      id = name + "@" + version;
     }
+
+    pkg.id = id;
+    pkg.dependencyPaths = [];
+    /*
+    if (packages[id]) {
+      console.log(packages[id].path, pkg.path, id);
+    }
+    assert(!packages[id]);
+    */
+    packages[id] = pkg;
+  });
+
+  /*
+  console.log(
+    "ppnnn",
+    packages_in_node_modules
+      .filter(
+        ({
+          node: {
+            package: { funding },
+          },
+        }) => !!funding
+      )
+      .map(
+        ({
+          node: {
+            name,
+            package: { version },
+            path,
+          },
+        }) => name + "@" + version + "(" + path + ")"
+      )
+      .join("\n")
+  );
+  */
+
+  const packages_in_dependency_tree = traverse(
+    await npmls(userProjectPath),
+    (node) =>
+      Object.entries(node.dependencies || {}).map(([key, obj]) => ({
+        name: key,
+        ...obj,
+      }))
   );
 
-  traverse(await npmls(userProjectPath), (node) =>
-    Object.entries(node.dependencies || {}).map(([key, obj]) => ({
-      name: key,
-      ...obj,
-    }))
-  ).forEach(({ node, ancestors }) => {
+  packages_in_dependency_tree.forEach(({ node }) => {
     //console.log("pp", node.name, Object.keys(node));
-    //console.log("pp", node, ancestors);
 
-    const { name } = node;
+    const { name, version } = node;
     assert(name);
-    // assert(ancestors.length === 0 || ancestors.slice(-1)[0].name === "thanks");
+    assert(version);
 
-    let pkg = packages[name];
-    if (!pkg) {
-      pkg = packages[name] = {
+    const id = name + "@" + version;
+
+    if (!packages[id]) {
+      packages[id] = {
+        id,
         name,
         notInstalledInNodeModulesDirectory: true,
         dependencyPaths: [],
       };
     }
+  });
 
-    assert(pkg.name);
+  packages_in_dependency_tree.forEach(({ node, ancestors }) => {
+    const { name, version } = node;
+    assert(name);
+    assert(version);
+    const id = name + "@" + version;
 
-    const dependencyPath = ancestors.map(({ name }) => name);
+    const pkg = packages[id];
+    assert(pkg);
+
+    // assert(ancestors.length === 0 || ancestors.slice(-1)[0].name === "thanks");
+
+    const dependencyPath = ancestors.map(({ name, version }) => {
+      const id = name + "@" + version;
+      const pkg = packages[id];
+      assert(pkg);
+      return pkg;
+    });
+
+    /*
+    console.log(
+      "pp",
+      node.id,
+      dependencyPath.map(({ id }) => id)
+    );
+    */
+
     pkg.dependencyPaths.push(dependencyPath);
   });
 
