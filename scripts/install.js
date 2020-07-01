@@ -18,18 +18,16 @@ async function postinstall() {
 async function findPackagesWithFunding() {
   const userProjectPath = process.env.INIT_CWD || process.cwd();
 
-  const packages = await getPackages(userProjectPath);
+  const { packages, rootPackage } = await getPackages(userProjectPath);
 
   print_packages_with_funding(packages);
   console.log("dir", userProjectPath);
 
   //const userPackageJson = getUserPackageJson(userProjectPath);
-  Object.values(packages).forEach((pkg) => {
-    return;
-    if (pkg.package && pkg.package.funding) {
-      console.log(pkg.name);
-      console.log(pkg.dependencyAncestors.length);
-      console.log(pkg.dependencyAncestors.join(" "));
+
+  packages.forEach((pkg) => {
+    if (pkg.funding && pkg.dependencyAncestors.includes(rootPackage.name)) {
+      console.log("rr", pkg.name);
     }
   });
 }
@@ -42,11 +40,11 @@ function getUserPackageJson(userProjectPath) {
 */
 
 function print_packages_with_funding(packages) {
-  const packages_with_funding = Object.values(packages).filter((pkg) => {
+  const packages_with_funding = packages.filter((pkg) => {
     if (pkg.notInstalledInNodeModulesDirectory) {
       return false;
     }
-    if (!pkg.package.funding) {
+    if (!pkg.funding) {
       return false;
     }
     if (pkg.dependencyPaths.length === 0) {
@@ -54,7 +52,7 @@ function print_packages_with_funding(packages) {
     }
     if (
       pkg.dependencyPaths.every((depPath) =>
-        depPath.some((pkg) => (pkg.package.lsos || {}).skipDonationFund)
+        depPath.some((pkg) => (pkg.packageJson.lsos || {}).skipDonationFund)
       )
     ) {
       return false;
@@ -77,15 +75,15 @@ function print_packages_with_funding(packages) {
         )
         .join("\n")
     );
-    console.log(findFundingUrls(pkg.package.funding).join(", "));
+    console.log(findFundingUrls(pkg.funding).join(", "));
     console.log();
   });
-  console.log("total packages: " + Object.keys(packages).length);
+  console.log("total packages: " + packages.length);
   console.log("with funding: " + packages_with_funding.length);
 }
 
 async function getPackages(userProjectPath) {
-  const packages = {};
+  const packages_map = {};
 
   const packages_in_node_modules = traverse(
     await readPackageTree(userProjectPath),
@@ -93,36 +91,53 @@ async function getPackages(userProjectPath) {
   )
     .map(({ node }) => node)
     .filter((pkg) => {
-      const { name, version } = pkg.package;
-      warning(name && version);
-      return !!name && !!version;
+      const { package } = pkg;
+      if (!package) {
+        warning(false);
+        return false;
+      }
+      const { name, version } = package;
+      if (!name || !version) {
+        warning(false);
+        return false;
+      }
+      return true;
     })
     .map((pkg) => {
-      const { name, version } = pkg.package;
-      warning(pkg.name === name);
+      pkg.packageJson = pkg.package;
+
+      const { name, version } = pkg.packageJson;
+      warning(pkg.name === name, name + "!==" + pkg.name);
       pkg.name = name;
       pkg.version = version;
+
       pkg.id = name + "@" + version;
+
+      pkg.funding = pkg.packageJson.funding;
+
       pkg.dependencyPaths = [];
+
       return pkg;
     });
 
   packages_in_node_modules.forEach((pkg) => {
     /* It can happen that a module is installed at two different paths, when linking modules while developing.
-    assert(!packages[pkg.id]);
+    assert(!packages_map[pkg.id]);
     */
 
-    packages[pkg.id] = pkg;
+    packages_map[pkg.id] = pkg;
   });
 
   const { parents, ancestors } = getDependenciesParents(
     packages_in_node_modules
   );
-  const rootPackage = getRootPackage(packages_in_node_modules, userProjectPath);
-  Object.values(packages).forEach((pkg) => {
-    const pkg_ancestors = ancestors[pkg.package.name];
+  Object.values(packages_map).forEach((pkg) => {
+    const pkg_ancestors = ancestors[pkg.name];
     assert(pkg_ancestors);
     pkg.dependencyAncestors = pkg_ancestors;
+    const pkg_parents = parents[pkg.name];
+    assert(pkg_parents);
+    pkg.dependencyParents = pkg_parents;
   });
 
   /*
@@ -167,8 +182,8 @@ async function getPackages(userProjectPath) {
 
     const id = name + "@" + version;
 
-    if (!packages[id]) {
-      packages[id] = {
+    if (!packages_map[id]) {
+      packages_map[id] = {
         id,
         name,
         notInstalledInNodeModulesDirectory: true,
@@ -183,14 +198,14 @@ async function getPackages(userProjectPath) {
     assert(version);
     const id = name + "@" + version;
 
-    const pkg = packages[id];
+    const pkg = packages_map[id];
     assert(pkg);
 
     // assert(ancestors.length === 0 || ancestors.slice(-1)[0].name === "thanks");
 
     const dependencyPath = ancestors.map(({ name, version }) => {
       const id = name + "@" + version;
-      const pkg = packages[id];
+      const pkg = packages_map[id];
       assert(pkg);
       return pkg;
     });
@@ -206,7 +221,10 @@ async function getPackages(userProjectPath) {
     pkg.dependencyPaths.push(dependencyPath);
   });
 
-  return packages;
+  const rootPackage = getRootPackage(packages_in_node_modules, userProjectPath);
+  const packages = Object.values(packages_map);
+
+  return { packages, rootPackage };
 }
 
 function unique(arr) {
@@ -321,12 +339,13 @@ function getRootPackage(packages_in_node_modules, userProjectPath) {
 
 function getDependenciesParents(packages_in_node_modules) {
   const parents = {};
-
   packages_in_node_modules.forEach((pkg) => {
     const { name } = pkg;
     assert(name);
     parents[name] = [];
   });
+
+  const ignoredPackages = getIgnoredPackages(packages_in_node_modules);
 
   packages_in_node_modules.forEach((pkg) => {
     const deps = getDependencies(pkg);
@@ -336,25 +355,41 @@ function getDependenciesParents(packages_in_node_modules) {
         //warning(false, dep_name);
         return;
       }
+      if (ignoredPackages[dep_name]) {
+        return;
+      }
       parents[dep_name].push(pkg.name);
     });
   });
 
   const ancestors = transitiveClosure(parents);
 
+  console.log("a", ancestors);
+  console.log("p", parents);
+  console.log("ii", Object.keys(ignoredPackages).join(" "));
   return { parents, ancestors };
 
   function getDependencies(pkg) {
     let dependencies = [];
-    const pkgJson = pkg.package;
-    Object.keys(pkgJson).forEach((packageProp) => {
+    const { packageJson } = pkg;
+    Object.keys(packageJson).forEach((packageProp) => {
       if (packageProp.toLowerCase().endsWith("dependencies")) {
-        dependencies.push(...Object.keys(pkgJson[packageProp]));
+        dependencies.push(...Object.keys(packageJson[packageProp]));
       }
     });
     dependencies = unique(dependencies);
     return dependencies;
   }
+}
+
+function getIgnoredPackages(packages_in_node_modules) {
+  const ignoredPackages = {};
+  packages_in_node_modules
+    .filter((pkg) => (pkg.packageJson.lsos || {}).skipDonationFund)
+    .forEach((pkg) => {
+      ignoredPackages[pkg.name] = true;
+    });
+  return ignoredPackages;
 }
 
 function transitiveClosure(parents) {
@@ -380,8 +415,6 @@ function transitiveClosure(parents) {
       add_parents(node, visited_nodes, node_ancestors);
       ancestors[node] = node_ancestors;
     });
-    console.log("a", ancestors);
-    console.log("p", parents);
     return ancestors;
   }
 
