@@ -13,7 +13,46 @@ async function postinstall() {
 }
 
 async function findPackagesWithFunding() {
-  const userProjectPath = process.cwd();
+  const packages = await getPackages();
+
+  const packages_with_funding = Object.values(packages).filter((pkg) => {
+    if (pkg.notInstalledInNodeModulesDirectory) {
+      return false;
+    }
+    if (!pkg.package.funding) {
+      return false;
+    }
+    /*
+    if (
+      pkg.dependencyPaths.every((depPath) =>
+        depPath.some((pkg) => pkg.name === "lsos")
+      )
+    ) {
+      return false;
+    }
+    */
+    return true;
+  });
+  packages_with_funding.forEach((pkg) => {
+    const { name, dependencyPaths } = pkg;
+    assert(name);
+    assert(dependencyPaths);
+    console.log(name);
+    console.log(
+      dependencyPaths
+        .map((depPath) => depPath.map((dep) => dep.name).join(" -> "))
+        .join("\n")
+    );
+    console.log(findFundingUrls(pkg.package.funding).join(", "));
+    console.log();
+  });
+  console.log("total packages: " + Object.keys(packages).length);
+  console.log("with funding: " + packages_with_funding.length);
+}
+
+async function getPackages() {
+  const userProjectPath = process.env.INIT_CWD || process.cwd();
+  console.log("dir", userProjectPath);
 
   const packages = {};
 
@@ -21,37 +60,41 @@ async function findPackagesWithFunding() {
     ({ node: pkg }) => {
       const { name } = pkg;
       assert(name);
+      assert(pkg.package, pkg);
       pkg.dependencyPaths = [];
       packages[name] = pkg;
     }
   );
 
-  traverse(await npmls(), (node) =>
+  traverse(await npmls(userProjectPath), (node) =>
     Object.entries(node.dependencies || {}).map(([key, obj]) => ({
       name: key,
       ...obj,
     }))
-  ).forEach(({ node: { name }, ancestors }) => {
+  ).forEach(({ node, ancestors }) => {
+    //console.log("pp", node.name, Object.keys(node));
+    //console.log("pp", node, ancestors);
+
+    const { name } = node;
+    assert(name);
     // assert(ancestors.length === 0 || ancestors.slice(-1)[0].name === "thanks");
-    packages[name].dependencyPaths.push(ancestors);
+
+    let pkg = packages[name];
+    if (!pkg) {
+      pkg = packages[name] = {
+        name,
+        notInstalledInNodeModulesDirectory: true,
+        dependencyPaths: [],
+      };
+    }
+
+    assert(pkg.name);
+
+    const dependencyPath = ancestors.map(({ name }) => name);
+    pkg.dependencyPaths.push(dependencyPath);
   });
 
-  const packages_with_funding = Object.values(packages).filter(
-    ({ node }) => node.package.funding
-  );
-  packages_with_funding.forEach(({ node: pkg }) => {
-    const { name, dependencyPaths } = pkg;
-    assert(name);
-    assert(dependencyPaths);
-    console.log(name);
-    console.log(
-      dependencyPaths.map((depPath) => depPath.join(" -> ")).join("\n")
-    );
-    console.log(findFundingUrls(pkg.package.funding).join(", "));
-    console.log();
-  });
-  console.log("total packages: " + packages.length);
-  console.log("with funding: " + packages_with_funding.length);
+  return packages;
 }
 
 function unique(arr) {
@@ -109,22 +152,41 @@ function traverse(obj, children_key) {
   }
 }
 
-async function npmls() {
+async function npmls(cwd) {
   let resolve, reject;
   const p = new Promise((resolve_, reject_) => {
     resolve = resolve_;
     reject = reject_;
   });
-  require("child_process").exec("npm ls --json", function (
+  require("child_process").exec("npm ls --json", { cwd }, function (
     err,
     stdout,
     stderr
   ) {
+    let parseError;
+    let depTree;
+    try {
+      depTree = JSON.parse(stdout);
+    } catch (err) {
+      parseError = err;
+    }
+    if (depTree) {
+      resolve(depTree);
+      return;
+    }
     if (err) {
       reject(err);
       return;
     }
-    resolve(JSON.parse(stdout));
+    if (stderr) {
+      reject(err);
+      return;
+    }
+    if (parseError) {
+      reject(err);
+      return;
+    }
+    resolve({});
   });
   return p;
 }
