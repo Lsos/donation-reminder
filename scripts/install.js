@@ -15,36 +15,43 @@ async function postinstall() {
 async function findPackagesWithFunding() {
   const userProjectPath = process.cwd();
 
-  const nodeModulesTree = await readPackageTree(userProjectPath);
+  const packages = {};
 
-  const packages = traverse(nodeModulesTree, "children");
-  const funding_pkgs = packages.filter(({ node }) => node.package.funding);
+  traverse(await readPackageTree(userProjectPath), "children").forEach(
+    ({ node: pkg }) => {
+      const { name } = pkg;
+      assert(name);
+      pkg.dependencyPaths = [];
+      packages[name] = pkg;
+    }
+  );
 
-  const dependencyTree = await npmls();
-  const deps = traverse(dependencyTree, (node) =>
+  traverse(await npmls(), (node) =>
     Object.entries(node.dependencies || {}).map(([key, obj]) => ({
       name: key,
       ...obj,
     }))
-  );
-  const packageDependencyPath = {};
-  deps.forEach(({ node: { name }, ancestors }) => {
+  ).forEach(({ node: { name }, ancestors }) => {
     // assert(ancestors.length === 0 || ancestors.slice(-1)[0].name === "thanks");
-    packageDependencyPath[name] = [name, ...ancestors.map((a) => a.name)];
+    packages[name].dependencyPaths.push(ancestors);
   });
 
-  funding_pkgs.forEach(({ node }) => {
-    const { name } = node.package;
+  const packages_with_funding = Object.values(packages).filter(
+    ({ node }) => node.package.funding
+  );
+  packages_with_funding.forEach(({ node: pkg }) => {
+    const { name, dependencyPaths } = pkg;
     assert(name);
+    assert(dependencyPaths);
     console.log(name);
-    const dependencyPath = packageDependencyPath[name];
-    assert(dependencyPath);
-    console.log(dependencyPath.join(" -> "));
-    console.log(findFundingUrls(node.package.funding).join(", "));
+    console.log(
+      dependencyPaths.map((depPath) => depPath.join(" -> ")).join("\n")
+    );
+    console.log(findFundingUrls(pkg.package.funding).join(", "));
     console.log();
   });
   console.log("total packages: " + packages.length);
-  console.log("with funding: " + funding_pkgs.length);
+  console.log("with funding: " + packages_with_funding.length);
 }
 
 function unique(arr) {

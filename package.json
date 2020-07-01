@@ -2,7 +2,6 @@
   "name": "lsos",
   "version": "0.0.1",
   "main": "index.js",
-  "repository": "github:lsos/donation-fund",
   "scripts": {
     "postinstall": "scripts/install.js"
   },
@@ -17,5 +16,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0"
-  }
+  },
+  "repository": "github:lsos",
+  "license": "CC0-1.0"
 }
