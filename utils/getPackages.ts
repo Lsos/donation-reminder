@@ -67,7 +67,8 @@ async function getPackages(userProjectPath: string): Promise<Package[]> {
         name: pkgInfo.name,
         dependencyAncestors: pkgInfo.dependencyAncestors,
         dependencyParents: pkgInfo.dependencyParents,
-        wantsFunding: !!pkgInfo.fundingObject,
+        wantsFunding:
+          !!pkgInfo.fundingObject || findFundingUrls(pkgInfo).length > 0,
       };
       return pkg;
     });
@@ -154,9 +155,11 @@ function getDependencyInfo(packagesInfo: PackageInfo[]): DependencyInfo {
 
   const ancestors = transitiveClosure(parents);
 
+  /*
   console.log("a", ancestors);
   console.log("p", parents);
   console.log("ii", Object.keys(ignoredPackages).join(" "));
+  */
   return { parents, ancestors };
 
   function getDependencies(pkg: PackageInfo): PackageName[] {
@@ -190,10 +193,12 @@ function findFundingUrls(thing) {
     ...matchPathname(str, "github.com/sponsors"),
   ];
   const urls = pathnames.map((m) => "https://" + m);
+  /*
   if (urls.length === 0 && !str.includes("?sponsor=")) {
     console.log(str);
     throw new Error("look me up");
   }
+  */
   return unique(urls);
 }
 function matchPathname(str, domainName) {

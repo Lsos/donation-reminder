@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import assert from "assert";
 import {
   getPackages,
   packageRootName,
@@ -30,7 +31,7 @@ async function findPackagesWithFunding() {
     .filter((pkg: Package) => pkg.dependencyParents.includes(packageRootName))
     .map((pkg: Package) => pkg.name);
 
-  const fundingDependencies = {};
+  const depsWithFunding = {};
   packages.forEach((pkg: Package) => {
     if (!pkg.wantsFunding) {
       return;
@@ -38,25 +39,45 @@ async function findPackagesWithFunding() {
     if (!pkg.dependencyAncestors.includes(packageRootName)) {
       return;
     }
-    const fundingDeps = intersect(pkg.dependencyAncestors, directDependencies);
-    warning(
-      fundingDeps.length > 0 || pkg.dependencyParents.includes(packageRootName)
+    const relevantAncestors = intersect(
+      pkg.dependencyAncestors,
+      directDependencies
     );
-    if (fundingDeps.length === 0) {
-      fundingDeps.push(packageRootName);
+    if (pkg.dependencyParents.includes(packageRootName)) {
+      relevantAncestors.push(packageRootName);
     }
-    fundingDeps.forEach((fundingDep) => {
-      fundingDependencies[fundingDep] = fundingDependencies[fundingDep] || [];
-      fundingDependencies[fundingDep].push(pkg.name);
+    relevantAncestors.forEach((ancestorName) => {
+      depsWithFunding[ancestorName] =
+        depsWithFunding[ancestorName] || new Set();
+      depsWithFunding[ancestorName].add(pkg.name);
     });
   });
 
+  console.log();
+  console.log("packages: " + packages.map((pkg) => pkg.name).join(" "));
+  console.log();
   console.log(
-    "Funding dependencies:",
-    JSON.stringify(fundingDependencies, null, 2)
+    "packages with funding info: " +
+      packages
+        .filter((pkg) => pkg.wantsFunding)
+        .map((pkg) => pkg.name)
+        .join(" ")
   );
+  console.log();
+  const fundingDepsJson = stringifyFundingDeps(depsWithFunding);
+  console.log("Funding dependencies:", fundingDepsJson);
   console.log("total packages: " + packages.length);
   console.log("dir", userProjectPath);
+}
+
+function stringifyFundingDeps(depsWithFunding) {
+  const str_object: any = {};
+  Object.entries(depsWithFunding).forEach(([pkgName, deps]) => {
+    assert(deps.constructor === Set);
+    str_object[pkgName] = Array.from(deps);
+  });
+  const str = JSON.stringify(str_object, null, 2);
+  return str;
 }
 
 /*
