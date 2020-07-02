@@ -172,10 +172,10 @@ async function getPackages(userProjectPath: string) {
   return { packages, rootPackage };
 }
 
-function unique(arr) {
+function unique<T>(arr: T[]): T[] {
   return Array.from(new Set(arr));
 }
-function intersect(array1, array2) {
+function intersect<T>(array1: T[], array2: T[]): T[] {
   return array1.filter((value) => array2.includes(value));
 }
 
@@ -199,7 +199,7 @@ function matchPathname(str, domainName) {
   );
   return unique(matches);
 }
-function escapeRegex(string) {
+function escapeRegex(string: string): string {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 function traverse(
