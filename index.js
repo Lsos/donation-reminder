@@ -84,7 +84,7 @@ function main() {
     "\n\n",
     "Donate and/or remove this note by running ",
     {
-      text: "npm run lsos",
+      text: "npx lsos",
       style: codeStyle,
     },
     "/",
@@ -101,7 +101,7 @@ function main() {
       style: noteStyle,
     },
     {
-      text: "npm run lsos",
+      text: "npx lsos",
       style: codeStyle,
     },
     {
