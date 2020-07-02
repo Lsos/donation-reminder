@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-const pify = require("pify");
-const readPackageTree = pify(require("read-package-tree"));
-const assert = require("assert");
-const stringify = require("json-stringify-safe");
+import assert from "assert";
+import stringify from "json-stringify-safe";
+import pify from "pify";
+import readPackageTreeAsync from "read-package-tree";
+const readPackageTree = pify(readPackageTreeAsync);
 
 postinstall();
 
@@ -24,36 +25,32 @@ async function findPackagesWithFunding() {
 
   const rootPackageName = rootPackage.name;
   const rootPackageDependencies = packages
-    .filter((pkg) => !pkg.notInstalledInNodeModulesDirectory)
-    .filter((pkg) => pkg.dependencyParents.includes(rootPackageName))
-    .map((pkg) => pkg.name);
+    .filter((pkg: any) => pkg.dependencyParents.includes(rootPackageName))
+    .map((pkg: any) => pkg.name);
 
   const fundingDependencies = {};
-  packages
-    .filter((pkg) => !pkg.notInstalledInNodeModulesDirectory)
-    .forEach((pkg) => {
-      if (!pkg.funding) {
-        return;
-      }
-      if (!pkg.dependencyAncestors.includes(rootPackageName)) {
-        return;
-      }
-      const fundingDeps = intersect(
-        pkg.dependencyAncestors,
-        rootPackageDependencies
-      );
-      warning(
-        fundingDeps.length > 0 ||
-          pkg.dependencyParents.includes(rootPackageName)
-      );
-      if (fundingDeps.length === 0) {
-        fundingDeps.push(rootPackageName);
-      }
-      fundingDeps.forEach((fundingDep) => {
-        fundingDependencies[fundingDep] = fundingDependencies[fundingDep] || [];
-        fundingDependencies[fundingDep].push(pkg.name);
-      });
+  packages.forEach((pkg: any) => {
+    if (!pkg.funding) {
+      return;
+    }
+    if (!pkg.dependencyAncestors.includes(rootPackageName)) {
+      return;
+    }
+    const fundingDeps = intersect(
+      pkg.dependencyAncestors,
+      rootPackageDependencies
+    );
+    warning(
+      fundingDeps.length > 0 || pkg.dependencyParents.includes(rootPackageName)
+    );
+    if (fundingDeps.length === 0) {
+      fundingDeps.push(rootPackageName);
+    }
+    fundingDeps.forEach((fundingDep) => {
+      fundingDependencies[fundingDep] = fundingDependencies[fundingDep] || [];
+      fundingDependencies[fundingDep].push(pkg.name);
     });
+  });
 
   console.log(
     "Funding dependencies:",
@@ -80,8 +77,7 @@ async function getPackages(userProjectPath) {
   )
     .map(({ node }) => node)
     .filter((pkg) => {
-      const { package } = pkg;
-      if (!package) {
+      if (!pkg.package) {
         warning(false);
         return false;
       }
@@ -125,7 +121,7 @@ async function getPackages(userProjectPath) {
   const { parents, ancestors } = getDependenciesParents(
     packages_in_node_modules
   );
-  Object.values(packages_map).forEach((pkg) => {
+  Object.values(packages_map).forEach((pkg: any) => {
     const pkg_ancestors = ancestors[pkg.name];
     assert(pkg_ancestors);
     pkg.dependencyAncestors = pkg_ancestors;
@@ -194,9 +190,9 @@ function matchPathname(str, domainName) {
 function escapeRegex(string) {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
-function traverse(obj, children_key) {
+function traverse(obj, children_key: any) {
   const children_retriever =
-    children_key.constructor === String
+    typeof children_key === "string"
       ? (node) => node[children_key]
       : children_key;
   const nodes = [];
@@ -223,11 +219,11 @@ function traverse(obj, children_key) {
   }
 }
 
-function warning(...args) {
+function warning(bool, msg?) {
   if (!isDev()) {
     return;
   }
-  assert(...args);
+  assert(bool, msg);
 }
 function isDev() {
   return process.cwd().startsWith("/home/romu");
@@ -300,13 +296,15 @@ function transitiveClosure(parents) {
   return getAncestors();
 
   function validateParents() {
-    Object.entries(parents).forEach(([node, node_parents]) => {
-      assert(node.constructor === String);
-      node_parents.forEach((parent) => {
-        assert(parent.constructor === String);
-        assert(parents[parent]);
-      });
-    });
+    Object.entries(parents).forEach(
+      ([node, node_parents]: [string, string[]]) => {
+        assert(node.constructor === String);
+        node_parents.forEach((parent: string) => {
+          assert(parent.constructor === String);
+          assert(parents[parent]);
+        });
+      }
+    );
   }
 
   function getAncestors() {

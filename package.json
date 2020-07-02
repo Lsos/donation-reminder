@@ -1,25 +1,34 @@
 {
   "name": "lsos",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "dist/index.js",
   "lsos": {
     "skipDonationFund": true
   },
   "scripts": {
-    "postinstall": "scripts/install.js"
-  },
-  "publishConfig": {
-    "access": "public"
+    "dev": "npm run build && npm run build:watch",
+    "build": "npm run build:clean && npm run build:code && npm run build:permissions",
+    "build:clean": "rm -rf dist/",
+    "build:code": "tsc",
+    "build:watch": "tsc --watch",
+    "build:permissions": "chmod 775 dist/scripts/postinstall.js",
+    "prepublishOnly": "npm run build",
+    "postinstall": "dist/scripts/postinstall.js"
   },
   "dependencies": {
+    "@types/node": "^14.0.14",
     "json-stringify-safe": "^5.0.1",
     "pify": "^5.0.0",
     "read-package-tree": "^5.3.1",
     "template-colors-web": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.0.0",
+    "typescript": "^3.9.6"
   },
   "repository": "github:lsos",
-  "license": "CC0-1.0"
+  "license": "CC0-1.0",
+  "publishConfig": {
+    "access": "public"
+  }
 }
