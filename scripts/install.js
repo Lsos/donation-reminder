@@ -19,9 +19,6 @@ async function findPackagesWithFunding() {
 
   const { packages, rootPackage } = await getPackages(userProjectPath);
 
-  print_packages_with_funding(packages);
-  console.log("dir", userProjectPath);
-
   //const userPackageJson = getUserPackageJson(userProjectPath);
   //
 
@@ -62,6 +59,8 @@ async function findPackagesWithFunding() {
     "Funding dependencies:",
     JSON.stringify(fundingDependencies, null, 2)
   );
+  console.log("total packages: " + packages.length);
+  console.log("dir", userProjectPath);
 }
 
 /*
@@ -71,49 +70,6 @@ function getUserPackageJson(userProjectPath) {
   return userPackageJson;
 }
 */
-
-function print_packages_with_funding(packages) {
-  const packages_with_funding = packages.filter((pkg) => {
-    if (pkg.notInstalledInNodeModulesDirectory) {
-      return false;
-    }
-    if (!pkg.funding) {
-      return false;
-    }
-    if (pkg.dependencyPaths.length === 0) {
-      return false;
-    }
-    if (
-      pkg.dependencyPaths.every((depPath) =>
-        depPath.some((pkg) => (pkg.packageJson.lsos || {}).skipDonationFund)
-      )
-    ) {
-      return false;
-    }
-    return true;
-  });
-  packages_with_funding.forEach((pkg) => {
-    const { id, dependencyPaths } = pkg;
-    assert(id);
-    assert(dependencyPaths);
-    console.log(id);
-    console.log(
-      dependencyPaths
-        .map((dependencyPath) =>
-          dependencyPath
-            .map((pkg) => {
-              return pkg.id;
-            })
-            .join(" -> ")
-        )
-        .join("\n")
-    );
-    console.log(findFundingUrls(pkg.funding).join(", "));
-    console.log();
-  });
-  console.log("total packages: " + packages.length);
-  console.log("with funding: " + packages_with_funding.length);
-}
 
 async function getPackages(userProjectPath) {
   const packages_map = {};
@@ -202,63 +158,6 @@ async function getPackages(userProjectPath) {
   );
   */
 
-  const packages_in_dependency_tree = traverse(
-    await npmls(userProjectPath),
-    (node) =>
-      Object.entries(node.dependencies || {}).map(([key, obj]) => ({
-        name: key,
-        ...obj,
-      }))
-  );
-
-  packages_in_dependency_tree.forEach(({ node }) => {
-    //console.log("pp", node.name, Object.keys(node));
-
-    const { name, version } = node;
-    assert(name);
-    assert(version);
-
-    const id = name + "@" + version;
-
-    if (!packages_map[id]) {
-      packages_map[id] = {
-        id,
-        name,
-        notInstalledInNodeModulesDirectory: true,
-        dependencyPaths: [],
-      };
-    }
-  });
-
-  packages_in_dependency_tree.forEach(({ node, ancestors }) => {
-    const { name, version } = node;
-    assert(name);
-    assert(version);
-    const id = name + "@" + version;
-
-    const pkg = packages_map[id];
-    assert(pkg);
-
-    // assert(ancestors.length === 0 || ancestors.slice(-1)[0].name === "thanks");
-
-    const dependencyPath = ancestors.map(({ name, version }) => {
-      const id = name + "@" + version;
-      const pkg = packages_map[id];
-      assert(pkg);
-      return pkg;
-    });
-
-    /*
-    console.log(
-      "pp",
-      node.id,
-      dependencyPath.map(({ id }) => id)
-    );
-    */
-
-    pkg.dependencyPaths.push(dependencyPath);
-  });
-
   const rootPackage = getRootPackage(packages_in_node_modules, userProjectPath);
   const packages = Object.values(packages_map);
 
@@ -322,45 +221,6 @@ function traverse(obj, children_key) {
       });
     }
   }
-}
-
-async function npmls(cwd) {
-  let resolve, reject;
-  const p = new Promise((resolve_, reject_) => {
-    resolve = resolve_;
-    reject = reject_;
-  });
-  require("child_process").exec("npm ls --json", { cwd }, function (
-    err,
-    stdout,
-    stderr
-  ) {
-    let parseError;
-    let depTree;
-    try {
-      depTree = JSON.parse(stdout);
-    } catch (err) {
-      parseError = err;
-    }
-    if (depTree) {
-      resolve(depTree);
-      return;
-    }
-    if (err) {
-      reject(err);
-      return;
-    }
-    if (stderr) {
-      reject(err);
-      return;
-    }
-    if (parseError) {
-      reject(err);
-      return;
-    }
-    resolve({});
-  });
-  return p;
 }
 
 function warning(...args) {
