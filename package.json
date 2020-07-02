@@ -20,6 +20,7 @@
     "json-stringify-safe": "^5.0.1",
     "pify": "^5.0.0",
     "read-package-tree": "^5.3.1",
+    "replace-in-file": "^6.1.0",
     "template-colors-web": "^1.0.0"
   },
   "devDependencies": {

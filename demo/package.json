@@ -3,6 +3,7 @@
     "dev": "parcel serve ./index.html --port 8080"
   },
   "dependencies": {
-    "parcel": "^2.0.0-beta.1"
+    "parcel": "^2.0.0-beta.1",
+    "lsos": "*"
   }
 }

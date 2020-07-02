@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import assert from "assert";
+import path from "path";
 import {
   getPackages,
   packageRootName,
@@ -9,6 +10,8 @@ import {
 } from "../utils/getPackages";
 import { warning } from "../utils/warning";
 import { intersect } from "../utils/intersect";
+import packageJson from "../package.json";
+import replace from "replace-in-file";
 
 postinstall();
 
@@ -68,6 +71,19 @@ async function findPackagesWithFunding() {
   console.log("Funding dependencies:", fundingDepsJson);
   console.log("total packages: " + packages.length);
   console.log("dir", userProjectPath);
+
+  const packageJsonPath = require.resolve("../../package.json");
+  const lsosPackageRootDir = path.dirname(packageJsonPath);
+  const donationReminderSourceCodeFile = require.resolve(
+    path.resolve(lsosPackageRootDir, packageJson.main)
+  );
+  console.log(donationReminderSourceCodeFile);
+  // @ts-ignore
+  await replace({
+    files: donationReminderSourceCodeFile,
+    from: '"UNAVAILABLE_FUNDING_DEPS"',
+    to: fundingDepsJson,
+  });
 }
 
 function stringifyFundingDeps(depsWithFunding) {

@@ -137,3 +137,8 @@ function styledLog(strings = [], { defaultStyle = "" } = {}) {
   });
   console.log(str, ...styles);
 }
+
+function getFundingDependencies() {
+  const fundingDependencies = "UNAVAILABLE_FUNDING_DEPS";
+  return fundingDependencies;
+}

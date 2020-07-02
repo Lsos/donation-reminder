@@ -49,7 +49,6 @@ type PackageInfo = {
   dependencyAncestors: DependencyAncestors;
 };
 
-// TODO
 export type Package = {
   dependencyParents: DependencyParents;
   dependencyAncestors: DependencyAncestors;
