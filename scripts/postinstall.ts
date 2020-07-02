@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
-import { getPackages, packageRootName } from "./getPackages";
-import { Package, PackageName } from "./getPackages";
+import {
+  getPackages,
+  packageRootName,
+  Package,
+  PackageName,
+} from "../utils/getPackages";
 import { warning } from "../utils/warning";
 import { intersect } from "../utils/intersect";
 
