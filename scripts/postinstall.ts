@@ -8,6 +8,18 @@ const readPackageTree = pify(readPackageTreeAsync);
 
 postinstall();
 
+type PackageID = string & { _brand?: "PackageID" };
+type PackageName = string & { _brand?: "PackageName" };
+
+type Package = {
+  id: PackageID;
+  name?: PackageName;
+  version?: string;
+  dependencyParents: PackageName[];
+  dependencyAncestors: PackageName[];
+  funding: any;
+};
+
 async function postinstall() {
   await findPackagesWithFunding();
   console.log();
@@ -23,13 +35,13 @@ async function findPackagesWithFunding() {
   //const userPackageJson = getUserPackageJson(userProjectPath);
   //
 
-  const rootPackageName = rootPackage.name;
+  const rootPackageName: PackageName = rootPackage.name;
   const rootPackageDependencies = packages
-    .filter((pkg: any) => pkg.dependencyParents.includes(rootPackageName))
-    .map((pkg: any) => pkg.name);
+    .filter((pkg: Package) => pkg.dependencyParents.includes(rootPackageName))
+    .map((pkg: Package) => pkg.name);
 
   const fundingDependencies = {};
-  packages.forEach((pkg: any) => {
+  packages.forEach((pkg: Package) => {
     if (!pkg.funding) {
       return;
     }
@@ -68,7 +80,7 @@ function getUserPackageJson(userProjectPath) {
 }
 */
 
-async function getPackages(userProjectPath) {
+async function getPackages(userProjectPath: string) {
   const packages_map = {};
 
   const packages_in_node_modules = traverse(
@@ -121,7 +133,7 @@ async function getPackages(userProjectPath) {
   const { parents, ancestors } = getDependenciesParents(
     packages_in_node_modules
   );
-  Object.values(packages_map).forEach((pkg: any) => {
+  Object.values(packages_map).forEach((pkg: Package) => {
     const pkg_ancestors = ancestors[pkg.name];
     assert(pkg_ancestors);
     pkg.dependencyAncestors = pkg_ancestors;
@@ -190,7 +202,10 @@ function matchPathname(str, domainName) {
 function escapeRegex(string) {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
-function traverse(obj, children_key: any) {
+function traverse(
+  obj: object,
+  children_key: string | ((obj: object) => object)
+) {
   const children_retriever =
     typeof children_key === "string"
       ? (node) => node[children_key]
