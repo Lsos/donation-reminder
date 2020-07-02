@@ -129,28 +129,33 @@ async function getPackages(userProjectPath) {
         warning(false);
         return false;
       }
-      const { name, version } = package;
+      pkg.packageJson = pkg.package;
+      return true;
+    })
+    .filter((pkg, i) => {
+      /*
+      if (i === 0) {
+        pkg.id = "_root";
+        return true;
+      }
+      */
+
+      const { name, version } = pkg.packageJson;
       if (!name || !version) {
         warning(false);
         return false;
       }
-      return true;
-    })
-    .map((pkg) => {
-      pkg.packageJson = pkg.package;
 
-      const { name, version } = pkg.packageJson;
       warning(pkg.name === name, name + "!==" + pkg.name);
       pkg.name = name;
       pkg.version = version;
-
       pkg.id = name + "@" + version;
-
+      return true;
+    })
+    .filter((pkg) => {
       pkg.funding = pkg.packageJson.funding;
-
       pkg.dependencyPaths = [];
-
-      return pkg;
+      return true;
     });
 
   packages_in_node_modules.forEach((pkg) => {
