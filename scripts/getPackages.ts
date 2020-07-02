@@ -4,6 +4,8 @@ import pify from "pify";
 import readPackageTreeAsync from "read-package-tree";
 import { warning } from "../utils/warning";
 import { unique } from "../utils/unique";
+import { transitiveClosure } from "../utils/transitiveClosure";
+import { traverse } from "../utils/traverse";
 const readPackageTree = pify(readPackageTreeAsync);
 
 export const packageRootName = "_root";
@@ -125,61 +127,6 @@ async function getPackagesInfo(
   return packagesInfo;
 }
 
-function findFundingUrls(thing) {
-  const str = stringify(thing);
-  const pathnames = [
-    ...matchPathname(str, "patreon.com"),
-    ...matchPathname(str, "opencollective.com"),
-    ...matchPathname(str, "github.com/sponsors"),
-  ];
-  const urls = pathnames.map((m) => "https://" + m);
-  if (urls.length === 0 && !str.includes("?sponsor=")) {
-    console.log(str);
-    throw new Error("look me up");
-  }
-  return unique(urls);
-}
-function matchPathname(str, domainName) {
-  const matches = str.match(
-    new RegExp(escapeRegex(domainName) + "\\/[a-zA-Z0-9-_]+", "g")
-  );
-  return unique(matches);
-}
-function escapeRegex(string: string): string {
-  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-}
-function traverse(
-  obj: object,
-  children_key: string | ((obj: object) => object)
-) {
-  const children_retriever =
-    typeof children_key === "string"
-      ? (node) => node[children_key]
-      : children_key;
-  const nodes = [];
-  const visited_nodes = [];
-  walk(obj, []);
-
-  return nodes;
-
-  function walk(node, ancestors) {
-    if (visited_nodes.includes(node)) {
-      return;
-    }
-    visited_nodes.push(node);
-    nodes.push({
-      node,
-      ancestors,
-    });
-    const children = children_retriever(node);
-    if (children) {
-      children.forEach((child) => {
-        walk(child, [node, ...ancestors]);
-      });
-    }
-  }
-}
-
 function getDependencyInfo(packagesInfo: PackageInfo[]): DependencyInfo {
   const parents = {};
   packagesInfo.forEach((pkgInfo: PackageInfo) => {
@@ -235,41 +182,26 @@ function getIgnoredPackages(packagesInfo: PackageInfo[]): PackageName[] {
   return ignoredPackages;
 }
 
-function transitiveClosure(parents) {
-  validateParents();
-
-  return getAncestors();
-
-  function validateParents() {
-    Object.entries(parents).forEach(
-      ([node, node_parents]: [string, string[]]) => {
-        assert(node.constructor === String);
-        node_parents.forEach((parent: string) => {
-          assert(parent.constructor === String);
-          assert(parents[parent]);
-        });
-      }
-    );
+function findFundingUrls(thing) {
+  const str = stringify(thing);
+  const pathnames = [
+    ...matchPathname(str, "patreon.com"),
+    ...matchPathname(str, "opencollective.com"),
+    ...matchPathname(str, "github.com/sponsors"),
+  ];
+  const urls = pathnames.map((m) => "https://" + m);
+  if (urls.length === 0 && !str.includes("?sponsor=")) {
+    console.log(str);
+    throw new Error("look me up");
   }
-
-  function getAncestors() {
-    const ancestors = {};
-    Object.keys(parents).forEach((node) => {
-      const node_ancestors = [];
-      const visited_nodes: { [key: string]: boolean } = {};
-      add_parents(node, visited_nodes, node_ancestors);
-      ancestors[node] = node_ancestors;
-    });
-    return ancestors;
-  }
-
-  function add_parents(node, visited_nodes, node_ancestors) {
-    visited_nodes[node] = true;
-    const node_parents = parents[node];
-    node_parents.forEach((parent) => {
-      if (visited_nodes[parent]) return;
-      node_ancestors.push(parent);
-      add_parents(parent, visited_nodes, node_ancestors);
-    });
-  }
+  return unique(urls);
+}
+function matchPathname(str, domainName) {
+  const matches = str.match(
+    new RegExp(escapeRegex(domainName) + "\\/[a-zA-Z0-9-_]+", "g")
+  );
+  return unique(matches);
+}
+function escapeRegex(string: string): string {
+  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
