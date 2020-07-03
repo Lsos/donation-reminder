@@ -13,7 +13,7 @@ function main() {
     "\n\n",
     "You are a company? Support",
     ...getFundingObjects(),
-    "by donating $10 per month/developer.",
+    "by donating $10 per developer/month.",
     "\n\n",
     ...getFooter(),
   ];
