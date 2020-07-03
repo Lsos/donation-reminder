@@ -1,87 +1,63 @@
+import { unique } from "./utils/unique";
+
+const UNAVAILABLE_FUNDING_DEPS = Symbol();
+
 if (typeof window !== "undefined") {
   main();
 }
 
 function main() {
-  //*
-  const projectNames = [
-    "awesome-bundler",
-    "awesome-transpiler",
-    "a-polyfill-collection",
-    "awesome-dev-tool-1",
-    "lovely-dev-tool-2",
-    "lovely-dev-tool-3",
-    "neat-markdown-tool-1",
-    "neat-markdown-tool-2",
-    "javascript-utility-library-1",
-    "javascript-utility-library-2",
-    "javascript-utility-library-3",
-    "react-awesome-component-1",
-    "react-awesome-component-2",
-    "react-awesome-component-3",
-    "react-awesome-component-4",
-  ];
-  /*/
-  const projectNames = [
-    "react-flip-move",
-    "core-js",
-    "@babel",
-    "lerna",
-    "@mdx",
-    "remark",
-    "@brillout",
-    "chalk",
-    "rxjs",
-    "goldpage",
-    "inquirer",
-    "uuid",
-    "rollup",
-    "axios",
-    "jest",
-    "wildcard-api",
-    "bluebird",
-    "glob",
-    "json-s",
-  ];
-  //*/
-
-  const noteSize = "font-size: 0.99em;";
-  const noteStyle = "color: #666; " + noteSize;
-  /*
-  const codeBg = "rgb(246, 248, 250)"
-  /*/
-  const codeBg = "rgb(236, 238, 240)";
-  //*/
-  const codeStyle = "background: " + codeBg + "; padding: 2px 7px; " + noteSize;
-  const defaultStyle = "font-size: 1.2em; color: #31343d";
-
   const strings = [
+    ...getHeader(),
+    "\n\n",
+    "You are a company? Support",
+    ...getFundingObjects(),
+    "by donating $10 per month/user.",
+    "\n\n",
+    ...getFooter(),
+  ];
+
+  styledLog(strings, { defaultStyle: "font-size: 1.2em; color: #31343d" });
+}
+
+function getFundingObjects() {
+  const fundingList = getFundingList();
+
+  if (fundingList === null) {
+    return [" open source "];
+  }
+
+  return [
+    "\n\n",
+    {
+      text: "test",
+      style: "font-weight: bold; padding-left: 20px",
+    },
+    ...fundingList,
+  ];
+
+  /*
+    {
+      text: "",
+      style: "font-weight: bold; padding-left: 20px",
+    },
+    */
+}
+
+function getHeader() {
+  return [
     {
       text: "Support Open Source",
       style:
         "background: #00ae41; color: white; font-size: 2.2em; text-align: center; margin: auto; padding: 10px 20px",
     },
-    "\n\n",
-    "You are a company? Support\n\n",
-    {
-      text: projectNames.join("\xa0| "),
-      style: "font-weight: bold; padding-left: 20px",
-    },
-    /*
-    ...projectNames
-      .map((name, i) => [
-        {
-          text: name + "\xa0| ",
-          style: "font-weight: bold",
-        },
-        //"\xa0| ",
-        // i !== projectNames.length - 1 ? ", " : "",
-      ])
-      .flat(),
-    */
-    "\n\n",
-    "by donating $10 per month/user.",
-    "\n\n",
+  ];
+}
+
+function getFooter() {
+  const codeStyle =
+    "background: rgb(236, 238, 240); padding: 2px 7px; font-size: 0.99em;";
+  return [
     "Donate and/or remove this note by running ",
     {
       text: "npx lsos",
@@ -93,34 +69,80 @@ function main() {
       style: codeStyle,
     },
     ".",
-    /*
-    "by donating $10 per month/user, see https://lsos.org/donation-fund/donate.",
-    "\n\n",
-    {
-      text: "You can remove this note by running ",
-      style: noteStyle,
-    },
-    {
-      text: "npx lsos",
-      style: codeStyle,
-    },
-    {
-      text: " / ",
-      style: noteStyle,
-    },
-    {
-      text: "yarn lsos",
-      style: codeStyle,
-    },
-    {
-      text: ".",
-      style: noteStyle,
-    },
-    */
   ];
+}
 
-  styledLog(strings, { defaultStyle });
-  console.log(getFundingDependencies());
+function getFundingList() {
+  const fundingPackages = getFundingPackages();
+  if (fundingPackages === UNAVAILABLE_FUNDING_DEPS) {
+    return null;
+  }
+  const fundingInfo = unique([
+    ...fundingPackages["_root"],
+    ...Object.keys(fundingPackages),
+  ])
+    .filter((pkgName) => pkgName !== "_root")
+    .map((pkgName) => {
+      const fundingDeps = unique(
+        (fundingPackages[pkgName] || [])
+          .map((depName) => depName.split("@")[0])
+          .sort((depName1, depName2) => {
+            if (depName2.includes(pkgName)) {
+              return -1;
+            }
+            if (depName1.includes(pkgName)) {
+              return 1;
+            }
+          })
+      );
+      const wantsFunding = fundingPackages["_root"].includes(pkgName);
+      return {
+        pkgName,
+        wantsFunding,
+        fundingDeps,
+      };
+    });
+
+  const boldStyle = "font-weight: bold";
+  const fundingList = fundingInfo
+    .map(({ pkgName, wantsFunding, fundingDeps }, i) => {
+      const pkgText = wantsFunding
+        ? {
+            text: pkgName,
+            style: boldStyle,
+          }
+        : pkgName;
+      const depText =
+        fundingDeps.length === 0
+          ? []
+          : [
+              " (",
+              ...fundingDeps
+                .slice(0, 6)
+                .map((depName, i) => {
+                  if (i === 5) {
+                    const depsLeft = fundingDeps.length - 5;
+                    return [", ... (" + depsLeft + " more)"];
+                  }
+                  return [
+                    {
+                      text: depName,
+                      style: boldStyle,
+                    },
+                    i === fundingDeps.length - 1 || i === 4 ? "" : ", ",
+                  ];
+                })
+                .flat(),
+              ")",
+            ];
+      return [
+        pkgText,
+        ...depText,
+        i === fundingInfo.length - 1 ? "" : "\xa0| ",
+      ];
+    })
+    .flat();
+  return fundingList;
 }
 
 function styledLog(strings = [], { defaultStyle = "" } = {}) {
@@ -139,8 +161,8 @@ function styledLog(strings = [], { defaultStyle = "" } = {}) {
   console.log(str, ...styles);
 }
 
-function getFundingDependencies() {
-  const UNAVAILABLE_FUNDING_DEPS = Symbol();
-  const fundingDependencies = /*FUNDING_DEPS_BEGIN*/ UNAVAILABLE_FUNDING_DEPS; /*FUNDING_DEPS_END*/
-  return fundingDependencies;
+function getFundingPackages(): Symbol | object {
+  const fundingPackages = /*FUNDING_DEPS_BEGIN*/ UNAVAILABLE_FUNDING_DEPS; /*FUNDING_DEPS_END*/
+  console.log(123, fundingPackages);
+  return fundingPackages;
 }
