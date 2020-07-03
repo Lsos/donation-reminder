@@ -120,6 +120,7 @@ function main() {
   ];
 
   styledLog(strings, { defaultStyle });
+  console.log(getFundingDependencies());
 }
 
 function styledLog(strings = [], { defaultStyle = "" } = {}) {
@@ -139,6 +140,7 @@ function styledLog(strings = [], { defaultStyle = "" } = {}) {
 }
 
 function getFundingDependencies() {
-  const fundingDependencies = "UNAVAILABLE_FUNDING_DEPS";
+  const UNAVAILABLE_FUNDING_DEPS = Symbol();
+  const fundingDependencies = /*FUNDING_DEPS_BEGIN*/ UNAVAILABLE_FUNDING_DEPS; /*FUNDING_DEPS_END*/
   return fundingDependencies;
 }

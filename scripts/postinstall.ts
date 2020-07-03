@@ -8,21 +8,31 @@ import {
   Package,
   PackageName,
 } from "../utils/getPackages";
-import { warning } from "../utils/warning";
 import { intersect } from "../utils/intersect";
-import packageJson from "../package.json";
+import { escapeRegex } from "../utils/escapeRegex";
+import { isDev } from "../utils/isDev";
 import replace from "replace-in-file";
+
+/*/
+const DEBUG = true;
+/*/
+const DEBUG = false;
+//*/
 
 postinstall();
 
 async function postinstall() {
-  await findPackagesWithFunding();
-  console.log();
-  console.log("lsos postinstall ran");
-  console.log();
+  if (isDev()) {
+    await findFundingPackages();
+  } else {
+    try {
+      await findFundingPackages();
+      postinstall();
+    } catch (err) {}
+  }
 }
 
-async function findPackagesWithFunding() {
+async function findFundingPackages() {
   const userProjectPath = process.env.INIT_CWD || process.cwd();
 
   const packages: Package[] = await getPackages(userProjectPath);
@@ -34,7 +44,7 @@ async function findPackagesWithFunding() {
     .filter((pkg: Package) => pkg.dependencyParents.includes(packageRootName))
     .map((pkg: Package) => pkg.name);
 
-  const depsWithFunding = {};
+  const fundingDeps = {};
   packages.forEach((pkg: Package) => {
     if (!pkg.wantsFunding) {
       return;
@@ -50,50 +60,77 @@ async function findPackagesWithFunding() {
       relevantAncestors.push(packageRootName);
     }
     relevantAncestors.forEach((ancestorName) => {
-      depsWithFunding[ancestorName] =
-        depsWithFunding[ancestorName] || new Set();
-      depsWithFunding[ancestorName].add(pkg.name);
+      fundingDeps[ancestorName] = fundingDeps[ancestorName] || new Set();
+      fundingDeps[ancestorName].add(pkg.name);
     });
   });
 
-  console.log();
-  console.log("packages: " + packages.map((pkg) => pkg.name).join(" "));
-  console.log();
-  console.log(
-    "packages with funding info: " +
-      packages
-        .filter((pkg) => pkg.wantsFunding)
-        .map((pkg) => pkg.name)
-        .join(" ")
-  );
-  console.log();
-  const fundingDepsJson = stringifyFundingDeps(depsWithFunding);
-  console.log("Funding dependencies:", fundingDepsJson);
-  console.log("total packages: " + packages.length);
-  console.log("dir", userProjectPath);
+  const fundingDepsJson = stringifyFundingDeps(fundingDeps);
 
+  if (DEBUG) {
+    console.log();
+    console.log("packages: " + packages.map((pkg) => pkg.name).join(" "));
+    console.log();
+    console.log(
+      "packages with funding info: " +
+        packages
+          .filter((pkg) => pkg.wantsFunding)
+          .map((pkg) => pkg.name)
+          .join(" ")
+    );
+    console.log();
+    console.log(
+      "Funding dependencies:",
+      JSON.stringify(JSON.parse(fundingDepsJson), null, 2)
+    );
+    console.log("total packages: " + packages.length);
+    console.log("dir", userProjectPath);
+  }
+
+  await writeFundingDeps(fundingDepsJson);
+}
+
+async function writeFundingDeps(fundingDepsJson: string) {
   const packageJsonPath = require.resolve("../../package.json");
-  const lsosPackageRootDir = path.dirname(packageJsonPath);
+  const packageJson = require(packageJsonPath);
+  assert(packageJson.name === "lsos");
+  const rootDir = path.dirname(packageJsonPath);
   const donationReminderSourceCodeFile = require.resolve(
-    path.resolve(lsosPackageRootDir, packageJson.main)
+    path.resolve(rootDir, packageJson.main)
   );
-  console.log(donationReminderSourceCodeFile);
-  // @ts-ignore
-  await replace({
+
+  assert(fundingDepsJson.startsWith("{"));
+  assert(fundingDepsJson.endsWith("}"));
+  const delimiterBegin = "/*FUNDING_DEPS_BEGIN*/";
+  const delimiterEnd = "/*FUNDING_DEPS_END*/";
+  await (replace as any)({
     files: donationReminderSourceCodeFile,
-    from: '"UNAVAILABLE_FUNDING_DEPS"',
-    to: fundingDepsJson,
+    from: matchDelimiters(delimiterBegin, delimiterEnd),
+    to: delimiterBegin + fundingDepsJson + ";" + delimiterEnd,
   });
 }
 
-function stringifyFundingDeps(depsWithFunding) {
+function stringifyFundingDeps(fundingDeps: {
+  [key: string]: Set<PackageName>;
+}) {
   const str_object: any = {};
-  Object.entries(depsWithFunding).forEach(([pkgName, deps]) => {
+  Object.entries(fundingDeps).forEach(([pkgName, deps]) => {
     assert(deps.constructor === Set);
     str_object[pkgName] = Array.from(deps);
   });
-  const str = JSON.stringify(str_object, null, 2);
+  const str = JSON.stringify(str_object);
+  const numberOfLines = str.split("\n").length;
+  assert(numberOfLines === 1, numberOfLines.toString());
   return str;
+}
+
+function matchDelimiters(delimiterBegin: string, delimiterEnd: string) {
+  return new RegExp(
+    escapeRegex(delimiterBegin) +
+      // https://stackoverflow.com/questions/1979884/how-to-use-javascript-regex-over-multiple-lines
+      "[\\s\\S]*?" +
+      escapeRegex(delimiterEnd)
+  );
 }
 
 /*

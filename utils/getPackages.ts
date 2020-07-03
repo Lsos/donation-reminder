@@ -6,6 +6,7 @@ import { warning } from "../utils/warning";
 import { unique } from "../utils/unique";
 import { transitiveClosure } from "../utils/transitiveClosure";
 import { traverse } from "../utils/traverse";
+import { escapeRegex } from "../utils/escapeRegex";
 const readPackageTree = pify(readPackageTreeAsync);
 
 export const packageRootName = "_root";
@@ -205,7 +206,4 @@ function matchPathname(str, domainName) {
     new RegExp(escapeRegex(domainName) + "\\/[a-zA-Z0-9-_]+", "g")
   );
   return unique(matches);
-}
-function escapeRegex(string: string): string {
-  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 }

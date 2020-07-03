@@ -1,14 +1,11 @@
 import assert from "assert";
+import { isDev } from "../utils/isDev";
 
 export { warning };
 
-function warning(bool, msg?) {
-    if (!isDev()) {
-        return;
-    }
-    assert(bool, msg);
-}
-
-function isDev() {
-    return process.cwd().startsWith("/home/romu");
+function warning(bool: any, msg?: any) {
+  if (!isDev()) {
+    return;
+  }
+  assert(bool, msg);
 }
