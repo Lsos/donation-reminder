@@ -1,4 +1,5 @@
 import { unique } from "./utils/unique";
+import assert from "assert";
 
 const UNAVAILABLE_FUNDING_DEPS = Symbol();
 
@@ -12,7 +13,7 @@ function main() {
     "\n\n",
     "You are a company? Support",
     ...getFundingObjects(),
-    "by donating $10 per month/user.",
+    "by donating $10 per month/developer.",
     "\n\n",
     ...getFooter(),
   ];
@@ -30,18 +31,12 @@ function getFundingObjects() {
   return [
     "\n\n",
     {
-      text: "test",
-      style: "font-weight: bold; padding-left: 20px",
+      text: " ",
+      style: "padding-left: 20px",
     },
     ...fundingList,
+    "\n\n",
   ];
-
-  /*
-    {
-      text: "",
-      style: "font-weight: bold; padding-left: 20px",
-    },
-    */
 }
 
 function getHeader() {
@@ -85,7 +80,7 @@ function getFundingList() {
     .map((pkgName) => {
       const fundingDeps = unique(
         (fundingPackages[pkgName] || [])
-          .map((depName) => depName.split("@")[0])
+          .map((depName) => depName.split("/")[0])
           .sort((depName1, depName2) => {
             if (depName2.includes(pkgName)) {
               return -1;
@@ -104,6 +99,7 @@ function getFundingList() {
     });
 
   const boldStyle = "font-weight: bold";
+  const depListMax = 3;
   const fundingList = fundingInfo
     .map(({ pkgName, wantsFunding, fundingDeps }, i) => {
       const pkgText = wantsFunding
@@ -116,24 +112,27 @@ function getFundingList() {
         fundingDeps.length === 0
           ? []
           : [
-              " (",
+              " [",
               ...fundingDeps
-                .slice(0, 6)
+                .slice(0, depListMax + 1)
                 .map((depName, i) => {
-                  if (i === 5) {
-                    const depsLeft = fundingDeps.length - 5;
-                    return [", ... (" + depsLeft + " more)"];
+                  if (i === depListMax) {
+                    const depsLeft = fundingDeps.length - depListMax;
+                    return [", ...(" + depsLeft + " more)"];
                   }
+                  assert(depName);
                   return [
                     {
                       text: depName,
                       style: boldStyle,
                     },
-                    i === fundingDeps.length - 1 || i === 4 ? "" : ", ",
+                    i === fundingDeps.length - 1 || i === depListMax - 1
+                      ? ""
+                      : ", ",
                   ];
                 })
                 .flat(),
-              ")",
+              "]",
             ];
       return [
         pkgText,
@@ -163,6 +162,5 @@ function styledLog(strings = [], { defaultStyle = "" } = {}) {
 
 function getFundingPackages(): Symbol | object {
   const fundingPackages = /*FUNDING_DEPS_BEGIN*/ UNAVAILABLE_FUNDING_DEPS; /*FUNDING_DEPS_END*/
-  console.log(123, fundingPackages);
   return fundingPackages;
 }

@@ -3,7 +3,12 @@
     "dev": "parcel serve ./index.html --port 8080"
   },
   "dependencies": {
-    "parcel": "^2.0.0-beta.1",
-    "lsos": "*"
+    "@wildcard-api/client": "^0.3.1",
+    "@wildcard-api/server": "^0.3.1",
+    "chalk": "^4.1.0",
+    "fs-extra": "^9.0.1",
+    "goldpage": "^0.5.6",
+    "lsos": "*",
+    "parcel": "^1.12.4"
   }
 }

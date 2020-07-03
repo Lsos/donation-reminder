@@ -1,2 +1,6 @@
-.parcel-cache/
 dist/
+
+# Parcel v2
+.parcel-cache/
+# Parcel v1
+.cache/
