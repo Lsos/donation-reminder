@@ -1,24 +1,61 @@
 import { unique } from "./utils/unique";
 import assert from "assert";
 
+const COLOR_GREEN = "#00ae41";
 const UNAVAILABLE_FUNDING_DEPS = Symbol();
 
-if (typeof window !== "undefined") {
-  main();
+if (!skip()) {
+  showDonationReminder();
 }
 
-function main() {
+function showDonationReminder() {
   const strings = [
     ...getHeader(),
     "\n\n",
+    /*
     "You are a company? Support",
     ...getFundingObjects(),
     "by donating $10 per developer/month.",
     "\n\n",
+    */
+    " ",
+    icon("https://lsos.org/logo.hash_b4859b66bf49915e8d8ea777e776cc50.svg"),
+    "Lsos Donation Fund",
+    separator(),
+    "Support all your open source dependencies",
+    separator(),
+    "https://lsos.org/fund/donate.",
+    "\n\n",
+    ...getNote(),
+    "\n\n",
     ...getFooter(),
   ];
 
-  styledLog(strings, { defaultStyle: "font-size: 1.2em; color: #31343d" });
+  styledLog(strings, { defaultStyle: defaultStyle() });
+}
+
+function icon(iconUrl: string) {
+  return {
+    text: " ",
+    style: [
+      'background-image: url("' + iconUrl + '")',
+      "background-size: contain",
+      "background-repeat: no-repeat",
+      "padding: 14px",
+      "line-height: 0px",
+    ],
+  };
+}
+
+function separator() {
+  return {
+    text: " | ",
+    style: [...defaultStyle(), "color: #888"],
+  };
+}
+
+function defaultStyle() {
+  return ["font-size: 1.3em", "color: #31343d"];
 }
 
 function getFundingObjects() {
@@ -32,7 +69,7 @@ function getFundingObjects() {
     "\n\n",
     {
       text: " ",
-      style: "padding-left: 20px",
+      style: ["padding-left: 20px"],
     },
     ...fundingList,
     "\n\n",
@@ -40,30 +77,78 @@ function getFundingObjects() {
 }
 
 function getHeader() {
+  const { text, style } = getBorderCommons();
+  assert(text === "Support Open Source");
   return [
     {
-      text: "Support Open Source",
-      style:
-        "background: #00ae41; color: white; font-size: 2.2em; text-align: center; margin: auto; padding: 10px 20px",
+      text,
+      style: [
+        ...style,
+        "color: white",
+        "padding-top: 10px",
+        "padding-bottom: 10px",
+      ],
     },
   ];
 }
 
 function getFooter() {
-  const codeStyle =
-    "background: rgb(236, 238, 240); padding: 2px 7px; font-size: 0.99em;";
+  const { text, style } = getBorderCommons();
   return [
-    "Donate and/or remove this note by running ",
     {
-      text: "npx lsos",
+      text,
+      style: [
+        ...style,
+        "color: " + COLOR_GREEN,
+        "line-height: 0em",
+        "padding-top: 12px",
+      ],
+    },
+  ];
+}
+
+function getBorderCommons() {
+  return {
+    text: "Support Open Source",
+    style: [
+      "background: " + COLOR_GREEN,
+      "font-size: 2.2em",
+      "text-align: center",
+      "padding-left: 20px",
+      "padding-right: 20px",
+      "border-radius: 10px",
+    ],
+  };
+}
+
+function getNote() {
+  const codeStyle = [
+    "background: rgb(236, 238, 240)",
+    "padding: 2px 7px",
+    "font-size: 0.99em",
+  ];
+  const noteStyle = ["color: #666", "font-size: 1.2em"];
+  return [
+    {
+      text: "Remove this note by running ",
+      style: [...noteStyle, "padding-left: 11px"],
+    },
+    {
+      text: "npx lsos remove",
       style: codeStyle,
     },
-    "/",
     {
-      text: "yarn lsos",
+      text: "/",
+      style: noteStyle,
+    },
+    {
+      text: "yarn lsos remove",
       style: codeStyle,
     },
-    ".",
+    {
+      text: ".",
+      style: noteStyle,
+    },
   ];
 }
 
@@ -98,7 +183,7 @@ function getFundingList() {
       };
     });
 
-  const boldStyle = "font-weight: bold";
+  const boldStyle = ["font-weight: bold"];
   const depListMax = 3;
   const fundingList = fundingInfo
     .map(({ pkgName, wantsFunding, fundingDeps }, i) => {
@@ -144,18 +229,17 @@ function getFundingList() {
   return fundingList;
 }
 
-function styledLog(strings = [], { defaultStyle = "" } = {}) {
+function styledLog(strings = [], { defaultStyle = [] } = {}) {
   let str = "";
   const styles = [];
   strings.forEach((spec) => {
     if (spec.constructor === String) {
-      spec = {
-        text: spec,
-        style: defaultStyle,
-      };
+      spec = { text: spec };
     }
+    spec.style = spec.style || defaultStyle;
+
     str += "%c" + spec.text;
-    styles.push(spec.style);
+    styles.push(spec.style.join(";"));
   });
   console.log(str, ...styles);
 }
@@ -163,4 +247,48 @@ function styledLog(strings = [], { defaultStyle = "" } = {}) {
 function getFundingPackages(): Symbol | object {
   const fundingPackages = /*FUNDING_DEPS_BEGIN*/ UNAVAILABLE_FUNDING_DEPS; /*FUNDING_DEPS_END*/
   return fundingPackages;
+}
+
+function skip() {
+  return (
+    // We only show the donation-reminder in the browser
+    !isBrowser() ||
+    // We don't show the donation-reminder in staging or production environments
+    !isDev() ||
+    // The donation-reminder only works in chromium browsers
+    !isChromium()
+  );
+}
+
+function isBrowser() {
+  return typeof window !== "undefined";
+}
+
+function isDev() {
+  if (!window?.process?.env) {
+    return true;
+  }
+  return ["", "dev", "development"].includes(process.env.NODE_ENV);
+}
+
+declare global {
+  interface Window {
+    opr: any;
+    opera: any;
+    chrome: any;
+  }
+}
+function isChromium() {
+  // https://stackoverflow.com/questions/57660234/how-can-i-check-if-a-browser-is-chromium-based
+  // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+
+  const isOpera =
+    (!!window.opr && !!window.opr.addons) ||
+    !!window.opera ||
+    navigator.userAgent.indexOf(" OPR/") >= 0;
+
+  // Also detects Edge Chromium
+  const isChrome = !!window.chrome;
+
+  return isOpera || isChrome;
 }
