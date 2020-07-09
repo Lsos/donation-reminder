@@ -98,7 +98,7 @@ function projectLine({ iconUrl, title, desc, link }) {
 }
 
 function icon(iconUrl: string, { size = 18 }: { size?: number } = {}) {
-  const verticalAlignment = size > 20 ? 4 : 6;
+  const verticalAlignment = size > 20 ? 5 : 5;
   const paddingTop = size / 2 + verticalAlignment;
   const paddingBottom = size / 2 - verticalAlignment;
   return {
