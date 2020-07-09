@@ -4,8 +4,9 @@ import assert from "assert";
 const COLOR_GREEN = "#00ae41";
 const UNAVAILABLE_FUNDING_DEPS = Symbol();
 
-const MARGIN_LEFT = 20;
-const PROJECT_LOGO_SIZE = 14;
+const MARGIN_LEFT = 4;
+const NOTE_ADDITIONAL_MARGIN = 2;
+const PROJECT_LOGO_SIZE = 32;
 const PROJECT_LOGO_MARGIN_RIGHT = 10;
 const INNER_MARGIN_SIZE =
   MARGIN_LEFT + PROJECT_LOGO_SIZE + PROJECT_LOGO_MARGIN_RIGHT;
@@ -34,7 +35,7 @@ function showDonationReminder() {
       desc: [
         "G'day ",
         icon("https://discord.com/assets/df7ba0f4020ca70048a0226d1dfa73f6.svg"),
-        ", I'm Tanner, I'd love to be able to work full-time on open source and I'd appreciate any help! ",
+        ", I'm Tanner, I'd love to be able to work full-time on open source ",
         icon("https://discord.com/assets/da3651e59d6006dfa5fa07ec3102d1f3.svg"),
       ],
       link: "https://lsos.org/npm/react-table",
@@ -43,7 +44,7 @@ function showDonationReminder() {
       iconUrl:
         "https://lsos.org/logo.hash_b4859b66bf49915e8d8ea777e776cc50.svg",
       title: "Lsos Donation Fund",
-      desc: ["Support each of your open source dependencies"],
+      desc: ["Support all your open source dependencies"],
       link: "https://lsos.org/fund/donate",
     }),
     ...getNote(),
@@ -57,10 +58,18 @@ function showDonationReminder() {
 function projectLine({ iconUrl, title, desc, link }) {
   const projectLogo = icon(iconUrl, {
     size: PROJECT_LOGO_SIZE,
-    marginRight: 10,
   });
   projectLogo.style.push(
-    ...["margin-left: " + MARGIN_LEFT + "px", innerMarginStyle[1]]
+    ...[
+      "margin-left: " + MARGIN_LEFT + "px",
+      "margin-right: -" + (MARGIN_LEFT + PROJECT_LOGO_SIZE) + "px",
+      /*
+      ...innerMarginStyle,
+      innerMarginStyle[1],
+      "padding-top: 10.3px",
+      "line-height: 1em",
+      */
+    ]
   );
   return [
     projectLogo,
@@ -84,34 +93,38 @@ function projectLine({ iconUrl, title, desc, link }) {
       text: link,
       style: innerMarginStyle,
     },
-    "\n\n",
+    "\n\n\n",
   ];
 }
 
-function icon(
-  iconUrl: string,
-  { size = 10, marginRight = 0 }: { size?: number; marginRight?: number } = {}
-) {
+function icon(iconUrl: string, { size = 18 }: { size?: number } = {}) {
+  const verticalAlignment = size > 20 ? 4 : 6;
+  const paddingTop = size / 2 + verticalAlignment;
+  const paddingBottom = size / 2 - verticalAlignment;
   return {
+    //text: "\u200b",
     text: " ",
     style: [
+      "font-size: 0px",
       'background-image: url("' + iconUrl + '")',
       "background-size: contain",
-      "vertical-align: middle",
       "background-repeat: no-repeat",
-      "padding-top: " + size + "px",
-      "padding-bottom: " + size + "px",
-      "padding-left: " + size + "px",
-      "padding-right: " + (size - 4) + "px",
-      "line-height: 0.6em",
-      "margin-right: " + marginRight + "px",
+      "background-position: center",
+      "vertical-align: middle",
+      "padding-top: " + paddingTop + "px",
+      "padding-bottom: " + paddingBottom + "px",
+      "padding-left: " + size / 2 + "px",
+      "padding-right: " + size / 2 + "px",
+      "margin-top: -" + paddingTop + "px",
+      "margin-bottom: -" + paddingBottom + "px",
+      //"line-height: 0.6em",
     ],
   };
 }
 
 function separator() {
   return {
-    text: " | ",
+    text: "\xa0| ",
     style: [...defaultStyle(), ...innerMarginStyle, "color: #888"],
   };
 }
@@ -193,7 +206,10 @@ function getNote() {
   return [
     {
       text: "Remove this note by running ",
-      style: [...noteStyle, "padding-left: 11px"],
+      style: [
+        ...noteStyle,
+        "margin-left: " + (MARGIN_LEFT + NOTE_ADDITIONAL_MARGIN) + "px",
+      ],
     },
     {
       text: "npx lsos remove",
@@ -298,7 +314,7 @@ function styledLog(strings = [], { defaultStyle = [] } = {}) {
     if (spec.constructor === String) {
       spec = { text: spec };
     }
-    spec.style = spec.style || defaultStyle;
+    spec.style = [...defaultStyle, ...(spec.style || [])];
 
     str += "%c" + spec.text;
     styles.push(spec.style.join(";"));
