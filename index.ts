@@ -35,7 +35,11 @@ function showDonationReminder() {
       desc: [
         "G'day ",
         icon("https://discord.com/assets/df7ba0f4020ca70048a0226d1dfa73f6.svg"),
-        ", I'm Tanner, I'd love to be able to work full-time on open source ",
+        {
+          text:
+            ", I'm Tanner, I'd love to be able to work full-time on open source ",
+          enableLineBreak: true,
+        },
         icon("https://discord.com/assets/da3651e59d6006dfa5fa07ec3102d1f3.svg"),
       ],
       link: "https://lsos.org/npm/react-table",
@@ -44,7 +48,12 @@ function showDonationReminder() {
       iconUrl:
         "https://lsos.org/logo.hash_b4859b66bf49915e8d8ea777e776cc50.svg",
       title: "Lsos Donation Fund",
-      desc: ["Support all your open source dependencies"],
+      desc: [
+        {
+          text: "Support all your open source dependencies",
+          enableLineBreak: true,
+        },
+      ],
       link: "https://lsos.org/fund/donate",
     }),
     ...getNote(),
@@ -82,9 +91,9 @@ function projectLine({ iconUrl, title, desc, link }) {
       if (strings.constructor === String) {
         strings = {
           text: strings,
-          style: [],
         };
       }
+      strings.style = strings.style || [];
       strings.style.push(...innerMarginStyle);
       return strings;
     }),
@@ -316,8 +325,39 @@ function styledLog(strings = [], { defaultStyle = [] } = {}) {
     }
     spec.style = [...defaultStyle, ...(spec.style || [])];
 
-    str += "%c" + spec.text;
-    styles.push(spec.style.join(";"));
+    let wordsSpec = [spec];
+    if (spec.enableLineBreak) {
+      const wordsText = spec.text.split(" ");
+      wordsSpec = wordsText.map((wordText, nthWord) => {
+        const isFirstWord = nthWord !== 0;
+        const isLastWord = nthWord === wordsText.length - 1;
+
+        wordText += isLastWord ? "" : " ";
+
+        const wordStyle = spec.style.filter((style) => {
+          assert(!style.includes(";"));
+          assert(/[^[a-z]/.test(style));
+          if (style.startsWith("padding-left") && isFirstWord) {
+            return false;
+          }
+          if (style.startsWith("padding-right") && !isLastWord) {
+            return false;
+          }
+          assert(!style.startsWith("padding:"));
+          return true;
+        });
+
+        const wordSpec = {
+          text: wordText,
+          style: wordStyle,
+        };
+        return wordSpec;
+      });
+    }
+    wordsSpec.forEach((wordSpec) => {
+      str += "%c" + wordSpec.text;
+      styles.push(wordSpec.style.join(";"));
+    });
   });
   console.log(str, ...styles);
 }
