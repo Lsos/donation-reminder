@@ -1,5 +1,5 @@
 {
-  "name": "lsos",
+  "name": "@lsos/donation-fund",
   "version": "0.0.1",
   "main": "dist/index.js",
   "lsos": {
@@ -24,7 +24,7 @@
     "@babel/core": "^7.0.0",
     "typescript": "^3.9.6"
   },
-  "repository": "github:lsos",
+  "repository": "github:lsos/donation-fund",
   "license": "CC0-1.0",
   "publishConfig": {
     "access": "public"
