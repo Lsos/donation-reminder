@@ -1,10 +1,8 @@
-import { unique } from "./utils/unique";
 import assert from "@brillout/assert";
 
 export { showDonationReminder };
 
 const COLOR_GREEN = "#00ae41";
-const UNAVAILABLE_FUNDING_DEPS = Symbol();
 
 const MARGIN_LEFT = 4;
 const NOTE_ADDITIONAL_MARGIN = 2;
@@ -177,24 +175,6 @@ function defaultStyle() {
   return ["font-size: 1.3em", "color: #31343d"];
 }
 
-function getFundingObjects() {
-  const fundingList = getFundingList();
-
-  if (fundingList === null) {
-    return [" open source "];
-  }
-
-  return [
-    "\n\n",
-    {
-      text: " ",
-      style: ["padding-left: 20px"],
-    },
-    ...fundingList,
-    "\n\n",
-  ];
-}
-
 function getHeader() {
   const { text, style } = getBorderCommons();
   assert(text === "Support Open Source");
@@ -274,83 +254,6 @@ function getNote() {
   ];
 }
 
-function getFundingList() {
-  const fundingPackages = getFundingPackages();
-  if (fundingPackages === UNAVAILABLE_FUNDING_DEPS) {
-    return null;
-  }
-  const fundingInfo = unique([
-    ...fundingPackages["_root"],
-    ...Object.keys(fundingPackages),
-  ])
-    .filter((pkgName) => pkgName !== "_root")
-    .map((pkgName) => {
-      const fundingDeps = unique(
-        (fundingPackages[pkgName] || [])
-          .map((depName) => depName.split("/")[0])
-          .sort((depName1, depName2) => {
-            if (depName2.includes(pkgName)) {
-              return -1;
-            }
-            if (depName1.includes(pkgName)) {
-              return 1;
-            }
-          })
-      );
-      const wantsFunding = fundingPackages["_root"].includes(pkgName);
-      return {
-        pkgName,
-        wantsFunding,
-        fundingDeps,
-      };
-    });
-
-  const boldStyle = ["font-weight: bold"];
-  const depListMax = 3;
-  const fundingList = fundingInfo
-    .map(({ pkgName, wantsFunding, fundingDeps }, i) => {
-      const pkgText = wantsFunding
-        ? {
-            text: pkgName,
-            style: boldStyle,
-          }
-        : pkgName;
-      const depText =
-        fundingDeps.length === 0
-          ? []
-          : [
-              " [",
-              ...fundingDeps
-                .slice(0, depListMax + 1)
-                .map((depName, i) => {
-                  if (i === depListMax) {
-                    const depsLeft = fundingDeps.length - depListMax;
-                    return [", ...(" + depsLeft + " more)"];
-                  }
-                  assert(depName);
-                  return [
-                    {
-                      text: depName,
-                      style: boldStyle,
-                    },
-                    i === fundingDeps.length - 1 || i === depListMax - 1
-                      ? ""
-                      : ", ",
-                  ];
-                })
-                .flat(),
-              "]",
-            ];
-      return [
-        pkgText,
-        ...depText,
-        i === fundingInfo.length - 1 ? "" : "\xa0| ",
-      ];
-    })
-    .flat();
-  return fundingList;
-}
-
 function styledLog(strings = [], { defaultStyle = [] } = {}) {
   let str = "";
   const styles = [];
@@ -395,9 +298,4 @@ function styledLog(strings = [], { defaultStyle = [] } = {}) {
     });
   });
   console.log(str, ...styles);
-}
-
-function getFundingPackages(): Symbol | object {
-  const fundingPackages = /*FUNDING_DEPS_BEGIN*/ UNAVAILABLE_FUNDING_DEPS; /*FUNDING_DEPS_END*/
-  return fundingPackages;
 }
