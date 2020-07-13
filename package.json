@@ -6,14 +6,12 @@
     "skipDonationFund": true
   },
   "scripts": {
-    "dev": "npm run build && npm run build:watch",
-    "build": "npm run build:clean && npm run build:code && npm run build:permissions",
+    "dev": "npm run build:clean && npm run build:watch",
+    "build": "npm run build:clean && npm run build:code",
     "build:clean": "rm -rf dist/",
     "build:code": "tsc",
     "build:watch": "tsc --watch",
-    "build:permissions": "chmod 775 dist/scripts/postinstall.js",
-    "prepublishOnly": "npm run build",
-    "postinstall": "dist/scripts/postinstall.js"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@types/node": "^14.0.14",
