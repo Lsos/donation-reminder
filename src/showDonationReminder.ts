@@ -1,5 +1,5 @@
 import { unique } from "./utils/unique";
-import assert from "assert";
+import assert from "@brillout/assert";
 
 export { showDonationReminder };
 
@@ -17,21 +17,12 @@ const innerMarginStyle = [
   "margin-right: -" + INNER_MARGIN_SIZE + "px",
 ];
 
-const emojis = [
-  {
-    emojiCode: "wave",
-    emojiUrl: "https://discord.com/assets/df7ba0f4020ca70048a0226d1dfa73f6.svg",
-  },
-  {
-    emojiCode: "slight_smile",
-    emojiUrl: "https://discord.com/assets/da3651e59d6006dfa5fa07ec3102d1f3.svg",
-  },
-];
-
 function insertIcons(text: string): any[] {
   let fragments = [text];
-  text.split(/:[a-z_]+:/);
-  emojis.forEach(({ emojiCode, emojiUrl }) => {
+  const emojiList = text.match(/:[a-z_]+:/g);
+  (emojiList || []).forEach((emojiCode) => {
+    const emojiName = emojiCode.slice(1, -1);
+    const emojiUrl = "https://lsos.org/emojis/" + emojiName + ".svg";
     const fragments__new = [];
     fragments.forEach((fragment) => {
       if (fragment.constructor !== String) {
@@ -46,7 +37,7 @@ function insertIcons(text: string): any[] {
       const fragments__sub = fragment.split(emojiCode);
       fragments__sub.forEach((fragment_sub, i) => {
         fragments__new.push(fragment_sub);
-        if (i !== fragment_sub.length - 1) {
+        if (i !== fragments__sub.length - 1) {
           fragments__new.push(icon(emojiUrl));
         }
       });
@@ -76,14 +67,17 @@ function showDonationReminder(projects) {
     "by donating $10 per developer/month.",
     "\n\n",
     */
-    projects.map(({ projectName, npmName, text }) => {
-      return projectLine({
-        iconUrl: "https://lsos.org/npm/" + npmName + "/logo",
-        title: projectName,
-        desc: insertIcons(text),
-        link: "https://lsos.org/npm/" + npmName,
-      });
-    }),
+    ...projects
+      .map(({ projectName, npmName, text }) => {
+        assert(projectName);
+        return projectLine({
+          iconUrl: "https://lsos.org/npm/" + npmName + "/logo.svg",
+          title: projectName,
+          desc: insertIcons(text),
+          link: "https://lsos.org/npm/" + npmName,
+        });
+      })
+      .flat(),
     ...projectLine({
       iconUrl:
         "https://lsos.org/logo.hash_b4859b66bf49915e8d8ea777e776cc50.svg",
@@ -94,7 +88,7 @@ function showDonationReminder(projects) {
           enableLineBreak: true,
         },
       ],
-      link: "https://lsos.org/fund/donate",
+      link: "https://lsos.org/fund",
     }),
     ...getNote(),
     "\n\n",
@@ -105,6 +99,7 @@ function showDonationReminder(projects) {
 }
 
 function projectLine({ iconUrl, title, desc, link }) {
+  assert(title);
   const projectLogo = icon(iconUrl, {
     size: PROJECT_LOGO_SIZE,
   });
