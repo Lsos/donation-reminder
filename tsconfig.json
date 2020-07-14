@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
     "target": "es5",
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./dist",
-    "lib": ["ES2020", "ES2019.Object", "DOM"],
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": ["ES2020", "ES2019.Object", "DOM"]
   },
   "include": ["src/index.ts"]
 }
