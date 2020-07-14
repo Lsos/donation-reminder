@@ -2,11 +2,12 @@
 // - The donation-reminder is only shown in the browser developer console.
 // - The donation-reminder is only shown in chromium based browsers (Chrome, Edge Chromium, Opera, etc.).
 // - The donation-reminder is not shown in staging nor production environments.
+// - The donation-reminder is not shown if the user has run `lsos remove`.
 
 export { skip };
 
 function skip() {
-  if (isBrowser() && isChromium() && isDev()) {
+  if (isBrowser() && isChromium() && isDev() && !isRemoved()) {
     return false;
   }
   return true;
@@ -48,4 +49,8 @@ function isChromium() {
   const isChrome = !!window.chrome;
 
   return isOpera || isChrome;
+}
+
+function isRemoved() {
+  return /*IS_REMOVED_BEGIN*/ true /*IS_REMOVED_END*/;
 }

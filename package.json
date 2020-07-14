@@ -2,14 +2,20 @@
   "name": "@lsos/donation-reminder",
   "version": "0.1.0",
   "main": "dist/index.js",
+  "bin": {
+    "lsos": "dist/scripts/bin.js"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "npm run build:clean && npm run build:dev",
-    "prod": "npm run build:clean && npm run build:prod",
-    "build:clean": "rm -rf dist/",
+    "dev": "yarn build:prepare && yarn build:dev",
+    "prod": "yarn build:prepare && yarn build:prod",
     "build:dev": "tsc --watch",
     "build:prod": "tsc",
-    "prepublishOnly": "npm run prod"
+    "build:prepare": "yarn build:clean && yarn build:permissions",
+    "build:clean": "rm -rf dist/",
+    "build:permissions": "(mkdir -p dist/scripts/ && cd dist/scripts/ && touch bin.js postinstall.js && chmod 775 *.js)",
+    "postinstall": "dist/scripts/postinstall.js",
+    "prepublishOnly": "yarn prod"
   },
   "devDependencies": {
     "typescript": "^3.9.6"
@@ -17,5 +23,8 @@
   "repository": "github:lsos/donation-reminder",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@types/node": "^14.0.23"
   }
 }
