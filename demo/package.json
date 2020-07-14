@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "dev": "parcel serve ./index.html --port 8080"
-  }
-}

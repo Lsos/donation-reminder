@@ -16,23 +16,25 @@ function isBrowser() {
   return typeof window !== "undefined";
 }
 
-function isDev() {
-  if (!window?.process?.env) {
-    return true;
-  }
-  if (["", "dev", "development"].includes(process.env.NODE_ENV)) {
-    return true;
-  }
-  return false;
-}
-
 declare global {
   interface Window {
+    process: any;
     opr: any;
     opera: any;
     chrome: any;
   }
 }
+
+function isDev() {
+  if (!window?.process?.env) {
+    return true;
+  }
+  if (["", "dev", "development"].includes(window.process.env.NODE_ENV)) {
+    return true;
+  }
+  return false;
+}
+
 function isChromium() {
   // https://stackoverflow.com/questions/57660234/how-can-i-check-if-a-browser-is-chromium-based
   // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
