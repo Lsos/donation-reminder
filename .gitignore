@@ -1,5 +1,16 @@
-dist/
+# Installed modules
 node_modules/
-npm-debug.log
-npm-error.log
+
+# Build directory
+dist/
+
+# Debug info
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# We use Yarn
 package-lock.json
+
+# Apple macOS Finder settings
+.DS_Store
