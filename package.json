@@ -14,8 +14,7 @@
   "devDependencies": {
     "typescript": "^3.9.6"
   },
-  "repository": "github:lsos/donation-fund",
-  "license": "CC0-1.0",
+  "repository": "github:lsos/donation-reminder",
   "publishConfig": {
     "access": "public"
   }
