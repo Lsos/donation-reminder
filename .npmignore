@@ -1,6 +1,0 @@
-demo/
-
-# TypeScript source
-*.ts
-!*.d.ts
-tsconfig.json
