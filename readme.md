@@ -1,3 +1,3 @@
 # @lsos/donation-reminder
 
-Kindly remind users to donate.
+Kindly remind large companies to donate.
