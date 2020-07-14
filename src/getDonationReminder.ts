@@ -1,6 +1,6 @@
-import assert from "@brillout/assert";
+import assert from "assert";
 
-export { showDonationReminder };
+export { getDonationReminder };
 
 const COLOR_GREEN = "#00ae41";
 
@@ -15,47 +15,7 @@ const innerMarginStyle = [
   "margin-right: -" + INNER_MARGIN_SIZE + "px",
 ];
 
-function insertIcons(text: string): any[] {
-  let fragments = [text];
-  const emojiList = text.match(/:[a-z_]+:/g);
-  (emojiList || []).forEach((emojiCode) => {
-    const emojiName = emojiCode.slice(1, -1);
-    const emojiUrl = "https://lsos.org/emojis/" + emojiName + ".svg";
-    const fragments__new = [];
-    fragments.forEach((fragment) => {
-      if (fragment.constructor !== String) {
-        fragments__new.push(fragment);
-        return;
-      }
-      assert(emojiCode.startsWith(":") && emojiCode.endsWith(":"));
-      if (!fragment.includes(emojiCode)) {
-        fragments__new.push(fragment);
-        return;
-      }
-      const fragments__sub = fragment.split(emojiCode);
-      fragments__sub.forEach((fragment_sub, i) => {
-        fragments__new.push(fragment_sub);
-        if (i !== fragments__sub.length - 1) {
-          fragments__new.push(icon(emojiUrl));
-        }
-      });
-    });
-    fragments = fragments__new;
-  });
-
-  return fragments.map((fragment) => {
-    if (fragment.constructor !== String) {
-      return fragment;
-    }
-
-    return {
-      text: fragment,
-      enableLineBreak: true,
-    };
-  });
-}
-
-function showDonationReminder(projects) {
+function getDonationReminder(projects) {
   const strings = [
     ...getHeader(),
     "\n\n",
@@ -93,7 +53,7 @@ function showDonationReminder(projects) {
     ...getFooter(),
   ];
 
-  styledLog(strings, { defaultStyle: defaultStyle() });
+  return { strings, defaultStyle: getDefaultStyle() };
 }
 
 function projectLine({ iconUrl, title, desc, link }) {
@@ -139,6 +99,46 @@ function projectLine({ iconUrl, title, desc, link }) {
   ];
 }
 
+function insertIcons(text: string): any[] {
+  let fragments = [text];
+  const emojiList = text.match(/:[a-z_]+:/g);
+  (emojiList || []).forEach((emojiCode) => {
+    const emojiName = emojiCode.slice(1, -1);
+    const emojiUrl = "https://lsos.org/emojis/" + emojiName + ".svg";
+    const fragments__new = [];
+    fragments.forEach((fragment) => {
+      if (fragment.constructor !== String) {
+        fragments__new.push(fragment);
+        return;
+      }
+      assert(emojiCode.startsWith(":") && emojiCode.endsWith(":"));
+      if (!fragment.includes(emojiCode)) {
+        fragments__new.push(fragment);
+        return;
+      }
+      const fragments__sub = fragment.split(emojiCode);
+      fragments__sub.forEach((fragment_sub, i) => {
+        fragments__new.push(fragment_sub);
+        if (i !== fragments__sub.length - 1) {
+          fragments__new.push(icon(emojiUrl));
+        }
+      });
+    });
+    fragments = fragments__new;
+  });
+
+  return fragments.map((fragment) => {
+    if (fragment.constructor !== String) {
+      return fragment;
+    }
+
+    return {
+      text: fragment,
+      enableLineBreak: true,
+    };
+  });
+}
+
 function icon(iconUrl: string, { size = 18 }: { size?: number } = {}) {
   const verticalAlignment = size > 20 ? 5 : 5;
   const paddingTop = size / 2 + verticalAlignment;
@@ -167,11 +167,11 @@ function icon(iconUrl: string, { size = 18 }: { size?: number } = {}) {
 function separator() {
   return {
     text: "\xa0| ",
-    style: [...defaultStyle(), ...innerMarginStyle, "color: #888"],
+    style: [...getDefaultStyle(), ...innerMarginStyle, "color: #888"],
   };
 }
 
-function defaultStyle() {
+function getDefaultStyle() {
   return ["font-size: 1.3em", "color: #31343d"];
 }
 
@@ -252,50 +252,4 @@ function getNote() {
       style: noteStyle,
     },
   ];
-}
-
-function styledLog(strings = [], { defaultStyle = [] } = {}) {
-  let str = "";
-  const styles = [];
-  strings.forEach((spec) => {
-    if (spec.constructor === String) {
-      spec = { text: spec };
-    }
-    spec.style = [...defaultStyle, ...(spec.style || [])];
-
-    let wordsSpec = [spec];
-    if (spec.enableLineBreak) {
-      const wordsText = spec.text.split(" ");
-      wordsSpec = wordsText.map((wordText, nthWord) => {
-        const isFirstWord = nthWord !== 0;
-        const isLastWord = nthWord === wordsText.length - 1;
-
-        wordText += isLastWord ? "" : " ";
-
-        const wordStyle = spec.style.filter((style) => {
-          assert(!style.includes(";"));
-          assert(/[^[a-z]/.test(style));
-          if (style.startsWith("padding-left") && isFirstWord) {
-            return false;
-          }
-          if (style.startsWith("padding-right") && !isLastWord) {
-            return false;
-          }
-          assert(!style.startsWith("padding:"));
-          return true;
-        });
-
-        const wordSpec = {
-          text: wordText,
-          style: wordStyle,
-        };
-        return wordSpec;
-      });
-    }
-    wordsSpec.forEach((wordSpec) => {
-      str += "%c" + wordSpec.text;
-      styles.push(wordSpec.style.join(";"));
-    });
-  });
-  console.log(str, ...styles);
 }

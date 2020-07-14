@@ -1,12 +1,15 @@
-// The donation-reminder is shown only under certain conditions:
+// The donation-reminder is shown only under certain conditions.
 // - The donation-reminder is only shown in the browser developer console.
 // - The donation-reminder is only shown in chromium based browsers (Chrome, Edge Chromium, Opera, etc.).
-// - The donation-reminder is not shown in staging nor production.
+// - The donation-reminder is not shown in staging nor production environments.
 
-export { skipDonationReminder };
+export { skip };
 
-function skipDonationReminder() {
-  return !isBrowser() || !isChromium() || !isDev();
+function skip() {
+  if (isBrowser() && isChromium() && isDev()) {
+    return false;
+  }
+  return true;
 }
 
 function isBrowser() {
@@ -17,7 +20,10 @@ function isDev() {
   if (!window?.process?.env) {
     return true;
   }
-  return ["", "dev", "development"].includes(process.env.NODE_ENV);
+  if (["", "dev", "development"].includes(process.env.NODE_ENV)) {
+    return true;
+  }
+  return false;
 }
 
 declare global {

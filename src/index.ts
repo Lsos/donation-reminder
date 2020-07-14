@@ -1,8 +1,8 @@
-import { showDonationReminder } from "./showDonationReminder";
-import { skipDonationReminder } from "./skipDonationReminder";
+import { getDonationReminder } from "./getDonationReminder";
+import { skip } from "./skip";
+import { styleConsoleLog } from "./utils/styleConsoleLog";
 
 export { lsosDonationFund };
-export default lsosDonationFund;
 
 let collectionFinished = false;
 const projects = [];
@@ -28,11 +28,14 @@ async function main() {
 
   collectionFinished = true;
 
-  if (skipDonationReminder()) {
+  // Whether the donation-reminder should be shown
+  if (skip()) {
     return;
   }
 
-  showDonationReminder(projects);
+  const { strings, defaultStyle } = getDonationReminder(projects);
+
+  console.log(...styleConsoleLog(strings, { defaultStyle }));
 }
 
 function validate({ npmName, projectName, text }) {

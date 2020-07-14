@@ -2,22 +2,20 @@
   "name": "@lsos/donation-fund",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "lsos": {
     "skipDonationFund": true
   },
   "scripts": {
-    "dev": "npm run build:clean && npm run build:watch",
-    "build": "npm run build:clean && npm run build:code",
+    "dev": "npm run build:clean && npm run build:dev",
+    "build": "npm run build:clean && npm run build:prod",
     "build:clean": "rm -rf dist/",
-    "build:code": "tsc",
-    "build:watch": "tsc --watch",
+    "build:dev": "tsc --watch",
+    "build:prod": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "@brillout/assert": "^0.1.7"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.0.0",
     "typescript": "^3.9.6"
   },
   "repository": "github:lsos/donation-fund",
