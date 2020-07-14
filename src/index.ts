@@ -2,14 +2,14 @@ import { getDonationReminder } from "./getDonationReminder";
 import { skip } from "./skip";
 import { styleConsoleLog } from "./utils/styleConsoleLog";
 
-export { lsosDonationFund };
+export { donationReminder };
 
 let collectionFinished = false;
 const projects = [];
 
 main();
 
-function lsosDonationFund({
+function donationReminder({
   npmName,
   projectName,
   text,
@@ -23,7 +23,7 @@ function lsosDonationFund({
 }
 
 async function main() {
-  // Wait for projects to call the `lsosDonationFund()` function
+  // Wait for projects to call the `donationReminder()` function
   await Promise.resolve();
 
   collectionFinished = true;
@@ -44,7 +44,7 @@ function validate({ npmName, projectName, text }) {
   if (collectionFinished) {
     throw new Error(
       errorPrefix +
-        "The `lsosDonationFund()` function needs to be called immeditaly; it needs to be called before any promise and IO event, and shouldn't be called it in an `async` function."
+        "The `donationReminder()` function needs to be called immeditaly; it needs to be called before any promise and IO event, and shouldn't be called it in an `async` function."
     );
   }
 

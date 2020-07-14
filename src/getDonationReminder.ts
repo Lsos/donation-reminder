@@ -19,12 +19,6 @@ function getDonationReminder(projects) {
   const strings = [
     ...getHeader(),
     "\n\n",
-    /*
-    "You are a company? Support",
-    ...getFundingObjects(),
-    "by donating $10 per developer/month.",
-    "\n\n",
-    */
     ...projects
       .map(({ projectName, npmName, text }) => {
         assert(projectName);
