@@ -52,5 +52,9 @@ function isChromium() {
 }
 
 function isRemoved() {
-  return /*IS_REMOVED_BEGIN*/ true /*IS_REMOVED_END*/;
+  return (
+    /*IS_REMOVED_BEGIN*/
+    true
+    /*IS_REMOVED_END*/
+  );
 }

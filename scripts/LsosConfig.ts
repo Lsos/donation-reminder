@@ -1,6 +1,7 @@
 import { homedir } from "os";
-import { join as pathJoin } from "path";
+import { join as pathJoin, isAbsolute as pathIsAbsolute } from "path";
 import { writeFileSync, readFileSync } from "fs";
+import assert = require("assert");
 
 type ConfigJSON = {
   donationReminder?: {
@@ -8,13 +9,11 @@ type ConfigJSON = {
   };
 };
 
-console.log(homedir());
-
 export class DonationReminderConfig {
   static ensureRemovalState() {
-    const state = DonationReminderConfig.isRemoved() ? "true" : "false";
+    const state = this.isRemoved() ? "true" : "false";
     replaceFileContent(
-      "../src/skip.js",
+      pathJoin(__dirname, "../src/skip.js"),
       "/*IS_REMOVED_BEGIN*/",
       "/*IS_REMOVED_END*/",
       state
@@ -30,6 +29,7 @@ export class DonationReminderConfig {
         removed: true,
       },
     });
+    this.ensureRemovalState();
   }
 }
 
@@ -39,11 +39,19 @@ function replaceFileContent(
   delimiterEnd: string,
   newContent: string
 ) {
-  const filePathAbsolute = pathJoin(__dirname, filePath);
-  const fileContent = readFileSync(filePathAbsolute, "utf8");
-  const fileBegin = fileContent.split(delimiterBegin)[0];
-  const fileEnd = fileContent.split(delimiterEnd)[1];
-  writeFileSync(filePathAbsolute, fileBegin + newContent + fileEnd, "utf8");
+  assert(pathIsAbsolute(filePath));
+  const fileContent = readFileSync(filePath, "utf8");
+  const delimiterBeginSplit = fileContent.split(delimiterBegin);
+  assert(delimiterBeginSplit.length === 2);
+  const fileBegin = delimiterBeginSplit[0];
+  const delimiterEndSplit = fileContent.split(delimiterEnd);
+  assert(delimiterEndSplit.length === 2);
+  const fileEnd = delimiterEndSplit[1];
+  writeFileSync(
+    filePath,
+    fileBegin + delimiterBegin + newContent + delimiterEnd + fileEnd,
+    "utf8"
+  );
 }
 
 class LsosConfig {
@@ -51,12 +59,12 @@ class LsosConfig {
     throw new Error(LsosConfig.name + " is a singleton");
   }
   static _get(): ConfigJSON {
-    return readJsonFile(LsosConfig._path);
+    return readJsonFile(this._path);
   }
   static _set(configsMod: ConfigJSON) {
-    const configsOld = LsosConfig._get();
+    const configsOld = this._get();
     const configsNew = Object.assign({}, configsOld, configsMod);
-    writeJsonFile(LsosConfig._path, configsNew);
+    writeJsonFile(this._path, configsNew);
   }
   static get _path() {
     return getHomeSettingPath(".lsos.json");
