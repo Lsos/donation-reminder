@@ -11,10 +11,10 @@ type ConfigJSON = {
 
 export class DonationReminderConfig {
   static ensureRemovalState() {
-    const fileContent = `export const isRemoved = ${
-      this.isRemoved() ? "true" : "false"
-    };`;
-    replaceFileContent(pathJoin(__dirname, "../src/isRemoved.js"), fileContent);
+    const filePath = pathJoin(__dirname, "../src/isRemoved.js");
+    const variableName = "isRemoved";
+    const variableValue = this.isRemoved() ? "true" : "false";
+    replaceFileContent(filePath, variableName, variableValue);
   }
   static isRemoved() {
     const lsosConfig = LsosConfig._get();
@@ -30,9 +30,36 @@ export class DonationReminderConfig {
   }
 }
 
-function replaceFileContent(filePath: string, newContent: string) {
-  assert(pathIsAbsolute(filePath));
-  writeFileSync(filePath, newContent, "utf8");
+function replaceFileContent(
+  filePath: string,
+  variableName: string,
+  variableValue: string
+) {
+  const { lastLine, previousLines } = getLines();
+  assert(lastLine === getTranspiledLine(variableName, "null"));
+  writeFileSync(
+    filePath,
+    [...previousLines, getTranspiledLine(variableName, variableValue)].join(
+      "\n"
+    ),
+    "utf8"
+  );
+
+  return;
+
+  function getTranspiledLine(variableName: string, variableValue: string) {
+    return "exports." + variableName + " = " + variableValue + "null;";
+  }
+
+  function getLines() {
+    assert(pathIsAbsolute(filePath));
+    const fileContent = readFileSync(filePath, "utf8");
+    const fileLines = fileContent.split("\n");
+    const lastIndex = fileLines.length - 1;
+    const lastLine = fileLines[lastIndex];
+    const previousLines = fileLines.slice(0, lastIndex);
+    return { lastLine, previousLines };
+  }
 }
 
 class LsosConfig {
