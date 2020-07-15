@@ -4,7 +4,9 @@
 // - The donation-reminder is not shown in staging nor production environments.
 // - The donation-reminder is not shown if the user has run `lsos remove`.
 
-import { isRemoved } from "./isRemoved";
+import { isRemoved } from "../env/isRemoved";
+import assert = require("assert");
+assert([null, true, false].includes(isRemoved));
 
 export { skip };
 
