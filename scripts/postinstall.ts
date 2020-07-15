@@ -18,29 +18,25 @@ async function postinstall() {
   ]);
 }
 
-async function replaceFile_isRemoved() {
-  await set(
-    "../env/isRemoved.js",
-    "isRemoved",
-    DonationReminderConfig.isRemoved()
-  );
+function replaceFile_isRemoved() {
+  set("../env/isRemoved.js", "isRemoved", DonationReminderConfig.isRemoved());
 }
 async function replaceFile_numberOfAuthors() {
-  await set(
+  set(
     "../env/numberOfAuthors.js",
     "numberOfAuthors",
-    getNumberOfAuthors()
+    await getNumberOfAuthors()
   );
 }
-async function replaceFile_donationReminderProjects() {
-  await set(
+function replaceFile_donationReminderProjects() {
+  set(
     "../env/donationReminderProjects.js",
     "donationReminderProjects",
     getDonationReminderProjects()
   );
 }
 
-async function set(filePath, variableName, variableValue) {
+function set(filePath: string, variableName: string, variableValue: any) {
   filePath = pathJoin(__dirname, filePath);
-  await replaceFileContent(filePath, variableName, variableValue);
+  replaceFileContent(filePath, variableName, variableValue);
 }

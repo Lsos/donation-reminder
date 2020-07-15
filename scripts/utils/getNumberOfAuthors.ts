@@ -1,14 +1,74 @@
 import { execCmd } from "../utils/execCmd";
+import assert = require("assert");
 
 export { getNumberOfAuthors };
 
-async function getNumberOfAuthors() {
+async function getNumberOfAuthors(): Promise<number | null> {
   const gitAuthorList = await getGitAuthorList();
-  console.log(gitAuthorList);
-  return 3;
+  if (!gitAuthorList) {
+    return null;
+  }
+
+  const authors = splitByLines(gitAuthorList).map((authorSummary) => {
+    const parts = splitByWhitespace(authorSummary).filter(Boolean);
+
+    const partNumberOfCommits = parts[0];
+    const numberOfCommits = parseInt(partNumberOfCommits, 10);
+    assert(numberOfCommits >= 1);
+    assert(numberOfCommits.toString() === partNumberOfCommits);
+
+    const partEmail = parts[parts.length - 1];
+    assert(partEmail.startsWith("<"));
+    assert(partEmail.endsWith(">"));
+    const email = partEmail.slice(1, partEmail.length - 1);
+    assert(email.length === partEmail.length - 2);
+
+    const partName = parts.slice(1, parts.length - 1);
+    assert(partName.length === parts.length - 2);
+    const name = partName.join(" ");
+
+    return { name, email, numberOfCommits };
+  });
+
+  let numberOfAuthors = 0;
+  const authorNames = {};
+  const authorEmails = {};
+  authors.forEach(({ numberOfCommits, name, email }) => {
+    // We consider someone an author only if he commited at least 10 commits
+    if (numberOfCommits < 10) {
+      return;
+    }
+
+    email = email.toLowerCase();
+    name = name.toLowerCase();
+
+    // Detect duplicated user
+    if (authorEmails[email] === true) {
+      return;
+    }
+
+    // Detect duplicated user
+    // We don't match first names, such as "Alice"
+    const isFirstNameOnly = name.split(" ").length === 1;
+    if (authorNames[name] === true && !isFirstNameOnly) {
+      return;
+    }
+
+    // Detect bots
+    const botRegex = /\bbot\b/;
+    if (botRegex.test(name) || botRegex.test(email)) {
+      return;
+    }
+
+    authorEmails[email] = true;
+    authorEmails[name] = true;
+    numberOfAuthors++;
+  });
+
+  return numberOfAuthors;
 }
 
-async function getGitAuthorList() {
+async function getGitAuthorList(): Promise<string | null> {
   try {
     return await execCmd("git shortlog --summary --numbered --email --all");
   } catch (_) {
@@ -16,14 +76,10 @@ async function getGitAuthorList() {
   }
 }
 
-/*
-async function gitIsAvailable() {
-    try {
-      await execCmd('git --version');
-      return true;
-    } catch(err) {
-      return false;
-    }
+function splitByLines(str: string): string[] {
+  // https://stackoverflow.com/questions/21895233/how-in-node-to-split-string-by-newline-n
+  return str.split(/\r?\n/).filter(Boolean);
 }
-*/
-
+function splitByWhitespace(str: string): string[] {
+  return str.split(/\s/).filter(Boolean);
+}

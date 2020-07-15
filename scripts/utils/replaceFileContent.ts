@@ -27,6 +27,7 @@ function replaceFileContent(
   return;
 
   function getNewContentLine() {
+    assert(!variableValue || !variableValue.then);
     const variableValue__string = JSON.stringify(variableValue);
     assert(JSON.stringify(true) === "true");
     assert(JSON.stringify(3) === "3");
