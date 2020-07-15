@@ -5,13 +5,20 @@
 // - The donation-reminder is not shown if the user has run `lsos remove`.
 
 import { isRemoved } from "../env/isRemoved";
+import { numberOfAuthors } from "../env/numberOfAuthors";
+import { donationReminderProjects } from "../env/donationReminderProjects";
 import assert = require("assert");
-assert([null, true, false].includes(isRemoved));
 
 export { skip };
 
 function skip() {
-  if (isBrowser() && isChromium() && isDev() && !isRemoved) {
+  if (
+    !userHasNotRemovedDonationReminder() &&
+    isBrowser() &&
+    isChromium() &&
+    isDev() &&
+    hasEnoughAuthors()
+  ) {
     return false;
   }
   return true;
@@ -53,4 +60,28 @@ function isChromium() {
   const isChrome = !!window.chrome;
 
   return isOpera || isChrome;
+}
+
+function hasEnoughAuthors() {
+  if (numberOfAuthors === null) {
+    return true;
+  }
+  assert(numberOfAuthors >= 0);
+  if (donationReminderProjects === null) {
+    return true;
+  }
+  assert(donationReminderProjects.constructor === Array);
+
+  return donationReminderProjects.some(({ minNumberOfAuthors }) => {
+    assert(minNumberOfAuthors >= 0);
+    return minNumberOfAuthors >= numberOfAuthors;
+  });
+}
+
+function userHasNotRemovedDonationReminder() {
+  assert([null, true, false].includes(isRemoved));
+  if (isRemoved === null) {
+    return true;
+  }
+  return !isRemoved;
 }

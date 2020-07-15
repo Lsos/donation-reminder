@@ -30,7 +30,7 @@ function replaceFileContent(
     const variableValue__string = JSON.stringify(variableValue);
     assert(JSON.stringify(true) === "true");
     assert(JSON.stringify(3) === "3");
-    assert(JSON.stringify({ answer: 42 }) === "{answer:42}");
+    assert(JSON.stringify([{ answer: 42 }]) === '[{"answer":42}]');
     assert(variableValue__string.split("\n").length === 1);
     return getContentLineBegin() + variableValue__string + ";";
   }

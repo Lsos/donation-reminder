@@ -21,11 +21,14 @@ function getDonationReminderProjects() {
       const packageName = pkgJson.name;
       assert(packageName);
       const { text } = pkgJson.lsos.donationReminder;
+      const { minNumberOfAuthors = 0 } = pkgJson.lsos.donationReminder;
+      assert(minNumberOfAuthors >= 0);
       assert(text);
       return {
         packageName,
         projectName,
         text,
+        minNumberOfAuthors,
       };
     })
     .filter(Boolean);
