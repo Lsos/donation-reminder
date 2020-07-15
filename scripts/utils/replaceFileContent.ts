@@ -1,5 +1,6 @@
 import { writeFileSync, readFileSync } from "fs";
 import { findLastIndex } from "../utils/findLastIndex";
+import { splitByLine } from "../utils/splitByLine";
 import { isAbsolute as pathIsAbsolute } from "path";
 import assert = require("assert");
 
@@ -32,7 +33,7 @@ function replaceFileContent(
     assert(JSON.stringify(true) === "true");
     assert(JSON.stringify(3) === "3");
     assert(JSON.stringify([{ answer: 42 }]) === '[{"answer":42}]');
-    assert(variableValue__string.split("\n").length === 1);
+    assert(splitByLine(variableValue__string).length === 1);
     return getContentLineBegin() + variableValue__string + ";";
   }
   function getContentLineBegin() {
@@ -42,7 +43,7 @@ function replaceFileContent(
   function getBoilerplateLines() {
     assert(pathIsAbsolute(filePath));
     const fileContent = readFileSync(filePath, "utf8");
-    const fileLines = fileContent.split("\n");
+    const fileLines = splitByLine(fileContent);
     const contentLineBegin = getContentLineBegin();
     const contentLineIndex = findLastIndex(fileLines, (line) =>
       line.startsWith(contentLineBegin)

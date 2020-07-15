@@ -1,4 +1,5 @@
 import { execCmd } from "../utils/execCmd";
+import { splitByLine } from "../utils/splitByLine";
 import assert = require("assert");
 
 export { getNumberOfAuthors };
@@ -9,26 +10,28 @@ async function getNumberOfAuthors(): Promise<number | null> {
     return null;
   }
 
-  const authors = splitByLines(gitAuthorList).map((authorSummary) => {
-    const parts = splitByWhitespace(authorSummary).filter(Boolean);
+  const authors = splitByLine(gitAuthorList)
+    .filter(Boolean)
+    .map((authorSummary) => {
+      const parts = splitByWhitespace(authorSummary).filter(Boolean);
 
-    const partNumberOfCommits = parts[0];
-    const numberOfCommits = parseInt(partNumberOfCommits, 10);
-    assert(numberOfCommits >= 1);
-    assert(numberOfCommits.toString() === partNumberOfCommits);
+      const partNumberOfCommits = parts[0];
+      const numberOfCommits = parseInt(partNumberOfCommits, 10);
+      assert(numberOfCommits >= 1);
+      assert(numberOfCommits.toString() === partNumberOfCommits);
 
-    const partEmail = parts[parts.length - 1];
-    assert(partEmail.startsWith("<"));
-    assert(partEmail.endsWith(">"));
-    const email = partEmail.slice(1, partEmail.length - 1);
-    assert(email.length === partEmail.length - 2);
+      const partEmail = parts[parts.length - 1];
+      assert(partEmail.startsWith("<"));
+      assert(partEmail.endsWith(">"));
+      const email = partEmail.slice(1, partEmail.length - 1);
+      assert(email.length === partEmail.length - 2);
 
-    const partName = parts.slice(1, parts.length - 1);
-    assert(partName.length === parts.length - 2);
-    const name = partName.join(" ");
+      const partName = parts.slice(1, parts.length - 1);
+      assert(partName.length === parts.length - 2);
+      const name = partName.join(" ");
 
-    return { name, email, numberOfCommits };
-  });
+      return { name, email, numberOfCommits };
+    });
 
   let numberOfAuthors = 0;
   const authorNames = {};
@@ -76,10 +79,6 @@ async function getGitAuthorList(): Promise<string | null> {
   }
 }
 
-function splitByLines(str: string): string[] {
-  // https://stackoverflow.com/questions/21895233/how-in-node-to-split-string-by-newline-n
-  return str.split(/\r?\n/).filter(Boolean);
-}
 function splitByWhitespace(str: string): string[] {
   return str.split(/\s/).filter(Boolean);
 }
