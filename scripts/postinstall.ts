@@ -11,11 +11,16 @@ export { replaceFile_isRemoved };
 postinstall();
 
 async function postinstall() {
-  await Promise.all([
-    replaceFile_isRemoved(),
-    replaceFile_numberOfAuthors(),
-    replaceFile_donationReminderProjects(),
-  ]);
+  try {
+    await Promise.all([
+      replaceFile_isRemoved(),
+      replaceFile_numberOfAuthors(),
+      replaceFile_donationReminderProjects(),
+    ]);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 
 function replaceFile_isRemoved() {
