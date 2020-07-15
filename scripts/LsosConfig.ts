@@ -11,13 +11,10 @@ type ConfigJSON = {
 
 export class DonationReminderConfig {
   static ensureRemovalState() {
-    const state = this.isRemoved() ? "true" : "false";
-    replaceFileContent(
-      pathJoin(__dirname, "../src/skip.js"),
-      "/*IS_REMOVED_BEGIN*/",
-      "/*IS_REMOVED_END*/",
-      state
-    );
+    const fileContent = `export const isRemoved = ${
+      this.isRemoved() ? "true" : "false"
+    };`;
+    replaceFileContent(pathJoin(__dirname, "../src/isRemoved.js"), fileContent);
   }
   static isRemoved() {
     const lsosConfig = LsosConfig._get();
@@ -33,25 +30,9 @@ export class DonationReminderConfig {
   }
 }
 
-function replaceFileContent(
-  filePath: string,
-  delimiterBegin: string,
-  delimiterEnd: string,
-  newContent: string
-) {
+function replaceFileContent(filePath: string, newContent: string) {
   assert(pathIsAbsolute(filePath));
-  const fileContent = readFileSync(filePath, "utf8");
-  const delimiterBeginSplit = fileContent.split(delimiterBegin);
-  assert(delimiterBeginSplit.length === 2);
-  const fileBegin = delimiterBeginSplit[0];
-  const delimiterEndSplit = fileContent.split(delimiterEnd);
-  assert(delimiterEndSplit.length === 2);
-  const fileEnd = delimiterEndSplit[1];
-  writeFileSync(
-    filePath,
-    fileBegin + delimiterBegin + newContent + delimiterEnd + fileEnd,
-    "utf8"
-  );
+  writeFileSync(filePath, newContent, "utf8");
 }
 
 class LsosConfig {
