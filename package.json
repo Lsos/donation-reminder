@@ -2,6 +2,7 @@
   "name": "@lsos/donation-reminder",
   "version": "0.1.0",
   "main": "dist/index.js",
+  "dependencies": {},
   "bin": {
     "lsos": "dist/scripts/bin.js"
   },
@@ -18,13 +19,11 @@
     "prepublishOnly": "yarn prod"
   },
   "devDependencies": {
+    "@types/node": "^14.0.23",
     "typescript": "^3.9.6"
   },
   "repository": "github:lsos/donation-reminder",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@types/node": "^14.0.23"
   }
 }
