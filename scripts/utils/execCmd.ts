@@ -8,6 +8,7 @@ function execCmd(cmd: string, options: { cwd?: string } = {}): Promise<string> {
 
   exec(cmd, options, (err: Error, stdout: string, stderr: string) => {
     if (!err && !stderr) {
+      assert(stdout.constructor === String);
       resolvePromise(stdout);
       return;
     }
