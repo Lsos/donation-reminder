@@ -20,8 +20,6 @@ async function getAllDependencies() {
     .map(getPackageDependencies)
     .flat();
 
-  console.log(allDependencies);
-
   return allDependencies;
 }
 
@@ -47,13 +45,10 @@ async function getUserProjectFiles() {
     ...(await getGitSubmodulePaths(gitRootDir)),
   ];
 
-  console.log(gitDirs);
-
   let userProjectFiles: FilePath[] = (
     await Promise.all(gitDirs.map(getGitFiles))
   ).flat();
 
-  console.log(userProjectFiles);
   userProjectFiles = unique(userProjectFiles);
 
   return userProjectFiles;

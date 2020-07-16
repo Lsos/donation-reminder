@@ -2,6 +2,7 @@
 // - The donation-reminder is only shown in the browser developer console.
 // - The donation-reminder is only shown in chromium based browsers (Chrome, Edge Chromium, Opera, etc.).
 // - The donation-reminder is not shown in staging nor production environments.
+// - The donation-reminder is not shown for small projects (when there are only few git authors).
 // - The donation-reminder is not shown if the user has run `lsos remove`.
 
 import { isRemoved } from "../env/isRemoved";
@@ -11,7 +12,7 @@ import assert = require("assert");
 
 export { skip };
 
-function skip() {
+function skip(): boolean {
   if (
     !userHasNotRemovedDonationReminder() &&
     isBrowser() &&

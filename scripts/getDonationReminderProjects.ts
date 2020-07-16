@@ -1,27 +1,42 @@
 import { join as pathJoin } from "path";
 import { getAllDependencies } from "./utils/getAllDependencies";
+import { assertUsage } from "./utils/assertUsage";
 export { getDonationReminderProjects };
-import assert = require("assert");
 
 async function getDonationReminderProjects(): Promise<object[]> {
   const dependencies = await getAllDependencies();
 
   const donationReminderProjects = dependencies
     .map((dependency: string) => {
-      const pkgJson = getPackageJson(dependency);
-      if (!pkgJson?.lsos?.donationReminder) {
+      const { packageJson, packageJsonPath } = getPackageJson(dependency);
+      if (!packageJson?.lsos?.donationReminder) {
         return null;
       }
-      const { projectName } = pkgJson.lsos;
-      assert(projectName);
-      const packageName = pkgJson.name;
-      assert(packageName);
-      const { text } = pkgJson.lsos.donationReminder;
-      const { minNumberOfAuthors = 0 } = pkgJson.lsos.donationReminder;
-      assert(minNumberOfAuthors >= 0);
-      assert(text);
+      const { projectName } = packageJson.lsos.donationReminder;
+      assertUsage(
+        projectName,
+        "Property `" +
+          packageJsonPath +
+          "->lsos.donationReminder.projectName` is required."
+      );
+      const npmName = packageJson.name;
+      assertUsage(npmName, "Property `package.json->name` is required.");
+      const { minNumberOfAuthors = 0 } = packageJson.lsos.donationReminder;
+      assertUsage(
+        minNumberOfAuthors >= 0,
+        "Property `" +
+          packageJsonPath +
+          "->lsos.donationReminder.minNumberOfAuthors` should be a positive number."
+      );
+      const { text } = packageJson.lsos.donationReminder;
+      assertUsage(
+        text,
+        "Property `" +
+          packageJsonPath +
+          "->lsos.donationReminder.text` is required."
+      );
       return {
-        packageName,
+        npmName,
         projectName,
         text,
         minNumberOfAuthors,
@@ -33,9 +48,12 @@ async function getDonationReminderProjects(): Promise<object[]> {
 }
 
 function getPackageJson(pathOrPkgName: string) {
-  const packageJsonPath = pathJoin(pathOrPkgName, "package.json");
   try {
-    return require(packageJsonPath);
+    const packageJsonPath = require.resolve(
+      pathJoin(pathOrPkgName, "package.json")
+    );
+    const packageJson = require(packageJsonPath);
+    return { packageJson, packageJsonPath };
   } catch (_) {
     return null;
   }

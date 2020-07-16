@@ -5,7 +5,8 @@
     "module": "commonjs",
     "declaration": true,
     "sourceMap": true,
-    "lib": ["ES2020", "ES2019.Object", "DOM"]
+    "lib": ["ES2020", "ES2019.Object", "DOM"],
+    "resolveJsonModule": true
   },
   "include": ["src/index.ts", "scripts/bin.ts", "scripts/postinstall.ts"]
 }

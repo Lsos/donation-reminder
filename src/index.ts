@@ -1,63 +1,33 @@
 import { getDonationReminder } from "./getDonationReminder";
 import { skip } from "./skip";
 import { styleConsoleLog } from "./utils/styleConsoleLog";
+import { extractPackageJsonInfo } from "./extractPackageJsonInfo";
+import { PackageJSON, LsosProject } from "./types";
+import { Collector } from "./Collector";
 
 export { donationReminder };
 
-let collectionFinished = false;
-const projects = [];
-
 main();
 
-function donationReminder({
-  npmName,
-  projectName,
-  text,
-}: {
-  npmName: string;
-  projectName: string;
-  text: string;
-}) {
-  validate({ npmName, projectName, text });
-  projects.push({ npmName, projectName, text });
+const lsosProjects: LsosProject[] = [];
+
+function donationReminder(packageJson: PackageJSON) {
+  Collector.newCall();
+  const { npmName, projectName, donationText } = extractPackageJsonInfo(
+    packageJson
+  );
+  lsosProjects.push({ npmName, projectName, donationText });
 }
 
 async function main() {
-  // Wait for projects to call the `donationReminder()` function
-  await Promise.resolve();
-
-  collectionFinished = true;
+  // Wait for the code of Lsos projects to call the `donationReminder()` function
+  await Collector.waitForCalls();
 
   // Whether the donation-reminder should be shown
   if (skip()) {
     return;
   }
 
-  const { strings, defaultStyle } = getDonationReminder(projects);
-
+  const { strings, defaultStyle } = getDonationReminder(lsosProjects);
   console.log(...styleConsoleLog(strings, { defaultStyle }));
-}
-
-function validate({ npmName, projectName, text }) {
-  const errorPrefix = "[@lsos/donation-fund] ";
-
-  if (collectionFinished) {
-    throw new Error(
-      errorPrefix +
-        "The `donationReminder()` function needs to be called immeditaly; it needs to be called before any promise and IO event, and shouldn't be called it in an `async` function."
-    );
-  }
-
-  const missingArguments = [
-    !npmName && "npmName",
-    !projectName && "projectName",
-    !text && "text",
-  ].filter(Boolean);
-  if (missingArguments.length > 0) {
-    throw new Error(
-      errorPrefix +
-        "Missing arguments: " +
-        missingArguments.map((arg) => "`" + arg + "`").join(", ")
-    );
-  }
 }

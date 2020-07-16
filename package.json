@@ -1,8 +1,9 @@
 {
   "name": "@lsos/donation-reminder",
   "version": "0.1.0",
-  "main": "dist/index.js",
+  "//": "No dependencies.",
   "dependencies": {},
+  "main": "dist/index.js",
   "bin": {
     "lsos": "dist/scripts/bin.js"
   },
@@ -14,7 +15,7 @@
     "build:prod": "tsc",
     "build:prepare": "yarn build:clean && yarn build:permissions",
     "build:clean": "rm -rf dist/",
-    "build:permissions": "(mkdir -p dist/scripts/ && cd dist/scripts/ && touch bin.js postinstall.js && chmod 775 *.js)",
+    "build:permissions": "(mkdir -p dist/scripts/ && cd dist/scripts/ && touch bin.js postinstall.js && chmod 775 bin.js postinstall.js)",
     "postinstall": "dist/scripts/postinstall.js",
     "prepublishOnly": "yarn prod"
   },
