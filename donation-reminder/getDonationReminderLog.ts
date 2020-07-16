@@ -1,5 +1,6 @@
 import { assert } from "./utils/assert";
 import { LogSpec } from "./utils/computeConsoleLogArguments";
+import { LsosProject } from "../types";
 
 export { getDonationReminderLog };
 
@@ -15,17 +16,17 @@ const innerMarginStyle = [
   "margin-right: -" + INNER_MARGIN_SIZE + "px",
 ];
 
-function getDonationReminderLog(projects): LogSpec {
+function getDonationReminderLog(projects: LsosProject[]): LogSpec {
   const texts = [
     ...getHeader(),
     "\n\n",
     ...projects
-      .map(({ projectName, npmName, text }) => {
+      .map(({ projectName, npmName, donationText }) => {
         assert(projectName);
         return projectLine({
           iconUrl: "https://lsos.org/npm/" + npmName + "/logo.svg",
           title: projectName,
-          desc: insertIcons(text),
+          desc: insertIcons(donationText),
           link: "https://lsos.org/npm/" + npmName,
         });
       })

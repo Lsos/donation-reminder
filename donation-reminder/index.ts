@@ -2,7 +2,7 @@ import { getDonationReminderLog } from "./getDonationReminderLog";
 import { skip } from "./skip";
 import { computeConsoleLogArguments } from "./utils/computeConsoleLogArguments";
 import { extractPackageJsonInfo } from "./extractPackageJsonInfo";
-import { PackageJSON, LsosProject } from "./types";
+import { PackageJSON, LsosProject } from "../types";
 import { Collector } from "./Collector";
 
 export { donationReminder };
@@ -13,14 +13,16 @@ const lsosProjects: LsosProject[] = [];
 
 function donationReminder(packageJson: PackageJSON) {
   Collector.newCall();
-  const { npmName, projectName, donationText } = extractPackageJsonInfo(
-    packageJson
-  );
+  const {
+    npmName,
+    projectName,
+    donationText,
+  }: LsosProject = extractPackageJsonInfo(packageJson);
   lsosProjects.push({ npmName, projectName, donationText });
 }
 
 async function main() {
-  // Wait for the code of Lsos projects to call the `donationReminder()` function
+  // Wait for Lsos projects code to call the `donationReminder()` function
   await Collector.waitForCalls();
 
   // Whether the donation-reminder should be shown
