@@ -1,12 +1,12 @@
 import { join as pathJoin } from "path";
 import { getAllDependencies } from "./utils/getAllDependencies";
 import { assertUsage } from "./utils/assertUsage";
-export { getDonationReminderProjects };
+export { getLsosProjects };
 
-async function getDonationReminderProjects(): Promise<object[]> {
+async function getLsosProjects(): Promise<object[]> {
   const dependencies = await getAllDependencies();
 
-  const donationReminderProjects = dependencies
+  const lsosProjects = dependencies
     .map((dependency: string) => {
       const { packageJson, packageJsonPath } = getPackageJson(dependency);
       if (!packageJson?.lsos?.donationReminder) {
@@ -44,7 +44,7 @@ async function getDonationReminderProjects(): Promise<object[]> {
     })
     .filter(Boolean);
 
-  return donationReminderProjects;
+  return lsosProjects;
 }
 
 function getPackageJson(pathOrPkgName: string) {

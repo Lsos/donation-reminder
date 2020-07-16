@@ -3,35 +3,36 @@ import { join as pathJoin } from "path";
 import { writeFileSync, readFileSync } from "fs";
 import { replaceFile_isRemoved } from "./postinstall";
 
-type ConfigJSON = {
-  donationReminder?: {
-    removed?: boolean;
-  };
+export { LsosConfig };
+
+type DonationReminderRemoveConfig = boolean & {
+  _brand?: "DonationReminderRemoveConfig";
 };
 
-export class DonationReminderConfig {
-  static isRemoved(): boolean {
-    const lsosConfig = LsosConfig._get();
-    return !!lsosConfig?.donationReminder?.removed;
+type DonationReminderConfig = {
+  remove?: DonationReminderRemoveConfig;
+};
+type LsosConfigJSON = {
+  donationReminder?: DonationReminderConfig;
+};
+
+class LsosConfig {
+  static donationReminderIsRemoved(): boolean {
+    const lsosConfig = this._get();
+    return !!lsosConfig?.donationReminder?.remove;
   }
-  static remove() {
-    LsosConfig._set({
+  static removeDonationReminder() {
+    this._set({
       donationReminder: {
-        removed: true,
+        remove: true,
       },
     });
     replaceFile_isRemoved();
   }
-}
-
-class LsosConfig {
-  constructor() {
-    throw new Error(LsosConfig.name + " is a singleton");
-  }
-  static _get(): ConfigJSON {
+  static _get(): LsosConfigJSON {
     return readJsonFile(this._path);
   }
-  static _set(configsMod: ConfigJSON) {
+  static _set(configsMod: LsosConfigJSON) {
     const configsOld = this._get();
     const configsNew = Object.assign({}, configsOld, configsMod);
     writeJsonFile(this._path, configsNew);
@@ -39,14 +40,17 @@ class LsosConfig {
   static get _path() {
     return getHomeSettingPath(".lsos.json");
   }
+  constructor() {
+    throw new Error(LsosConfig.name + " is a singleton");
+  }
 }
 
-function writeJsonFile(path: string, obj: ConfigJSON): void {
+function writeJsonFile(path: string, obj: LsosConfigJSON): void {
   const content = JSON.stringify(obj, null, 2);
   writeFileSync(path, content + "\n", "utf8");
 }
 
-function readJsonFile(path: string): ConfigJSON {
+function readJsonFile(path: string): LsosConfigJSON {
   try {
     const content = readFileSync(path, "utf8");
     const obj = JSON.parse(content);

@@ -1,5 +1,5 @@
-import { assertUsage } from "../src/utils/assertUsage";
-import { donationReminder } from "../src";
+import { assertUsage } from "./utils/assertUsage";
+import { donationReminder } from "../donation-reminder";
 import { PackageJSON, LsosProject } from "./types";
 
 export { extractPackageJsonInfo };

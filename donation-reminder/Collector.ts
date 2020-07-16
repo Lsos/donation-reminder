@@ -1,4 +1,4 @@
-import { donationReminder } from "../src";
+import { donationReminder } from "../donation-reminder";
 import { assertUsage } from "../scripts/utils/assertUsage";
 import donationReminderPackageJson = require("../package.json");
 

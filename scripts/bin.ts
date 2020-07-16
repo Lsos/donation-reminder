@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { DonationReminderConfig } from "./LsosConfig";
+import { LsosConfig } from "./LsosConfig";
 
 if (process.argv[2] === "remove") {
-  if (DonationReminderConfig.isRemoved()) {
+  if (LsosConfig.donationReminderIsRemoved()) {
     console.log("Donation-reminder already removed.");
   } else {
-    DonationReminderConfig.remove();
+    LsosConfig.removeDonationReminder();
     console.log("Donation-reminder removed.");
   }
 }

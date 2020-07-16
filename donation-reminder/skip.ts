@@ -7,7 +7,7 @@
 
 import { isRemoved } from "../env/isRemoved";
 import { numberOfAuthors } from "../env/numberOfAuthors";
-import { donationReminderProjects } from "../env/donationReminderProjects";
+import { lsosProjects } from "../env/lsosProjects";
 import assert = require("assert");
 
 export { skip };
@@ -68,12 +68,12 @@ function hasEnoughAuthors() {
     return true;
   }
   assert(numberOfAuthors >= 0);
-  if (donationReminderProjects === null) {
+  if (lsosProjects === null) {
     return true;
   }
-  assert(donationReminderProjects.constructor === Array);
+  assert(lsosProjects.constructor === Array);
 
-  return donationReminderProjects.some(({ minNumberOfAuthors }) => {
+  return lsosProjects.some(({ minNumberOfAuthors }) => {
     assert(minNumberOfAuthors >= 0);
     return minNumberOfAuthors >= numberOfAuthors;
   });
