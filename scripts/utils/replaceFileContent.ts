@@ -1,6 +1,6 @@
 import { writeFileSync, readFileSync } from "fs";
 import { findLastIndex } from "../utils/findLastIndex";
-import { splitByLine } from "../utils/splitByLine";
+import { splitByLine } from "../utils/split";
 import { isAbsolute as pathIsAbsolute } from "path";
 import assert = require("assert");
 

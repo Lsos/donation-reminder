@@ -5,39 +5,37 @@ import { getNumberOfAuthors } from "./utils/getNumberOfAuthors";
 import { join as pathJoin } from "path";
 import { getDonationReminderProjects } from "./getDonationReminderProjects";
 import { replaceFileContent } from "./utils/replaceFileContent";
+import assert = require("assert");
 
 export { replaceFile_isRemoved };
 
 postinstall();
 
 async function postinstall() {
-  try {
-    await Promise.all([
-      replaceFile_isRemoved(),
-      replaceFile_numberOfAuthors(),
-      replaceFile_donationReminderProjects(),
-    ]);
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
+  await Promise.all([
+    replaceFile_isRemoved(),
+    replaceFile_numberOfAuthors(),
+    replaceFile_donationReminderProjects(),
+  ]);
 }
 
 function replaceFile_isRemoved() {
-  set("../env/isRemoved.js", "isRemoved", DonationReminderConfig.isRemoved());
+  const isRemoved = DonationReminderConfig.isRemoved();
+  assert([true, false].includes(isRemoved));
+  set("../env/isRemoved.js", "isRemoved", isRemoved);
 }
 async function replaceFile_numberOfAuthors() {
-  set(
-    "../env/numberOfAuthors.js",
-    "numberOfAuthors",
-    await getNumberOfAuthors()
-  );
+  const numberOfAuthors = await getNumberOfAuthors();
+  assert(numberOfAuthors === null || numberOfAuthors >= 0);
+  set("../env/numberOfAuthors.js", "numberOfAuthors", numberOfAuthors);
 }
-function replaceFile_donationReminderProjects() {
+async function replaceFile_donationReminderProjects() {
+  const donationReminderProjects = await getDonationReminderProjects();
+  assert(donationReminderProjects.constructor === Array);
   set(
     "../env/donationReminderProjects.js",
     "donationReminderProjects",
-    getDonationReminderProjects()
+    donationReminderProjects
   );
 }
 

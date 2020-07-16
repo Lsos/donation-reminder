@@ -10,7 +10,7 @@ type ConfigJSON = {
 };
 
 export class DonationReminderConfig {
-  static isRemoved() {
+  static isRemoved(): boolean {
     const lsosConfig = LsosConfig._get();
     return !!lsosConfig?.donationReminder?.removed;
   }

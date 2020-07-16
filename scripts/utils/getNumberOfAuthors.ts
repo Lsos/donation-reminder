@@ -1,5 +1,5 @@
 import { execCmd } from "../utils/execCmd";
-import { splitByLine } from "../utils/splitByLine";
+import { splitByLine, splitByWhitespace } from "../utils/split";
 import assert = require("assert");
 
 export { getNumberOfAuthors };
@@ -77,8 +77,4 @@ async function getGitAuthorList(): Promise<string | null> {
   } catch (_) {
     return null;
   }
-}
-
-function splitByWhitespace(str: string): string[] {
-  return str.split(/\s/).filter(Boolean);
 }

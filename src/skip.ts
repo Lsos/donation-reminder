@@ -79,8 +79,8 @@ function hasEnoughAuthors() {
 }
 
 function userHasNotRemovedDonationReminder() {
-  assert([null, true, false].includes(isRemoved));
-  if (isRemoved === null) {
+  assert([undefined, true, false].includes(isRemoved));
+  if (isRemoved === undefined) {
     return true;
   }
   return !isRemoved;

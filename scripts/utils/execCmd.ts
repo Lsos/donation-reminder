@@ -3,10 +3,10 @@ import assert = require("assert");
 
 export { execCmd };
 
-function execCmd(cmd: string): Promise<string> {
+function execCmd(cmd: string, options: { cwd?: string } = {}): Promise<string> {
   const { promise, resolvePromise, rejectPromise } = genPromise();
 
-  exec(cmd, {}, (err: Error, stdout: string, stderr: string) => {
+  exec(cmd, options, (err: Error, stdout: string, stderr: string) => {
     if (!err && !stderr) {
       resolvePromise(stdout);
       return;

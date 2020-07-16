@@ -1,15 +1,11 @@
 import { join as pathJoin } from "path";
-import { unique } from "./utils/unique";
+import { getAllDependencies } from "./utils/getAllDependencies";
 export { getDonationReminderProjects };
 import assert = require("assert");
 
-function getDonationReminderProjects() {
-  const userProjectRootDir = process.cwd();
+async function getDonationReminderProjects(): Promise<object[]> {
+  const dependencies = await getAllDependencies();
 
-  const userPackageJson = getPackageJson(userProjectRootDir);
-  assert(userPackageJson);
-
-  const dependencies = getAllDependencies(userPackageJson);
   const donationReminderProjects = dependencies
     .map((dependency: string) => {
       const pkgJson = getPackageJson(dependency);
@@ -32,6 +28,7 @@ function getDonationReminderProjects() {
       };
     })
     .filter(Boolean);
+
   return donationReminderProjects;
 }
 
@@ -42,15 +39,4 @@ function getPackageJson(pathOrPkgName: string) {
   } catch (_) {
     return null;
   }
-}
-
-function getAllDependencies(packageJson: any) {
-  let dependencies = [];
-  Object.entries(packageJson).forEach(([prop, val]) => {
-    if (prop.toLowerCase().endsWith("dependencies")) {
-      dependencies.push(...Object.keys(val));
-    }
-  });
-  dependencies = unique(dependencies);
-  return dependencies;
 }

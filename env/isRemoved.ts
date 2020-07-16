@@ -1,2 +1,2 @@
 // This constant is set by `../scripts/postinstall.ts`
-export const isRemoved = null;
+export const isRemoved = undefined;
