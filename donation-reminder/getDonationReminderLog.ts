@@ -1,9 +1,9 @@
 import { assert } from "./utils/assert";
+import { LogSpec } from "./utils/computeConsoleLogArguments";
 
-export { getDonationReminder };
+export { getDonationReminderLog };
 
 const COLOR_GREEN = "#00ae41";
-
 const MARGIN_LEFT = 4;
 const NOTE_ADDITIONAL_MARGIN = 2;
 const PROJECT_LOGO_SIZE = 32;
@@ -15,8 +15,8 @@ const innerMarginStyle = [
   "margin-right: -" + INNER_MARGIN_SIZE + "px",
 ];
 
-function getDonationReminder(projects) {
-  const strings = [
+function getDonationReminderLog(projects): LogSpec {
+  const texts = [
     ...getHeader(),
     "\n\n",
     ...projects
@@ -47,7 +47,7 @@ function getDonationReminder(projects) {
     ...getFooter(),
   ];
 
-  return { strings, defaultStyle: getDefaultStyle() };
+  return { texts, defaultStyle: getDefaultStyle() };
 }
 
 function projectLine({ iconUrl, title, desc, link }) {

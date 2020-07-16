@@ -1,6 +1,6 @@
-import { getDonationReminder } from "./getDonationReminder";
+import { getDonationReminderLog } from "./getDonationReminderLog";
 import { skip } from "./skip";
-import { styleConsoleLog } from "./utils/styleConsoleLog";
+import { computeConsoleLogArguments } from "./utils/computeConsoleLogArguments";
 import { extractPackageJsonInfo } from "./extractPackageJsonInfo";
 import { PackageJSON, LsosProject } from "./types";
 import { Collector } from "./Collector";
@@ -28,6 +28,10 @@ async function main() {
     return;
   }
 
-  const { strings, defaultStyle } = getDonationReminder(lsosProjects);
-  console.log(...styleConsoleLog(strings, { defaultStyle }));
+  showDonationReminder();
+}
+
+function showDonationReminder() {
+  const donationReminderLog = getDonationReminderLog(lsosProjects);
+  console.log(...computeConsoleLogArguments(donationReminderLog));
 }

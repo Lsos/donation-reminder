@@ -2,9 +2,9 @@
 
 import { LsosConfig } from "./LsosConfig";
 import { getNumberOfAuthors } from "./utils/getNumberOfAuthors";
-import { join as pathJoin } from "path";
 import { getLsosProjects } from "./getLsosProjects";
 import { replaceFileContent } from "./utils/replaceFileContent";
+import { join as pathJoin } from "path";
 import assert = require("assert");
 
 export { replaceFile_isRemoved };
