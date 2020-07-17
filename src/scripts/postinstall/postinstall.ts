@@ -4,7 +4,6 @@ import { LsosConfig } from "../LsosConfig";
 import { getNumberOfAuthors } from "./utils/getNumberOfAuthors";
 import { getLsosProjects } from "./getLsosProjects";
 import { replaceFileContent } from "./utils/replaceFileContent";
-import { join as pathJoin } from "path";
 import assert = require("assert");
 
 export { replaceFile_isRemoved };
@@ -22,20 +21,20 @@ async function postinstall() {
 function replaceFile_isRemoved() {
   const isRemoved = LsosConfig.donationReminderIsRemoved();
   assert([true, false].includes(isRemoved));
-  set("../env/isRemoved.js", "isRemoved", isRemoved);
+  set("../../env/isRemoved.js", "isRemoved", isRemoved);
 }
 async function replaceFile_numberOfAuthors() {
   const numberOfAuthors = await getNumberOfAuthors();
   assert(numberOfAuthors === null || numberOfAuthors >= 0);
-  set("../env/numberOfAuthors.js", "numberOfAuthors", numberOfAuthors);
+  set("../../env/numberOfAuthors.js", "numberOfAuthors", numberOfAuthors);
 }
 async function replaceFile_lsosProjects() {
   const lsosProjects = await getLsosProjects();
   assert(lsosProjects.constructor === Array);
-  set("../env/lsosProjects.js", "lsosProjects", lsosProjects);
+  set("../../env/lsosProjects.js", "lsosProjects", lsosProjects);
 }
 
 function set(filePath: string, variableName: string, variableValue: any) {
-  filePath = pathJoin(__dirname, filePath);
+  filePath = require.resolve(filePath);
   replaceFileContent(filePath, variableName, variableValue);
 }

@@ -6,7 +6,7 @@ if (isNodejs()) {
 
 function assertPackageName() {
   const assert = lazyRequire("assert");
-  const packageJson = lazyRequire("../packageJson");
+  const packageJson = lazyRequire("../../package.json");
   const packageName2 = packageJson.name;
   assert(packageName === packageName2);
 }
