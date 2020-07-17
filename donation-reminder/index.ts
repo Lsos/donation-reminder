@@ -1,39 +1,37 @@
 import { getDonationReminderLog } from "./getDonationReminderLog";
 import { skip } from "./skip";
 import { computeConsoleLogArguments } from "./utils/computeConsoleLogArguments";
-import { extractPackageJsonInfo } from "./extractPackageJsonInfo";
+import { extractLsosProjectInfo } from "./extractLsosProjectInfo";
 import { PackageJSON, LsosProject } from "../types";
-import { Collector } from "./Collector";
-
-export { donationReminder };
+import {
+  collectLsosProject,
+  getCollectedLsosProjects,
+} from "./collectLsosProjects";
 
 main();
 
-const lsosProjects: LsosProject[] = [];
+export { donationReminder };
 
+// Projects who wish to show the donation-reminder to their users (we call them Lsos projects)
+// call the `donationReminder` function.
 function donationReminder(packageJson: PackageJSON) {
-  Collector.newCall();
-  const {
-    npmName,
-    projectName,
-    donationText,
-  }: LsosProject = extractPackageJsonInfo(packageJson);
-  lsosProjects.push({ npmName, projectName, donationText });
+  const lsosProject: LsosProject = extractLsosProjectInfo(packageJson);
+  collectLsosProject(lsosProject, donationReminder.name);
 }
 
 async function main() {
-  // Wait for Lsos projects code to call the `donationReminder()` function
-  await Collector.waitForCalls();
+  // We retrieve all projects that called the `donationReminder` function.
+  const lsosProjects = await getCollectedLsosProjects();
 
-  // Whether the donation-reminder should be shown
+  // Whether the donation-reminder should actually be shown
   if (skip()) {
     return;
   }
 
-  showDonationReminder();
+  showDonationReminder(lsosProjects);
 }
 
-function showDonationReminder() {
+function showDonationReminder(lsosProjects: LsosProject[]) {
   const donationReminderLog = getDonationReminderLog(lsosProjects);
   console.log(...computeConsoleLogArguments(donationReminderLog));
 }

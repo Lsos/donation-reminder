@@ -64,18 +64,18 @@ function isChromium() {
 }
 
 function hasEnoughAuthors() {
-  if (numberOfAuthors === null) {
+  if ([null, undefined].includes(numberOfAuthors)) {
     return true;
   }
   assert(numberOfAuthors >= 0);
-  if (lsosProjects === null) {
+  if ([null, undefined].includes(lsosProjects)) {
     return true;
   }
   assert(lsosProjects.constructor === Array);
 
   return lsosProjects.some(({ minNumberOfAuthors }) => {
     assert(minNumberOfAuthors >= 0);
-    return minNumberOfAuthors >= numberOfAuthors;
+    return numberOfAuthors >= minNumberOfAuthors;
   });
 }
 

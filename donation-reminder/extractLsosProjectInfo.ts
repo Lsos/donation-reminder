@@ -2,9 +2,9 @@ import { assertUsage } from "./utils/assertUsage";
 import { donationReminder } from "../donation-reminder";
 import { PackageJSON, LsosProject } from "../types";
 
-export { extractPackageJsonInfo };
+export { extractLsosProjectInfo };
 
-function extractPackageJsonInfo(packageJson: PackageJSON): LsosProject {
+function extractLsosProjectInfo(packageJson: PackageJSON): LsosProject {
   const npmName = packageJson.name;
   const { projectName } = packageJson.lsos;
   const donationText = packageJson.lsos.donationReminder.text;
