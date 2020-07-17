@@ -1,7 +1,7 @@
 import { homedir } from "os";
 import { join as pathJoin } from "path";
 import { writeFileSync, readFileSync } from "fs";
-import { replaceFile_isRemoved } from "./postinstall";
+import { replaceFile_isRemoved } from "./postinstall/postinstall";
 
 export { LsosConfig };
 

@@ -8,9 +8,9 @@ const collector = new Collector();
 
 const lsosProjects: LsosProject[] = [];
 
-function collectLsosProject(lsosProject: LsosProject, callerName: string) {
+function collectLsosProject(lsosProject: LsosProject) {
   lsosProjects.push(lsosProject);
-  collector.newCall(callerName);
+  collector.newCall();
 }
 
 async function getCollectedLsosProjects(): Promise<LsosProject[]> {

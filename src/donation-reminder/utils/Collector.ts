@@ -2,7 +2,8 @@
 // calls made by package consumers.
 
 import { assertUsage } from "../utils/assertUsage";
-import { packageName } from "../utils/packageName";
+import { packageName } from "../../utils/packageName";
+import { exportName } from "../utils/exportName";
 
 export { Collector };
 
@@ -12,27 +13,27 @@ class Collector {
     await Promise.resolve();
     this._collectionPhaseIsOver = true;
   }
-  newCall(callerName: string) {
+  newCall() {
     if (this._collectionPhaseIsOver === true) {
       return;
     }
-    throw_call_too_late_error(callerName);
+    throw_call_too_late_error();
   }
 }
 
-function throw_call_too_late_error(callerName: string) {
+function throw_call_too_late_error() {
   assertUsage(
     false,
     [
-      `The \`${callerName}\` function must be called synchronously after it is imported:`,
+      `The \`${exportName}\` function must be called synchronously after it is imported:`,
       "  ~~~js",
-      `  import { ${callerName} } from "${packageName}";`,
+      `  import { ${exportName} } from "${packageName}";`,
       `  import packageJson from "../path/to/package.json";`,
       "",
-      `  // We call \`${callerName}\` right away`,
-      `  ${callerName}(packageJson);`,
+      `  // We call \`${exportName}\` right away`,
+      `  ${exportName}(packageJson);`,
       "  ~~~",
-      "Do not call `${callerName}` after an IO event or a promise and do not call it in an `async` function.",
+      "Do not call `${exportName}` after an IO event or a promise and do not call it in an `async` function.",
     ].join("\n")
   );
 }

@@ -16,7 +16,7 @@ export { donationReminder };
 // call the `donationReminder` function.
 function donationReminder(packageJson: PackageJSON) {
   const lsosProject: LsosProject = extractLsosProjectInfo(packageJson);
-  collectLsosProject(lsosProject, donationReminder.name);
+  collectLsosProject(lsosProject);
 }
 
 async function main() {

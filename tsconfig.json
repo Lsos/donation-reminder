@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "./dist",
     "target": "es5",
     "module": "commonjs",
@@ -9,8 +10,8 @@
     "resolveJsonModule": true
   },
   "include": [
-    "donation-reminder/index.ts",
-    "scripts/bin.ts",
-    "scripts/postinstall.ts"
+    "src/donation-reminder/donation-reminder.ts",
+    "src/scripts/cli/cli.ts",
+    "src/scripts/postinstall/postinstall.ts"
   ]
 }

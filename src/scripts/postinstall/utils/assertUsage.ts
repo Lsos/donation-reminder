@@ -1,4 +1,4 @@
-import packageJson = require("../../package.json");
+import { packageName } from "../../../utils/packageName";
 
 export { assertUsage };
 
@@ -10,7 +10,7 @@ function assertUsage(bool: any, userMsg: string) {
   console.log();
   console.log(stack);
   console.log();
-  console.log(boldRed("[" + packageJson.name + "] " + userMsg));
+  console.log(boldRed("[" + packageName + "] " + userMsg));
   console.log();
 }
 

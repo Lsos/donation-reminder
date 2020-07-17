@@ -1,4 +1,4 @@
-import { packageName } from "../utils/packageName";
+import { packageName } from "../../utils/packageName";
 
 export { assertUsage };
 

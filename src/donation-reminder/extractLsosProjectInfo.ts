@@ -1,5 +1,5 @@
 import { assertUsage } from "./utils/assertUsage";
-import { donationReminder } from "../donation-reminder";
+import { exportName } from "./utils/exportName";
 import { PackageJSON, LsosProject } from "../types";
 
 export { extractLsosProjectInfo };
@@ -18,9 +18,6 @@ function extractLsosProjectInfo(packageJson: PackageJSON): LsosProject {
 function validate(lsosProjectInfo: LsosProject) {
   const { npmName, projectName, donationText } = lsosProjectInfo;
 
-  const functionName = donationReminder.name;
-  const functionPrefix = `The \`${functionName}\` function `;
-
   const argumentsMissing = [
     !npmName && "name",
     !projectName && "lsos.projectName",
@@ -29,8 +26,7 @@ function validate(lsosProjectInfo: LsosProject) {
 
   assertUsage(
     argumentsMissing.length === 0,
-    functionPrefix +
-      `must be called with following missing arguments:` +
+    `The \`${exportName}\` function must be called with following missing arguments:` +
       argumentsMissing.map((arg) => "`" + arg + "`").join(", ") +
       "."
   );

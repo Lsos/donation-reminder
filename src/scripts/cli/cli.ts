@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { LsosConfig } from "./LsosConfig";
+import { LsosConfig } from "../LsosConfig";
 
 if (process.argv[2] === "remove") {
   if (LsosConfig.donationReminderIsRemoved()) {

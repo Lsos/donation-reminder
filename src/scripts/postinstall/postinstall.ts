@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { LsosConfig } from "./LsosConfig";
+import { LsosConfig } from "../LsosConfig";
 import { getNumberOfAuthors } from "./utils/getNumberOfAuthors";
 import { getLsosProjects } from "./getLsosProjects";
 import { replaceFileContent } from "./utils/replaceFileContent";
