@@ -15,7 +15,7 @@
     "build:prod": "tsc",
     "build:prepare": "yarn build:clean && yarn build:permissions",
     "build:clean": "rm -rf dist/",
-    "build:permissions": "(mkdir -p dist/scripts/postinstall/ dist/scripts/cli/ && touch dist/scripts/cli/cli.js dist/scripts/postinstall/postinstall.js && chmod 775 dist/scripts/cli/cli.js dist/scripts/postinstall/postinstall.js)",
+    "build:permissions": "(mkdir -p dist/scripts/ && cd dist/scripts/ && touch cli.js postinstall.js && chmod 775 cli.js postinstall.js)",
     "postinstall": "dist/scripts/postinstall/postinstall.js",
     "prepublishOnly": "yarn prod"
   },

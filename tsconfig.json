@@ -11,7 +11,7 @@
   },
   "include": [
     "src/donation-reminder/donation-reminder.ts",
-    "src/scripts/cli/cli.ts",
-    "src/scripts/postinstall/postinstall.ts"
+    "src/scripts/cli.ts",
+    "src/scripts/postinstall.ts"
   ]
 }

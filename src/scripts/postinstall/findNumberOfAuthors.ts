@@ -1,11 +1,12 @@
 import { replaceFileContent } from "./utils/replaceFileContent";
-import { getNumberOfAuthors } from "./utils/getNumberOfAuthors";
+import { retrieveNumberOfAuthors } from "./findNumberOfAuthors/retrieveNumberOfAuthors";
+
 import assert = require("assert");
 
 export { findNumberOfAuthors };
 
 async function findNumberOfAuthors() {
-  const numberOfAuthors = await getNumberOfAuthors();
+  const numberOfAuthors = await retrieveNumberOfAuthors();
   assert(numberOfAuthors === null || numberOfAuthors >= 0);
   replaceFileContent(
     require.resolve("../../env/numberOfAuthors.js"),

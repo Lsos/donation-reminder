@@ -2,9 +2,9 @@ import { execCmd } from "../utils/execCmd";
 import { splitByLine, splitByWhitespace } from "../utils/split";
 import assert = require("assert");
 
-export { getNumberOfAuthors };
+export { retrieveNumberOfAuthors };
 
-async function getNumberOfAuthors(): Promise<number | null> {
+async function retrieveNumberOfAuthors(): Promise<number | null> {
   const gitAuthorList = await getGitAuthorList();
   if (!gitAuthorList) {
     return null;
