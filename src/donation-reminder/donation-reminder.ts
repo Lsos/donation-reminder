@@ -8,9 +8,9 @@ import {
   getCollectedLsosProjects,
 } from "./collectLsosProjects";
 
-main();
-
 export { donationReminder };
+
+main();
 
 // Projects who wish to show the donation-reminder to their users (we call them Lsos projects)
 // call the `donationReminder` function.

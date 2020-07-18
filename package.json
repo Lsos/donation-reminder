@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "//": "No dependencies.",
   "dependencies": {},
-  "main": "dist/index.js",
+  "main": "dist/donation-reminder/donation-reminder.js",
   "bin": {
     "lsos": "dist/scripts/cli.js"
   },

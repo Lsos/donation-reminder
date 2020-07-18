@@ -1,5 +1,5 @@
 import { assertUsage } from "./utils/assertUsage";
-import { exportName } from "./utils/exportName";
+import { getExportName } from "./utils/getExportName";
 import { PackageJSON, LsosProject } from "../types";
 
 export { extractLsosProjectInfo };
@@ -26,7 +26,7 @@ function validate(lsosProjectInfo: LsosProject) {
 
   assertUsage(
     argumentsMissing.length === 0,
-    `The \`${exportName}\` function must be called with following missing arguments:` +
+    `The \`${getExportName()}\` function must be called with following missing arguments:` +
       argumentsMissing.map((arg) => "`" + arg + "`").join(", ") +
       "."
   );
