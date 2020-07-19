@@ -13,13 +13,13 @@ type UserConfigData = {
 
 class UserConfig {
   static get(): UserConfigData {
-    return readJsonFile(this._configFile);
+    return readJsonFile(this.configFilePath);
   }
   static set(configNew: UserConfigData) {
-    writeJsonFile(this._configFile, configNew);
+    writeJsonFile(this.configFilePath, configNew);
     findUserConfig();
   }
-  private static get _configFile() {
+  static get configFilePath() {
     return getHomeSettingPath(".lsos.json");
   }
   constructor() {

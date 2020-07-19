@@ -7,19 +7,26 @@ cli();
 function cli() {
   const cmd = getCommand();
 
-  if (cmd === "remove") {
-    remove();
-    return;
+  switch (cmd) {
+    case "remove":
+      remove();
+      break;
+    case "help":
+    default:
+      showHelp();
   }
-
-  showHelp();
 }
 
 function showHelp() {
   console.log(
-    `Commands:
-  lsos remove - Remove the donation-reminder
-`
+    [
+      "Usage: lsos <command>",
+      "",
+      "Commands:",
+      "  remove                      remove donation-reminder",
+      "  help                        display this help information",
+      "",
+    ].join("\n")
   );
 }
 
