@@ -6,9 +6,9 @@ export { findUserConfig };
 
 function findUserConfig() {
   const userConfig = UserConfig.get();
-  const isRemoved = userConfig?.donationReminder?.remove ?? null;
+  const isRemoved = userConfig?.donationReminder?.remove ?? false;
   assert_ts_syntax();
-  assert([null, true, false].includes(isRemoved));
+  assert([true, false].includes(isRemoved));
   replaceFileContent(
     require.resolve("../../env/isRemoved.js"),
     "isRemoved",
