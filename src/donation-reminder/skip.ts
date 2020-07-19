@@ -14,7 +14,7 @@ export { skip };
 
 function skip(): boolean {
   if (
-    !userHasNotRemovedDonationReminder() &&
+    userHasNotRemovedDonationReminder() &&
     isBrowser() &&
     isChromium() &&
     isDev() &&
