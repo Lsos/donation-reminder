@@ -8,9 +8,7 @@ export { remove };
 function remove() {
   console.log(header);
 
-  const userConfig = UserConfig.get();
-
-  const isAlreadyRemoved: boolean = userConfig?.donationReminder?.remove;
+  const isAlreadyRemoved: boolean = UserConfig.get()?.donationReminder?.remove;
 
   if (!isAlreadyRemoved) {
     UserConfig.set({

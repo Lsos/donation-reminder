@@ -14,7 +14,7 @@ async function retrieveLsosProjects(): Promise<LsosProject[]> {
       if (!packageJson?.lsos?.donationReminder) {
         return null;
       }
-      const projectName = packageJson?.lsos?.donationReminder?.projectName;
+      const projectName = packageJson?.lsos?.projectName;
       const npmName = packageJson?.name;
       const { minNumberOfAuthors = 0 } = packageJson.lsos.donationReminder;
       const donationText = packageJson?.lsos?.donationReminder?.text;
@@ -41,9 +41,7 @@ function validate(lsosProject: LsosProject, packageJsonPath: string) {
   } = lsosProject;
   assertUsage(
     projectName,
-    "Property `" +
-      packageJsonPath +
-      "->lsos.donationReminder.projectName` is required."
+    "Property `" + packageJsonPath + "->lsos.projectName` is required."
   );
   assertUsage(npmName, "Property `package.json->name` is required.");
   assertUsage(
