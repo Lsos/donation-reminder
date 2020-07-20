@@ -1,5 +1,5 @@
 import { assert } from "./utils/assert";
-import { LogSpec } from "./utils/computeConsoleLogArguments";
+import { LogSpec, LogFragment } from "./utils/computeConsoleLogArguments";
 import { LsosProject } from "../types";
 
 export { getDonationReminderLog };
@@ -19,16 +19,19 @@ const innerMarginStyle = [
 function getDonationReminderLog(projects: LsosProject[]): LogSpec {
   const texts = [
     ...getHeader(),
-    "\n\n",
+    ...verticalSpace(27),
     ...projects
       .map(({ projectName, npmName, donationText }) => {
         assert(projectName);
-        return projectLine({
-          iconUrl: "https://lsos.org/npm/" + npmName + "/logo.svg",
-          title: projectName,
-          desc: insertIcons(donationText),
-          link: "https://lsos.org/npm/" + npmName,
-        });
+        return [
+          ...projectLine({
+            iconUrl: "https://lsos.org/npm/" + npmName + "/logo.svg",
+            title: projectName,
+            desc: insertIcons(donationText),
+            link: "https://lsos.org/npm/" + npmName,
+          }),
+          ...verticalSpace(32),
+        ];
       })
       .flat(),
     ...projectLine({
@@ -43,8 +46,9 @@ function getDonationReminderLog(projects: LsosProject[]): LogSpec {
       ],
       link: "https://lsos.org/fund",
     }),
+    ...verticalSpace(30),
     ...getNote(),
-    "\n\n",
+    ...verticalSpace(24),
     ...getFooter(),
   ];
 
@@ -55,6 +59,9 @@ function projectLine({ iconUrl, title, desc, link }) {
   assert(title);
   const projectLogo = icon(iconUrl, {
     size: PROJECT_LOGO_SIZE,
+    /*
+    paddingHeight: 10,
+    */
   });
   projectLogo.style.push(
     ...[
@@ -90,7 +97,6 @@ function projectLine({ iconUrl, title, desc, link }) {
       text: link,
       style: innerMarginStyle,
     },
-    "\n\n\n",
   ];
 }
 
@@ -134,7 +140,13 @@ function insertIcons(text: string): any[] {
   });
 }
 
-function icon(iconUrl: string, { size = 18 }: { size?: number } = {}) {
+function icon(
+  iconUrl: string,
+  {
+    size = 18,
+    paddingHeight = 0,
+  }: { size?: number; paddingHeight?: number } = {}
+): LogFragment {
   const verticalAlignment = size > 20 ? 5 : 5;
   const paddingTop = size / 2 + verticalAlignment;
   const paddingBottom = size / 2 - verticalAlignment;
@@ -152,14 +164,44 @@ function icon(iconUrl: string, { size = 18 }: { size?: number } = {}) {
       "padding-bottom: " + paddingBottom + "px",
       "padding-left: " + size / 2 + "px",
       "padding-right: " + size / 2 + "px",
-      "margin-top: -" + paddingTop + "px",
-      "margin-bottom: -" + paddingBottom + "px",
+      "margin-top: -" + (paddingTop - paddingHeight) + "px",
+      "margin-bottom: -" + (paddingBottom - paddingHeight) + "px",
       //"line-height: 0.6em",
     ],
   };
 }
 
-function separator() {
+function verticalSpace(height: number): LogFragment[] {
+  return [
+    {
+      text: "\n",
+      style: [
+        "font-size: 0",
+        "line-height: 0",
+        "color: red",
+        "color: red",
+        "color: red",
+        "color: red",
+        //"padding-bottom: " + height + "px",
+      ],
+    },
+    {
+      text: " ",
+      style: [
+        "padding-top: " + height + "px",
+        "padding-left: 0px",
+        "font-size: 0",
+        "color: red",
+        "color: red",
+        "color: red",
+        "color: red",
+        "color: red",
+      ],
+    },
+  ];
+}
+
+function separator(): LogFragment {
   return {
     text: "\xa0| ",
     style: [...getDefaultStyle(), ...innerMarginStyle, "color: #888"],
@@ -218,8 +260,9 @@ function getBorderCommons() {
 function getNote() {
   const codeStyle = [
     "background: rgb(236, 238, 240)",
-    "padding: 2px 7px",
+    "padding: 2px 6px",
     "font-size: 0.99em",
+    "border-radius: 4px",
   ];
   const noteStyle = ["color: #666", "font-size: 1.2em"];
   return [

@@ -22,11 +22,12 @@ export { computeConsoleLogArguments };
 type Text = string & { _brand?: "Text" };
 type EnableLineBreak = boolean & { _brand?: "EnableLineBreak" };
 type Style = string & { _brand?: "Style" };
-type TextWithStyle = {
+export type TextWithStyle = {
   text: Text;
   enableLineBreak?: EnableLineBreak;
   style?: Style[];
 };
+export type LogFragment = TextWithStyle;
 type TextSpec = TextWithStyle | Text;
 export type LogSpec = {
   texts: TextSpec[];
