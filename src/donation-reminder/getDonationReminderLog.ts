@@ -1,6 +1,6 @@
-// This module renders the donation-reminder.
-// Input: LsosProject[] - the list of projects that use the `@lsos/donation-reminder` package
-// Output: LogFragment[] - the donation-reminder render model
+// This module computes the donation-reminder render model.
+// Input: `LsosProject[]` - the list of open-source projects that use the `@lsos/donation-reminder` package
+// Output: `LogFragment[]` - the donation-reminder render model
 
 import { LsosProject } from "../types";
 import { LogFragment, Style } from "./utils/styled-log/types";
@@ -44,7 +44,7 @@ function getDonationReminderLog(projects: LsosProject[]): LogFragment[] {
     }),
     ...verticalSpace(30),
     ...getNote(),
-    ...verticalSpace(24),
+    ...verticalSpace(26),
     ...getFooter(),
   ];
 }

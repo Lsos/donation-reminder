@@ -1,7 +1,7 @@
 const ANSI_CODES = getAnsiCodes();
 
 export const symbolSuccess = "[" + fgGreen(fgBold("✔")) + "] ";
-export const symbolConfirmation = "[" + fgBlue(fgBold("ℹ")) + "] ";
+export const symbolInfo = "[" + fgBlue(fgBold("ℹ")) + "] ";
 export const symbolError = "[" + fgBlue(fgBold("ℹ")) + "] ";
 
 export { stylePath };

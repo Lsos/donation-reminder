@@ -1,9 +1,5 @@
 import { UserConfig } from "../UserConfig";
-import {
-  symbolConfirmation,
-  symbolSuccess,
-  stylePath,
-} from "./utils/cli-style";
+import { symbolInfo, symbolSuccess, stylePath } from "./utils/cli-style";
 import { splitByLine } from "../postinstall/utils/split";
 
 export { remove };
@@ -20,7 +16,7 @@ function remove() {
   }
 
   console.log(
-    (isAlreadyRemoved ? symbolConfirmation : symbolSuccess) +
+    (isAlreadyRemoved ? symbolInfo : symbolSuccess) +
       "Lsos config " +
       (isAlreadyRemoved ? "" : "saved ") +
       "at " +
@@ -31,10 +27,15 @@ function remove() {
 
   console.log();
   if (isAlreadyRemoved) {
-    console.log(symbolConfirmation + "Donation-reminder already removed.");
+    console.log(symbolInfo + "Donation-reminder already removed.");
   } else {
     console.log(symbolSuccess + "Donation-reminder successfully removed.");
   }
+  console.log();
+
+  console.log(
+    symbolInfo + "More info at https://github.com/Lsos/donation-reminder."
+  );
   console.log();
 }
 
