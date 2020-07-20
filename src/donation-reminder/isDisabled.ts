@@ -10,9 +10,9 @@ import { numberOfAuthors } from "../env/numberOfAuthors";
 import assert = require("assert");
 import { LsosProject } from "../types";
 
-export { skip };
+export { isDisabled };
 
-function skip(lsosProjects: LsosProject[]): boolean {
+function isDisabled(lsosProjects: LsosProject[]): boolean {
   if (
     userHasNotRemovedDonationReminder() &&
     isBrowser() &&

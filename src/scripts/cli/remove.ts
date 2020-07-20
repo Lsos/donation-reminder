@@ -1,5 +1,5 @@
 import { UserConfig } from "../UserConfig";
-import { symbolInfo, symbolSuccess, stylePath } from "./utils/cli-style";
+import { symbolInfo, symbolSuccess, stylePath } from "./utils/cli-components";
 import { splitByLine } from "../utils/split";
 
 export { remove };

@@ -1,4 +1,4 @@
-import { fgGreen } from "./utils/cli-style";
+import { fgGreen } from "./utils/cli-components";
 
 // Ascii art Source:
 //  - http://patorjk.com/software/taag/#p=display&f=Ogre&t=Lsos

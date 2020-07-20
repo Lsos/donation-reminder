@@ -1,5 +1,5 @@
 import { getDonationReminderLog } from "./getDonationReminderLog";
-import { skip } from "./skip";
+import { isDisabled } from "./isDisabled";
 import { getConsoleLogArguments } from "./utils/styled-log/getConsoleLogArguments";
 import { LogFragment } from "./utils/styled-log/types";
 import { shuffle } from "./utils/shuffle";
@@ -26,7 +26,7 @@ async function main() {
   const lsosProjects = await getCollectedLsosProjects();
 
   // Whether the donation-reminder is disabled
-  if (skip(lsosProjects)) {
+  if (isDisabled(lsosProjects)) {
     return;
   }
 

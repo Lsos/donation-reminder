@@ -3,7 +3,11 @@
 import { remove } from "./cli/remove";
 import { donate } from "./cli/donate";
 import { header } from "./cli/header";
-import { fgBold, styleError, styleErrorEmphasis } from "./cli/utils/cli-style";
+import {
+  fgBold,
+  styleError,
+  styleErrorEmphasis,
+} from "./cli/utils/cli-components";
 import assert = require("assert");
 
 cli();
