@@ -1,5 +1,5 @@
-import { execCmd } from "../utils/execCmd";
-import { splitByLine, splitByWhitespace } from "../utils/split";
+import { execCmd } from "../../utils/execCmd";
+import { splitByLine, splitByWhitespace } from "../../utils/split";
 import assert = require("assert");
 
 export { retrieveNumberOfAuthors };

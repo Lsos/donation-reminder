@@ -2,7 +2,7 @@ import { unique } from "../utils/unique";
 import { execCmd } from "../utils/execCmd";
 import { basename as filename, join as pathJoin } from "path";
 import assert = require("assert");
-import { splitByLine, splitByWhitespace } from "./split";
+import { splitByLine, splitByWhitespace } from "../utils/split";
 
 type FilePath = string & { _brand?: "FilePath" };
 

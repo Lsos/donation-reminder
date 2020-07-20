@@ -1,11 +1,11 @@
 import { join as pathJoin } from "path";
-import { getAllDependencies } from "../utils/getAllDependencies";
-import { assertUsage } from "../utils/assertUsage";
+import { getAllDependencies } from "../../utils/getAllDependencies";
+import { assertUsage } from "../../utils/assertUsage";
 import { LsosProject } from "../../../types";
 
-export { retrieveLsosProjects };
+export { findLsosProjects };
 
-async function retrieveLsosProjects(): Promise<LsosProject[]> {
+async function findLsosProjects(): Promise<LsosProject[]> {
   const dependencies = await getAllDependencies();
 
   const lsosProjects = dependencies
