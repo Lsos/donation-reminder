@@ -1,18 +1,27 @@
 #!/usr/bin/env node
 
 import { remove } from "./cli/remove";
+import { header } from "./cli/header";
+import { fgBold, styleError, styleErrorEmphasis } from "./cli/utils/cli-style";
+import assert = require("assert");
 
 cli();
 
 function cli() {
+  console.log(header);
+  console.log();
+
   const cmd = getCommand();
 
   switch (cmd) {
     case "remove":
       remove();
       break;
-    case "help":
     default:
+      console.log(styleError("Unknown command ") + styleErrorEmphasis(cmd));
+      console.log();
+    case "help":
+    case "":
       showHelp();
   }
 }
@@ -20,20 +29,26 @@ function cli() {
 function showHelp() {
   console.log(
     [
-      "Usage: lsos <command>",
+      "Usage: lsos " + /*cmdColor*/ "<command>",
       "",
       "Commands:",
-      "  remove                      remove donation-reminder",
-      "  help                        display this help information",
+      "  " + cmdColor("remove") + "       Remove donation-reminder",
+      "  " + cmdColor("help") + "         Display this help information",
       "",
     ].join("\n")
   );
 }
 
+function cmdColor(str: string): string {
+  return fgBold(str);
+}
+
 function getCommand(): string {
   const { argv } = process;
   if (argv.length !== 3) {
-    return null;
+    return "";
   }
-  return argv[2];
+  const cmd = argv[2];
+  assert(cmd.constructor === String);
+  return cmd;
 }

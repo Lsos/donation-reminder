@@ -1,13 +1,14 @@
 import { UserConfig } from "../UserConfig";
-import { symbolConfirmation, symbolSuccess, fgGray } from "./utils/cli-style";
+import {
+  symbolConfirmation,
+  symbolSuccess,
+  stylePath,
+} from "./utils/cli-style";
 import { splitByLine } from "../postinstall/utils/split";
-import { header } from "./header";
 
 export { remove };
 
 function remove() {
-  console.log(header);
-
   const isAlreadyRemoved: boolean = UserConfig.get()?.donationReminder?.remove;
 
   if (!isAlreadyRemoved) {
@@ -18,11 +19,12 @@ function remove() {
     });
   }
 
-  console.log();
   console.log(
     (isAlreadyRemoved ? symbolConfirmation : symbolSuccess) +
-      "Lsos config saved at " +
-      fgGray(UserConfig.configFilePath) +
+      "Lsos config " +
+      (isAlreadyRemoved ? "" : "saved ") +
+      "at " +
+      stylePath(UserConfig.configFilePath) +
       ":"
   );
   console.log(prettyUserConfig());
