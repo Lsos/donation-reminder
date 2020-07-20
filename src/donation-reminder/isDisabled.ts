@@ -5,16 +5,16 @@
 // - The donation-reminder is not shown for small projects (when there are only few git authors).
 // - The donation-reminder is not shown if the user has run `lsos remove`.
 
-import { isRemoved } from "../env/isRemoved";
+import { userConfig } from "../env/userConfig";
 import { numberOfAuthors } from "../env/numberOfAuthors";
-import assert = require("assert");
 import { LsosProject } from "../types";
+import { assert } from "console";
 
 export { isDisabled };
 
 function isDisabled(lsosProjects: LsosProject[]): boolean {
   if (
-    userHasNotRemovedDonationReminder() &&
+    !userHasRemovedDonationReminder() &&
     isBrowser() &&
     isChromium() &&
     isDev() &&
@@ -74,15 +74,23 @@ function hasEnoughAuthors(lsosProjects: LsosProject[]) {
   assert(lsosProjects.constructor === Array);
 
   return lsosProjects.some(({ minNumberOfAuthors }) => {
-    assert(minNumberOfAuthors >= 0);
+    assert(minNumberOfAuthors >= 0, { minNumberOfAuthors });
     return numberOfAuthors >= minNumberOfAuthors;
   });
 }
 
-function userHasNotRemovedDonationReminder() {
-  assert([undefined, true, false].includes(isRemoved));
-  if (isRemoved === undefined) {
+function userHasRemovedDonationReminder() {
+  // Postinstall script didn't run
+  if (userConfig === undefined) {
     return true;
   }
-  return !isRemoved;
+  // There is no `~/.lsos.json`
+  if (userConfig === null) {
+    return false;
+  }
+  // User has removed the donation-reminder
+  if (userConfig?.donationReminder?.remove) {
+    return true;
+  }
+  return false;
 }

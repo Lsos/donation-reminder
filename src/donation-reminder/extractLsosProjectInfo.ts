@@ -8,8 +8,15 @@ function extractLsosProjectInfo(packageJson: PackageJSON): LsosProject {
   const npmName = packageJson.name;
   const { projectName } = packageJson.lsos;
   const donationText = packageJson.lsos.donationReminder.text;
+  const minNumberOfAuthors =
+    packageJson.lsos.donationReminder.minNumberOfAuthors || 0;
 
-  const lsosProjectInfo: LsosProject = { npmName, projectName, donationText };
+  const lsosProjectInfo: LsosProject = {
+    npmName,
+    projectName,
+    donationText,
+    minNumberOfAuthors,
+  };
   validate(lsosProjectInfo);
 
   return lsosProjectInfo;

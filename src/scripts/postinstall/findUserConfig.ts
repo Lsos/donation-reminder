@@ -1,25 +1,26 @@
 import { UserConfig } from "../UserConfig";
 import { replaceFileContent } from "./utils/replaceFileContent";
-import assert = require("assert");
 
 export { findUserConfig };
 
 function findUserConfig() {
-  const userConfig = UserConfig.get();
-  const isRemoved = userConfig?.donationReminder?.remove ?? false;
-  assert_ts_syntax();
-  assert([true, false].includes(isRemoved));
+  let userConfig = UserConfig.get();
+  userConfig = extractInfo(userConfig);
   replaceFileContent(
-    require.resolve("../../env/isRemoved.js"),
-    "isRemoved",
-    isRemoved
+    require.resolve("../../env/userConfig.js"),
+    "userConfig",
+    userConfig
   );
 }
 
-function assert_ts_syntax() {
-  // @ts-ignore
-  assert({}?.doesntExist === undefined);
-  // @ts-ignore
-  assert({}?.doesntExist ?? null === null);
-  assert({ doesntExist: 42 }?.doesntExist ?? null === 42);
+function extractInfo(userConfig) {
+  if (!userConfig) {
+    return null;
+  }
+  const userConfig__extract: any = {};
+  if (userConfig?.donationReminder?.remove) {
+    userConfig__extract.donationReminder = { remove: true };
+  }
+
+  return userConfig__extract;
 }
