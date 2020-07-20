@@ -1,6 +1,9 @@
 import { getDonationReminderLog } from "./getDonationReminderLog";
 import { skip } from "./skip";
-import { computeConsoleLogArguments } from "./utils/computeConsoleLogArguments";
+import {
+  getConsoleLogArguments,
+  LogFragment,
+} from "./utils/computeConsoleLogArguments";
 import { extractLsosProjectInfo } from "./extractLsosProjectInfo";
 import { PackageJSON, LsosProject } from "../types";
 import {
@@ -32,6 +35,8 @@ async function main() {
 }
 
 function showDonationReminder(lsosProjects: LsosProject[]) {
-  const donationReminderLog = getDonationReminderLog(lsosProjects);
-  console.log(...computeConsoleLogArguments(donationReminderLog));
+  const donationReminderLog: LogFragment[] = getDonationReminderLog(
+    lsosProjects
+  );
+  console.log(...getConsoleLogArguments(donationReminderLog));
 }

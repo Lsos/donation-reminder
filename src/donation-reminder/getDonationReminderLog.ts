@@ -1,5 +1,5 @@
 import { assert } from "./utils/assert";
-import { LogSpec, LogFragment } from "./utils/computeConsoleLogArguments";
+import { LogFragment } from "./utils/computeConsoleLogArguments";
 import { LsosProject } from "../types";
 
 export { getDonationReminderLog };
@@ -16,7 +16,7 @@ const innerMarginStyle = [
   "margin-right: -" + INNER_MARGIN_SIZE + "px",
 ];
 
-function getDonationReminderLog(projects: LsosProject[]): LogSpec {
+function getDonationReminderLog(projects: LsosProject[]): LogFragment[] {
   const texts = [
     ...getHeader(),
     ...verticalSpace(27),
@@ -52,7 +52,7 @@ function getDonationReminderLog(projects: LsosProject[]): LogSpec {
     ...getFooter(),
   ];
 
-  return { texts, defaultStyle: getDefaultStyle() };
+  return texts;
 }
 
 function projectLine({ iconUrl, title, desc, link }) {
@@ -204,12 +204,8 @@ function verticalSpace(height: number): LogFragment[] {
 function separator(): LogFragment {
   return {
     text: "\xa0| ",
-    style: [...getDefaultStyle(), ...innerMarginStyle, "color: #888"],
+    style: [...innerMarginStyle, "color: #888"],
   };
-}
-
-function getDefaultStyle() {
-  return ["font-size: 1.3em", "color: #31343d"];
 }
 
 function getHeader() {

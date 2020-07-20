@@ -1,14 +1,10 @@
-// The module turns an specification array of texts and style
-// into arguments to be fed to `console.log`
-
+// This module turns an array of styled texts into a format that `console.log` understands
 // For example:
 //   console.log(
-//     ...computeConsoleLogArguments({
-//       texts: [
-//         { text: "I'm red", style: ["color: red"] },
-//         { text: "I'm bold & blue", style: ["color: blue", "font-weight: bold"] },
-//       ],
-//     })
+//     ...getConsoleLogArguments([
+//       { text: "I'm red", style: ["color: red"] },
+//       { text: "I'm bold & blue", style: ["color: blue", "font-weight: bold"] },
+//     ])
 //   );
 
 // Resources:
@@ -17,58 +13,32 @@
 
 import { assert } from "../utils/assert";
 
-export { computeConsoleLogArguments };
+export { getConsoleLogArguments };
 
 type Text = string & { _brand?: "Text" };
-type EnableLineBreak = boolean & { _brand?: "EnableLineBreak" };
 type Style = string & { _brand?: "Style" };
-export type TextWithStyle = {
+export type LogFragment = {
   text: Text;
-  enableLineBreak?: EnableLineBreak;
   style?: Style[];
-};
-export type LogFragment = TextWithStyle;
-type TextSpec = TextWithStyle | Text;
-export type LogSpec = {
-  texts: TextSpec[];
-  defaultStyle?: Style[];
+  enableLineBreak?: boolean;
 };
 
-function computeConsoleLogArguments({
-  texts,
-  defaultStyle,
-}: LogSpec): string[] {
-  const textsProcessed: TextWithStyle[] = [];
+function getConsoleLogArguments(
+  logFragments: LogFragment[],
+  {
+    defaultStyle = ["font-size: 1.3em", "color: #31343d"],
+  }: { defaultStyle?: Style[] } = {}
+): string[] {
+  logFragments = applyOptions(logFragments, { defaultStyle });
 
-  texts.forEach((textSpec: TextSpec) => {
-    // Overloading
-    const textWithStyle: TextWithStyle =
-      typeof textSpec === "string"
-        ? { text: textSpec as Text }
-        : (textSpec as TextWithStyle);
-
-    // Add defaultStyle
-    textWithStyle.style = [
-      ...(defaultStyle || []),
-      ...(textWithStyle.style || []),
-    ];
-
-    // Add line b
-    if (!textWithStyle.enableLineBreak) {
-      textsProcessed.push(textWithStyle);
-    } else {
-      textsProcessed.push(...breakIntoWords(textWithStyle));
-    }
-  });
-
-  return computeArguments(textsProcessed);
+  return computeArguments(logFragments);
 }
 
-function computeArguments(texts: TextWithStyle[]) {
+function computeArguments(logFragments: LogFragment[]) {
   let str = "";
   const styles = [];
 
-  texts.forEach((wordSpec: TextWithStyle) => {
+  logFragments.forEach((wordSpec: LogFragment) => {
     str += "%c" + wordSpec.text;
     styles.push(wordSpec.style.join(";"));
   });
@@ -76,18 +46,39 @@ function computeArguments(texts: TextWithStyle[]) {
   return [str, ...styles];
 }
 
-function breakIntoWords(textWithStyle: TextWithStyle) {
-  const words: TextWithStyle[] = [];
+function applyOptions(
+  logFragments: LogFragment[],
+  { defaultStyle }
+): LogFragment[] {
+  const logFragments__processed: LogFragment[] = [];
 
-  if (textWithStyle.enableLineBreak) {
-    const wordsText = textWithStyle.text.split(" ");
+  logFragments.forEach((logFrag: LogFragment) => {
+    // Add defaultStyle
+    logFrag.style = [...(defaultStyle || []), ...(logFrag.style || [])];
+
+    // Add line breaking
+    if (!logFrag.enableLineBreak) {
+      logFragments__processed.push(logFrag);
+    } else {
+      logFragments__processed.push(...breakIntoWords(logFrag));
+    }
+  });
+
+  return logFragments__processed;
+}
+
+function breakIntoWords(logFrag: LogFragment) {
+  const words: LogFragment[] = [];
+
+  if (logFrag.enableLineBreak) {
+    const wordsText = logFrag.text.split(" ");
     wordsText.forEach((wordText, nthWord) => {
       const isFirstWord = nthWord !== 0;
       const isLastWord = nthWord === wordsText.length - 1;
 
       wordText += isLastWord ? "" : " ";
 
-      const wordStyle = textWithStyle.style.filter((style) => {
+      const wordStyle = logFrag.style.filter((style) => {
         assert(!style.includes(";"));
         assert(/[^[a-z]/.test(style));
         if (style.startsWith("padding-left") && isFirstWord) {
