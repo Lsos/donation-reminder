@@ -3,6 +3,7 @@ const ANSI_CODES = getAnsiCodes();
 export const symbolSuccess = "[" + fgGreen(fgBold("✔")) + "] ";
 export const symbolInfo = "[" + fgBlue(fgBold("ℹ")) + "] ";
 export const symbolError = "[" + fgBlue(fgBold("ℹ")) + "] ";
+export const symbolTab = "    ";
 
 export { stylePath };
 export { styleError };
@@ -10,6 +11,7 @@ export { styleErrorEmphasis };
 
 export { fgGreen };
 export { fgBold };
+export { fgGray };
 
 function stylePath(str: string): string {
   return fgDim(str);
@@ -32,6 +34,9 @@ function fgRed(str: string): string {
 }
 function fgRedBright(str: string): string {
   return ANSI_CODES.RED_BRIGHT + str + ANSI_CODES._RESET;
+}
+function fgGray(str: string): string {
+  return ANSI_CODES.DIM + str + ANSI_CODES._RESET;
 }
 
 function fgBold(str: string): string {

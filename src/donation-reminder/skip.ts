@@ -7,18 +7,18 @@
 
 import { isRemoved } from "../env/isRemoved";
 import { numberOfAuthors } from "../env/numberOfAuthors";
-import { lsosProjects } from "../env/lsosProjects";
 import assert = require("assert");
+import { LsosProject } from "../types";
 
 export { skip };
 
-function skip(): boolean {
+function skip(lsosProjects: LsosProject[]): boolean {
   if (
     userHasNotRemovedDonationReminder() &&
     isBrowser() &&
     isChromium() &&
     isDev() &&
-    hasEnoughAuthors()
+    hasEnoughAuthors(lsosProjects)
   ) {
     return false;
   }
@@ -63,7 +63,7 @@ function isChromium() {
   return isOpera || isChrome;
 }
 
-function hasEnoughAuthors() {
+function hasEnoughAuthors(lsosProjects: LsosProject[]) {
   if ([null, undefined].includes(numberOfAuthors)) {
     return true;
   }

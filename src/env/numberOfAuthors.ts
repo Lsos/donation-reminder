@@ -1,2 +1,3 @@
-// This constant is set by `../scripts/postinstall.ts`
+// `numberOfAuthors` is determined and set in the postinstall Node.js script.
+// `numberOfAuthors` is consumed by the browser.
 export const numberOfAuthors = undefined;

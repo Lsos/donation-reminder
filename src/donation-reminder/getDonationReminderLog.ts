@@ -4,6 +4,7 @@
 
 import { LsosProject } from "../types";
 import { LogFragment, Style } from "./utils/styled-log/types";
+import { getLsosProjectInfo } from "../utils/getLsosProjectInfo";
 import {
   icon,
   verticalSpace,
@@ -26,15 +27,18 @@ function getDonationReminderLog(projects: LsosProject[]): LogFragment[] {
     ...getHeader(),
     ...verticalSpace(27),
     ...projects
-      .map(({ projectName, npmName, donationText }: LsosProject) => [
-        ...projectLine({
-          iconUrl: "https://lsos.org/npm/" + npmName + "/logo.svg",
-          title: projectName,
-          description: donationText,
-          link: "https://lsos.org/npm/" + npmName,
-        }),
-        ...verticalSpace(32),
-      ])
+      .map(getLsosProjectInfo)
+      .map(
+        ({ projectName, iconUrl, donationTextWithEmojis, donatePageUrl }) => [
+          ...projectLine({
+            iconUrl,
+            title: projectName,
+            description: donationTextWithEmojis,
+            link: donatePageUrl,
+          }),
+          ...verticalSpace(32),
+        ]
+      )
       .flat(),
     ...projectLine({
       iconUrl: "https://lsos.org/logo.svg",

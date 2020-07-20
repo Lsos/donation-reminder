@@ -26,7 +26,7 @@ async function main() {
   const lsosProjects = await getCollectedLsosProjects();
 
   // Whether the donation-reminder is disabled
-  if (skip()) {
+  if (skip(lsosProjects)) {
     return;
   }
 

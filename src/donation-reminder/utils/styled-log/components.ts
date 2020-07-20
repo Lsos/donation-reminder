@@ -1,6 +1,7 @@
 // Bunch of utilities for styled logs
 
 import { LogFragment, Style } from "./types";
+import { emojiRegex } from "../../../utils/emojiRegex";
 import assert = require("assert");
 
 export { verticalSpace };
@@ -51,7 +52,7 @@ function icon(
 function injectEmojis(text: string): LogFragment[] {
   let fragments: (string | LogFragment)[] = [text];
 
-  const emojiList = text.match(/:[a-z_]+:/g);
+  const emojiList = text.match(new RegExp(emojiRegex, "g"));
   (emojiList || []).forEach((emojiCode) => {
     assert(emojiCode.startsWith(":") && emojiCode.endsWith(":"));
     const emojiName = emojiCode.slice(1, -1);
