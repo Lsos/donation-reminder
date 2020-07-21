@@ -22,10 +22,14 @@ const MARGIN_NOTE_LEFT = 2;
 const PROJECT_LOGO_SIZE = 32;
 const PROJECT_LOGO_MARGIN_RIGHT = 10;
 
-function getDonationReminderLog(projects: LsosProject[]): LogFragment[] {
+function getDonationReminderLog(
+  projects: LsosProject[],
+  { showLsosDonationFund = false }: { showLsosDonationFund?: boolean } = {}
+): LogFragment[] {
   return [
-    ...getHeader(),
-    ...verticalSpace(27),
+    ...(showLsosDonationFund
+      ? [...getHeader(), ...verticalSpace(27)]
+      : [...verticalSpace(12)]),
     ...projects
       .map(getLsosProjectInfo)
       .map(
@@ -48,8 +52,7 @@ function getDonationReminderLog(projects: LsosProject[]): LogFragment[] {
     }),
     ...verticalSpace(30),
     ...getNote(),
-    ...verticalSpace(26),
-    ...getFooter(),
+    ...(showLsosDonationFund ? [...verticalSpace(26), ...getFooter()] : []),
   ];
 }
 
