@@ -10,7 +10,7 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src/donation-reminder/donation-reminder.ts",
+    "src/donation-reminder/showDonationReminder.ts",
     "src/scripts/cli.ts",
     "src/scripts/postinstall.ts"
   ]
