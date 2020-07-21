@@ -33,7 +33,7 @@ Your users can remove the donation-reminder by running `npx lsos remove`/`yarn l
 When setting the option `minNumberOfAuthors` to `n`,
 the donation-reminder is shown only to users working in a Git repository that has `n` or more Git authors.
 
-You can use any [Twemoji](https://github.com/twitter/twemoji) emoji.
+You can use any emoji of the [Twemoji](https://github.com/twitter/twemoji) catalog.
 (These are the emojis you see on Twitter and Discord.)
 You can use [Discord](https://discord.com/) to find emoji codes,
 for example `:smile:` or `:heart:`.
