@@ -40,11 +40,9 @@ function showHelp() {
       "Usage: lsos " + /*cmdColor*/ "<command>",
       "",
       "Commands:",
-      "  " +
-        cmdColor("donate") +
-        "       Donate to your open source dependencies",
-      "  " + cmdColor("remove") + "       Remove donation-reminder",
-      "  " + cmdColor("help") + "         Display this help information",
+      // `  ${cmdColor("donate")}       Donate to your open source dependencies`,
+      `  ${cmdColor("remove")}       Remove donation-reminder`,
+      `  ${cmdColor("help")}         Display this help information`,
       "",
     ].join("\n")
   );

@@ -4,6 +4,7 @@ import { getConsoleLogArguments } from "./utils/styled-log/getConsoleLogArgument
 import { LogFragment } from "./utils/styled-log/types";
 import { shuffle } from "./utils/shuffle";
 import { extractLsosProjectInfo } from "./extractLsosProjectInfo";
+import { validateLsosProject } from "./validateLsosProject";
 import { PackageJSON, LsosProject } from "../types";
 import {
   collectLsosProject,
@@ -16,8 +17,8 @@ main();
 
 // Projects who wish to show the donation-reminder to their users (we call them Lsos projects)
 // call the `printDonationReminder` function.
-function printDonationReminder(packageJson: PackageJSON) {
-  const lsosProject: LsosProject = extractLsosProjectInfo(packageJson);
+function printDonationReminder(args: PackageJSON | LsosProject): void {
+  const lsosProject: LsosProject = processArgs(args);
   collectLsosProject(lsosProject);
 }
 
@@ -46,4 +47,18 @@ function print(lsosProjects: LsosProject[]) {
 
   // We render the donation-reminder
   console.log(...getConsoleLogArguments(donationReminderLog));
+}
+
+function processArgs(args: PackageJSON | LsosProject): LsosProject {
+  let lsosProject: LsosProject;
+
+  if ((args as PackageJSON).name) {
+    const packageJson: PackageJSON = args as PackageJSON;
+    lsosProject = extractLsosProjectInfo(packageJson);
+  } else {
+    lsosProject = args as LsosProject;
+  }
+
+  validateLsosProject(lsosProject);
+  return lsosProject;
 }

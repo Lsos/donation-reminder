@@ -1,6 +1,5 @@
-import { assertUsage } from "./utils/assertUsage";
-import { getExportName } from "./utils/getExportName";
 import { PackageJSON, LsosProject } from "../types";
+import { validateLsosProject } from "./validateLsosProject";
 
 export { extractLsosProjectInfo };
 
@@ -17,24 +16,12 @@ function extractLsosProjectInfo(packageJson: PackageJSON): LsosProject {
     donationText,
     minNumberOfAuthors,
   };
-  validate(lsosProjectInfo);
+  const propSources = {
+    npmName: "name",
+    projectName: "lsos.projectName",
+    donationText: "lsos.donationReminder.text",
+  };
+  validateLsosProject(lsosProjectInfo, propSources);
 
   return lsosProjectInfo;
-}
-
-function validate(lsosProjectInfo: LsosProject) {
-  const { npmName, projectName, donationText } = lsosProjectInfo;
-
-  const argumentsMissing = [
-    !npmName && "name",
-    !projectName && "lsos.projectName",
-    !donationText && "lsos.donationReminder.text",
-  ].filter(Boolean);
-
-  assertUsage(
-    argumentsMissing.length === 0,
-    `The \`${getExportName()}\` function must be called with following missing arguments:` +
-      argumentsMissing.map((arg) => "`" + arg + "`").join(", ") +
-      "."
-  );
 }
