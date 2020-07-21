@@ -1,53 +1,53 @@
 # @lsos/donation-reminder
 
-The `@lsos/donation-reminder` npm package enables you to kindly remind (large) companies to donate.
+The `@lsos/donation-reminder` npm package enables you to kindly remind companies to donate.
 
-The following is shown to to your users that work on a project that has more than `x` auhtors.
+- [Gettings Started](#getting-started)
+- [Questions & Discussions](#questions-discussions)
+- [FAQ](#faq)
 
-IMG
-
-Your users can remove the donation-reminder by running `npx lsos remove`/`yarn lsos remove`.
-
-- [Gettings Started]()
-- [Questions & Discussions]()
-- [FAQ]()
 
 ## Getting Started
 
-1. Install `@lsos/donationReminder`:
-2. Setup
-   ~~~json
-   {
-     name: "my-open-source-project",
-     version: "1.0.0",
-     "lsos": {
-       "projectName": "My Open Source Project",
-       "donationReminder": {
-         "minNumberOfAuthors": 5,
-         "text": "Hello :wave:, I'm Alice, I'm looking for a gold sponsor, appreciate it :heart:"
-       }
-     }
-   }
-   ~~~
-
-3. Call `printDonationReminder`:
-
-We use [Twemoji](https://github.com/twitter/twemoji) which is are the emojis used by Discord and Twitter.
-Use Discord to find the emoji codes.
-
 ~~~js
+// npm install `@lsos/donationReminder`:
 import { printDonationReminder } from "@lsos/donation-reminder";
 
-printDonationReminder(
+printDonationReminder({
+  // Npm package name
+  npmName: "my-open-source-project",
 
+  //"Human-readable project name",
+  projectName: "My Open Source Project",
+
+  // Text that will be shown to users
+  donationText: "Hello :wave:, I'm Alice, I'm looking for a gold sponsor, thanks :heart:",
+
+  // Show the donation-reminder only to users working on projects with >=5 authors
+  minNumberOfAuthors: 5,
+});
 ~~~
+
+Your users can remove the donation-reminder by running `npx lsos remove`/`yarn lsos remove`.
+
+When setting the option `minNumberOfAuthors` to `n`,
+the donation-reminder is shown only to you users that work on a git repository that has `n` or more authors.
+
+You can use any [Twemoji](https://github.com/twitter/twemoji) emoji.
+(These are the emojis you see on Twitter and Discord.)
+You can use [Discord](https://discord.com/) to find the emoji codes such as `:smile:` and `:heart:`.
+
 
 ## Questions & Discussions
 
 For any questions
-[open a ticket]() on this repo for disucssions about donation-reminder,
-and [open a ticket on github.com/Lsos/converse]() for discussions about the Lsos and open source financing in general.
-We enjoy talking about anything :)
+[open a ticket](https://github.com/Lsos/donation-reminder/issues/new)
+on this repo for disucssions about donation-reminder,
+and
+[open a ticket on github.com/Lsos/converse](https://github.com/Lsos/converse/issues/new)
+for discussions about the Lsos and open source financing in general.
+We enjoy talking about anything OSS :).
+
 
 ## FAQ
 
@@ -57,9 +57,14 @@ Make sure that `window.process.env.NODE_ENV==='production'` (or `'stating'`/`'te
 
 Most frameworks (CRA, Gatsby, ...) do that for you already.
 
+### [OSS-project] I don't see any donation-reminder, where is it?
+
+The donation-reminder currently only works in Chromium-based browsers.
+If you use Firefox, you won't see any donation-reminder.
+
 ### [OSS-project] Does it work only for browser-side open source projects?
 
-Yes, the donation-reminder can only be shown in the browswer developer console.
+Yes, the donation-reminder can only be shown in the developer console of the browser.
 
 ### [OSS-project] Can I show the donation-reminder to all my users?
 
