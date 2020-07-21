@@ -10,30 +10,31 @@ import {
   getCollectedLsosProjects,
 } from "./collectLsosProjects";
 
-export { showDonationReminder };
+export { printDonationReminder };
 
 main();
 
 // Projects who wish to show the donation-reminder to their users (we call them Lsos projects)
-// call the `showDonationReminder` function.
-function showDonationReminder(packageJson: PackageJSON) {
+// call the `printDonationReminder` function.
+function printDonationReminder(packageJson: PackageJSON) {
   const lsosProject: LsosProject = extractLsosProjectInfo(packageJson);
   collectLsosProject(lsosProject);
 }
 
 async function main() {
-  // We retrieve all projects that called the `showDonationReminder` function.
+  // We retrieve all projects that called the `printDonationReminder` function.
   const lsosProjects = await getCollectedLsosProjects();
 
-  // Whether the donation-reminder is disabled
+  // Whether the donation-reminder is disabled,
+  // for example when the user has ran `yarn lsos remove`.
   if (isDisabled(lsosProjects)) {
     return;
   }
 
-  show(lsosProjects);
+  print(lsosProjects);
 }
 
-function show(lsosProjects: LsosProject[]) {
+function print(lsosProjects: LsosProject[]) {
   // We shuffle the projects to avoid the unfair situation
   // where the same projects are shown first.
   lsosProjects = shuffle(lsosProjects);

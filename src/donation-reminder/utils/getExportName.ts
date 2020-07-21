@@ -1,7 +1,7 @@
-import { showDonationReminder } from "../../donation-reminder/showDonationReminder";
+import { printDonationReminder } from "../../donation-reminder/printDonationReminder";
 
 export { getExportName };
 
 function getExportName() {
-  return showDonationReminder.name;
+  return printDonationReminder.name;
 }
