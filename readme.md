@@ -2,6 +2,11 @@
 
 The Lsos Donation Reminder enables you to kindly remind companies to donate.
 
+<p align="center">
+  <img src="/donation-reminder.png" />
+</p>
+
+
 - [Gettings Started](#getting-started)
 - [Questions & Discussions](#questions--discussions)
 - [FAQ](#faq)
@@ -21,7 +26,7 @@ printDonationReminder({
   projectName: "My Open Source Project",
 
   // Text that will be shown to users
-  donationText: "Hello :smile:, I'm Alice, I'm looking for a gold sponsor, thanks :heart:",
+  donationText: "Hi :smile:, I'm Alice, I'm looking for a gold sponsor, thanks! :heart:",
 
   // Show the donation-reminder only to users working on projects with >=5 authors
   minNumberOfAuthors: 5,

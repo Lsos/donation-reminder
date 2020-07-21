@@ -83,7 +83,7 @@ function hasEnoughAuthors(lsosProjects: LsosProject[]) {
 function userHasRemovedDonationReminder() {
   // Postinstall script didn't run
   if (userConfig === undefined) {
-    return true;
+    return false;
   }
   // There is no `~/.lsos.json`
   if (userConfig === null) {

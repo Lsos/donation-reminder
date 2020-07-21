@@ -1,6 +1,14 @@
 import { assertUsage } from "./utils/assertUsage";
 import { getExportName } from "./utils/getExportName";
-import { LsosProject } from "../../dist/types";
+import { LsosProject } from "../types";
+
+const AUTHORIZED_PROJECTS = [
+  "@goldpage",
+  "@wildcard-api",
+  "my-open-source-project",
+  "react-table",
+  "material-table",
+];
 
 export { validateLsosProject };
 
@@ -31,5 +39,10 @@ function validateLsosProject(
     `The \`${getExportName()}\` function must be called with following missing arguments:` +
       argumentsMissing.map((arg) => "`" + arg + "`").join(", ") +
       "."
+  );
+
+  assertUsage(
+    AUTHORIZED_PROJECTS.includes(npmName),
+    `Your project \`${npmName}\` has not been enabled yet, see https://lsos.org/join`
   );
 }

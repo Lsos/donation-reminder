@@ -17,7 +17,11 @@ export { getDonationReminderLog };
 
 const HEADER_TITLE = "Support Open Source";
 const BORDER_GREEN_COLOR = "#00ae41";
+/*
 const MARGIN_LEFT = 4;
+/*/
+const MARGIN_LEFT = 0;
+//*/
 const MARGIN_NOTE_LEFT = 2;
 const PROJECT_LOGO_SIZE = 32;
 const PROJECT_LOGO_MARGIN_RIGHT = 10;
