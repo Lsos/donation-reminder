@@ -21,7 +21,7 @@ printDonationReminder({
   projectName: "My Open Source Project",
 
   // Text that will be shown to users
-  donationText: "Hello :wave:, I'm Alice, I'm looking for a gold sponsor, thanks :heart:",
+  donationText: "Hello :smile:, I'm Alice, I'm looking for a gold sponsor, thanks :heart:",
 
   // Show the donation-reminder only to users working on projects with >=5 authors
   minNumberOfAuthors: 5,
