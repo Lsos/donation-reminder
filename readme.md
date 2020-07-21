@@ -1,9 +1,9 @@
-# @lsos/donation-reminder
+# Lsos Donation Reminder
 
-The `@lsos/donation-reminder` npm package enables you to kindly remind companies to donate.
+The Lsos Donation Reminder enables you to kindly remind companies to donate.
 
 - [Gettings Started](#getting-started)
-- [Questions & Discussions](#questions-discussions)
+- [Questions & Discussions](#questions--discussions)
 - [FAQ](#faq)
 
 
@@ -31,11 +31,12 @@ printDonationReminder({
 Your users can remove the donation-reminder by running `npx lsos remove`/`yarn lsos remove`.
 
 When setting the option `minNumberOfAuthors` to `n`,
-the donation-reminder is shown only to you users that work on a git repository that has `n` or more authors.
+the donation-reminder is shown only to users working in a Git repository that has `n` or more Git authors.
 
 You can use any [Twemoji](https://github.com/twitter/twemoji) emoji.
 (These are the emojis you see on Twitter and Discord.)
-You can use [Discord](https://discord.com/) to find the emoji codes such as `:smile:` and `:heart:`.
+You can use [Discord](https://discord.com/) to find emoji codes,
+for example `:smile:` or `:heart:`.
 
 
 ## Questions & Discussions
