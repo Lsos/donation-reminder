@@ -3,7 +3,7 @@
 The Lsos Donation Reminder enables you to kindly remind companies to donate.
 
 <p align="center">
-  <img src="/donation-reminder.png" />
+  <img src="/donation-reminder.png" height="175"/>
 </p>
 
 
