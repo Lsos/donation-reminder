@@ -29,28 +29,36 @@ function getDonationReminderLog(
   return [
     ...(showLsosDonationFund
       ? [...getHeader(), ...verticalSpace(27)]
-      : [...verticalSpace(12)]),
+      : verticalSpace(12)),
     ...projects
       .map(getLsosProjectInfo)
       .map(
-        ({ projectName, iconUrl, donationTextWithEmojis, donatePageUrl }) => [
+        (
+          { projectName, iconUrl, donationTextWithEmojis, donatePageUrl },
+          i
+        ) => [
           ...projectLine({
             iconUrl,
             title: projectName,
             description: donationTextWithEmojis,
             link: donatePageUrl,
           }),
-          ...verticalSpace(32),
+          ...(i === projects.length - 1 ? [] : verticalSpace(32)),
         ]
       )
       .flat(),
-    ...projectLine({
-      iconUrl: "https://lsos.org/logo.svg",
-      title: "Lsos Donation Fund",
-      description: "Support all your open source dependencies",
-      link: "https://lsos.org/fund",
-    }),
-    ...verticalSpace(30),
+    ...(showLsosDonationFund
+      ? [
+          ...verticalSpace(32),
+          ...projectLine({
+            iconUrl: "https://lsos.org/logo.svg",
+            title: "Lsos Donation Fund",
+            description: "Support all your open source dependencies",
+            link: "https://lsos.org/fund",
+          }),
+          ...verticalSpace(30),
+        ]
+      : verticalSpace(26)),
     ...getNote(),
     ...(showLsosDonationFund ? [...verticalSpace(26), ...getFooter()] : []),
   ];
