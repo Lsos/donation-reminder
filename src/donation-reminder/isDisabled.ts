@@ -74,7 +74,8 @@ function hasEnoughAuthors(lsosProjects: LsosProject[]) {
   assert(lsosProjects.constructor === Array);
 
   return lsosProjects.some(({ minNumberOfAuthors }) => {
-    assert(minNumberOfAuthors >= 0, { minNumberOfAuthors });
+    // assert(minNumberOfAuthors >= 0, { minNumberOfAuthors });
+    minNumberOfAuthors = minNumberOfAuthors || 0;
     return numberOfAuthors >= minNumberOfAuthors;
   });
 }

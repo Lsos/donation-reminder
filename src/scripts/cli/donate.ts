@@ -9,6 +9,16 @@ const HLINE = symbolTab + "~~~~~~~~~~~~~~~~~~";
 
 async function donate() {
   const lsosProjects: LsosProject[] = await findLsosProjects();
+
+  printLsosProjects(lsosProjects);
+
+  printLsosDonationFund();
+}
+
+function printLsosProjects(lsosProjects: LsosProject[]) {
+  if (lsosProjects.length === 0) {
+    return;
+  }
   console.log(symbolInfo + "Your dependencies' donation page:");
   lsosProjects
     .map(getLsosProjectInfo)
@@ -20,14 +30,16 @@ async function donate() {
     });
   console.log(HLINE);
   console.log("");
+}
 
+function printLsosDonationFund() {
   console.log(symbolInfo + fgBold("Lsos Donation Fund"));
   console.log(
     symbolTab +
       fgGray(
-        "Set up a monthly donation and we take care of distributing your donations among your open-source dependencies."
+        "Set up a monthly donation while we take care of fairly distributing your donations among your open-source dependencies."
       )
   );
-  console.log(symbolTab + "https://github.com/fund");
+  console.log(symbolTab + "https://lsos.org/fund");
   console.log();
 }
