@@ -17,7 +17,6 @@ The Lsos Donation Reminder enables you to kindly remind companies to donate.
 [FAQ](#faq)
 
 <br/>
-<br/>
 
 ## Getting Started
 
