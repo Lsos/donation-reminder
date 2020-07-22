@@ -1,7 +1,3 @@
-# Code Explanation
+# Source Code Explainer
 
-The code does following:
-- 
--
-
-That's it.
+WIP
