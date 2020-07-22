@@ -2,10 +2,13 @@
 
 The Lsos Donation Reminder enables you to kindly remind companies to donate.
 
+<br/>
+
 <p align="center">
   <img src="/donation-reminder.png" height="175"/>
 </p>
 
+<br/>
 
 - [Gettings Started](#getting-started)
 - [Questions & Discussions](#questions--discussions)
@@ -22,7 +25,7 @@ printDonationReminder({
   // Npm package name
   npmName: "my-open-source-project",
 
-  //"Human-readable project name",
+  // Human-readable project name
   projectName: "My Open Source Project",
 
   // Text that will be shown to users
@@ -40,18 +43,18 @@ the donation-reminder is shown only to users working in a Git repository that ha
 
 You can use any emoji of the [Twemoji](https://github.com/twitter/twemoji) catalog.
 (These are the emojis you see on Twitter and Discord.)
-You can use [Discord](https://discord.com/) to find emoji codes,
-for example `:smile:` or `:heart:`.
+You can use [Discord](https://discord.com/) to find emoji codes
+such as `:smile:` or `:heart:`.
 
 
 ## Questions & Discussions
 
-For any questions
+For any questions about the donation-reminder
 [open a ticket](https://github.com/Lsos/donation-reminder/issues/new)
-on this repo for disucssions about donation-reminder,
+here,
 and
 [open a ticket on github.com/Lsos/converse](https://github.com/Lsos/converse/issues/new)
-for discussions about the Lsos and open source financing in general.
+for broad discussions about open source financing.
 We enjoy talking about anything OSS :).
 
 
@@ -70,16 +73,16 @@ If you use Firefox, you won't see any donation-reminder.
 
 ### [OSS-project] Does it work only for browser-side open source projects?
 
-Yes, the donation-reminder can only be shown in the developer console of the browser.
+Yes, the donation-reminder is only shown in the developer console of the browser.
 
 ### [OSS-project] Can I show the donation-reminder to all my users?
 
 Yes, just set `minNumberOfAuthors: 0`.
 
-But note that the significant donations usually come from companies; it usually isn't worth it to show the donation-reminder to a user that works on a hobby single-author project.
-
-You may want money from companies, not hobbyists.
+Note that the significant donations usually come from companies.
+It usually isn't worth it to show the donation-reminder to a user that works on a hobby single-author project &mdash;
+you may want money from companies, not hobbyists.
 
 ### How does it work?
 
-If you're curious about what exactly the `@lsos/donation-reminder` code does, check out the source code overview at [/src/readme.md](/src/).
+If you're curious about what exactly the `@lsos/donation-reminder` code does, check out the source code explainer at [/src/readme.md](/src/#readme).
