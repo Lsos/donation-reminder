@@ -8,7 +8,6 @@
 import { userConfig } from "../env/userConfig";
 import { numberOfAuthors } from "../env/numberOfAuthors";
 import { LsosProject } from "../types";
-import { assert } from "console";
 
 export { isDisabled };
 
@@ -67,14 +66,14 @@ function hasEnoughAuthors(lsosProjects: LsosProject[]) {
   if ([null, undefined].includes(numberOfAuthors)) {
     return true;
   }
-  assert(numberOfAuthors >= 0);
+  console.assert(numberOfAuthors >= 0);
   if ([null, undefined].includes(lsosProjects)) {
     return true;
   }
-  assert(lsosProjects.constructor === Array);
+  console.assert(lsosProjects.constructor === Array);
 
   return lsosProjects.some(({ minNumberOfAuthors }) => {
-    // assert(minNumberOfAuthors >= 0, { minNumberOfAuthors });
+    // console.assert(minNumberOfAuthors >= 0, { minNumberOfAuthors });
     minNumberOfAuthors = minNumberOfAuthors || 0;
     return numberOfAuthors >= minNumberOfAuthors;
   });
