@@ -19,7 +19,7 @@ The Lsos Donation Reminder allows open source projects to kindly remind companie
 ## Getting Started
 
 ~~~js
-// npm install @lsos/donationReminder
+// npm install @lsos/donation-reminder
 import { printDonationReminder } from "@lsos/donation-reminder";
 
 // Show a donation-reminder in the developer console of the browser.
@@ -49,8 +49,7 @@ such as `:smile:` or `:heart:`.
 ## Questions & Discussions
 
 For any questions about the donation-reminder
-[open a ticket](https://github.com/Lsos/donation-reminder/issues/new)
-here,
+[open a ticket here](https://github.com/Lsos/donation-reminder/issues/new),
 and
 [open a ticket on github.com/Lsos/converse](https://github.com/Lsos/converse/issues/new)
 for broad discussions about open source financing.
