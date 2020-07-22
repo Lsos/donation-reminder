@@ -19,8 +19,7 @@ The Lsos Donation Reminder allows open source projects to kindly remind companie
 ## Getting Started
 
 ~~~js
-// npm install @lsos/donation-reminder
-import { printDonationReminder } from "@lsos/donation-reminder";
+import { printDonationReminder } from "@lsos/donation-reminder"; // npm add @lsos/donation-reminder
 
 // Show a donation-reminder in the developer console of the browser.
 printDonationReminder({
