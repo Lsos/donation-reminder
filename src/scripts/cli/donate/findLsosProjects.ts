@@ -41,20 +41,20 @@ function validate(lsosProject: LsosProject, packageJsonPath: string) {
   } = lsosProject;
   assertUsage(
     projectName,
-    "Property `" + packageJsonPath + "->lsos.projectName` is required."
+    "Property `" + packageJsonPath + "#lsos.projectName` is required."
   );
-  assertUsage(npmName, "Property `package.json->name` is required.");
+  assertUsage(npmName, "Property `package.json#name` is required.");
   assertUsage(
     minNumberOfAuthors >= 0,
     "Property `" +
       packageJsonPath +
-      "->lsos.donationReminder.minNumberOfAuthors` should be a positive number."
+      "#lsos.donationReminder.minNumberOfAuthors` should be a positive number."
   );
   assertUsage(
     donationText,
     "Property `" +
       packageJsonPath +
-      "->lsos.donationReminder.text` is required."
+      "#lsos.donationReminder.text` is required."
   );
 }
 
