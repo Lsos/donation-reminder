@@ -58,11 +58,12 @@ We enjoy talking about anything OSS :).
 
 ## FAQ
 
-### [End-user] How do I make sure the donation-reminder is never shown in tests, statging and production?
+### [End-user] How do I make sure the donation-reminder is never shown in tests, staging and production?
 
-Make sure that `window.process.env.NODE_ENV==='production'` (or `'stating'`/`'test'`).
+Make sure that `window.process?.env && !['dev', 'development'].includes(window.process.env.NODE_ENV)`.
+For example, if `['production', 'staging', 'test'].includes(window.process.env.NODE_ENV)` then the donation-reminder will not be shown.
 
-Most frameworks (CRA, Gatsby, ...) do that for you already.
+Most frameworks (CRA, Gatsby, ...) correctly set `window.process.env.NODE_ENV` and you don't have to do anything.
 
 ### [OSS-project] I don't see any donation-reminder, where is it?
 
