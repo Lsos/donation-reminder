@@ -10,7 +10,7 @@ The Lsos Donation Reminder allows open source projects to kindly remind companie
 
 <br/>
 
-[Gettings Started](#getting-started)
+[Getting Started](#getting-started)
 <br/>
 [Questions & Discussions](#questions--discussions)
 <br/>
@@ -21,7 +21,7 @@ The Lsos Donation Reminder allows open source projects to kindly remind companie
 ~~~js
 import { printDonationReminder } from "@lsos/donation-reminder"; // npm i @lsos/donation-reminder
 
-// Show a donation-reminder in the developer console of the browser.
+// Show a donation-reminder in the developer console of the browser
 printDonationReminder({
   // Npm package name
   npmName: "my-open-source-project",
@@ -42,7 +42,7 @@ the donation-reminder is shown only to users working in a Git repository that ha
 You can use any emoji of the [Twemoji](https://github.com/twitter/twemoji) catalog.
 (These are the emojis you see on Twitter and Discord.)
 You can use [Discord](https://discord.com/) to find emoji codes
-such as `:smile:` or `:heart:`.
+such as `:smile:` and `:heart:`.
 
 
 ## Questions & Discussions
@@ -83,4 +83,4 @@ you may want money from companies, not hobbyists.
 
 ### How does it work?
 
-If you're curious about what exactly the `@lsos/donation-reminder` code does, check out the source code explainer at [/src/readme.md](/src/#readme).
+If you're curious about what exactly the code does, check out the source code explainer at [/src/readme.md](/src/#readme).
