@@ -28,6 +28,11 @@ function validateLsosProject(
 ) {
   const { npmName, projectName, donationText } = lsosProjectInfo;
 
+  assertUsage(
+    npmName.split("/").length === 1,
+    "The `npmName` argument should be the name of the organization on npm (`@org-name`). If there is no npm organization, then it should be the name of the package (`package-name`). In particular do not set `npmName` to `@org-name/package-name`, but set it to `@org-name` instead."
+  );
+
   const argumentsMissing = [
     !npmName && propSources["npmName"],
     !projectName && propSources["projectName"],
