@@ -23,6 +23,9 @@
     "@types/node": "^14.0.23",
     "typescript": "^3.9.6"
   },
+  "files": [
+    "/dist/"
+  ],
   "repository": "github:lsos/donation-reminder",
   "publishConfig": {
     "access": "public"
