@@ -10,10 +10,14 @@ The Lsos Donation Reminder enables you to kindly remind companies to donate.
 
 <br/>
 
-- [Gettings Started](#getting-started)
-- [Questions & Discussions](#questions--discussions)
-- [FAQ](#faq)
+[Gettings Started](#getting-started)
+<br/>
+[Questions & Discussions](#questions--discussions)
+<br/>
+[FAQ](#faq)
 
+<br/>
+<br/>
 
 ## Getting Started
 
