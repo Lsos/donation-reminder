@@ -78,7 +78,7 @@ Yes, the donation-reminder is only shown in the developer console of the browser
 
 Yes, just set `minNumberOfAuthors: 0`.
 
-Note that the significant donations usually come from companies.
+Note that most significant donations come from companies.
 It usually isn't worth it to show the donation-reminder to a user that works on a hobby single-author project &mdash;
 you may want money from companies, not hobbyists.
 
