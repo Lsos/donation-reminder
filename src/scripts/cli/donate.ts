@@ -37,7 +37,7 @@ function printLsosDonationFund() {
   console.log(
     symbolTab +
       fgGray(
-        "Set up a monthly donation while we take care of fairly distributing your donations among your open-source dependencies."
+        "Set up a monthly donation and we take care of fairly distributing your donations among your open-source dependencies."
       )
   );
   console.log(symbolTab + "https://lsos.org/fund");
