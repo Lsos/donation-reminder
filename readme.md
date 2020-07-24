@@ -2,7 +2,9 @@
 
 The Lsos Donation Reminder allows open source projects to kindly remind companies to donate.
 
-Live Demo: [lsos.org/reminder/demo](https://lsos.org/reminder/demo).
+<p align="center">
+  <b><a href="https://lsos.org/reminder/demo" target="_blank">Live Demo</a></b>
+</p>
 
 <p align="center">
   <img src="/donation-reminder.png" height="175"/>
