@@ -3,6 +3,7 @@ import { findLastIndex } from "../utils/findLastIndex";
 import { splitByLine } from "../../utils/split";
 import { isAbsolute as pathIsAbsolute } from "path";
 import assert = require("assert");
+import { EOL } from "os";
 
 export { replaceFileContent };
 
@@ -21,7 +22,7 @@ function replaceFileContent(
       ...boilerplateLinesBefore,
       getNewContentLine(),
       ...boilerplateLinesAfter,
-    ].join("\n"),
+    ].join(EOL),
     "utf8"
   );
 

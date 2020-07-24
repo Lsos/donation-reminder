@@ -1,4 +1,5 @@
 import { fgGreen } from "./utils/cli-components";
+import { EOL } from "os";
 
 // Ascii art Source:
 //  - http://patorjk.com/software/taag/#p=display&f=Ogre&t=Lsos
@@ -15,5 +16,5 @@ export const header = fgGreen(
     String.raw`  / /__\__ \ (_) \__ \  `,
     String.raw`  \____/___/\___/|___/  `,
     String.raw`                        `,
-  ].join("\n")
+  ].join(EOL)
 );

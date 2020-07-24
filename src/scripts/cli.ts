@@ -9,6 +9,7 @@ import {
   styleErrorEmphasis,
 } from "./cli/utils/cli-components";
 import assert = require("assert");
+import { EOL } from "os";
 
 cli();
 
@@ -44,7 +45,7 @@ function showHelp() {
       `  ${cmdColor("remove")}       Remove donation-reminder`,
       `  ${cmdColor("help")}         Display this help information`,
       "",
-    ].join("\n")
+    ].join(EOL)
   );
 }
 

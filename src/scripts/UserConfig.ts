@@ -1,7 +1,10 @@
-import { homedir } from "os";
+import { homedir, EOL } from "os";
 import { join as pathJoin } from "path";
 import { writeFileSync, readFileSync } from "fs";
 import { findUserConfig } from "./postinstall/findUserConfig";
+
+// Upon problems, use:
+//  - https://github.com/sindresorhus/conf
 
 export { UserConfig };
 
@@ -33,7 +36,7 @@ function getHomeSettingPath(settingFileName: string): string {
 
 function writeJsonFile(path: string, obj: UserConfigData): void {
   const content = JSON.stringify(obj, null, 2);
-  writeFileSync(path, content + "\n", "utf8");
+  writeFileSync(path, content + EOL, "utf8");
 }
 
 function readJsonFile(path: string): UserConfigData {

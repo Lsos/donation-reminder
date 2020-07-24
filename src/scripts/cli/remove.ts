@@ -1,6 +1,7 @@
 import { UserConfig } from "../UserConfig";
 import { symbolInfo, symbolSuccess, stylePath } from "./utils/cli-components";
 import { splitByLine } from "../utils/split";
+import { EOL } from "os";
 
 export { remove };
 
@@ -43,6 +44,6 @@ function prettyUserConfig() {
   const userConfig = UserConfig.get();
   const lines = splitByLine(JSON.stringify(userConfig, null, 2));
   const TAB = "    ";
-  const withTabs = lines.map((line) => TAB + line).join("\n");
+  const withTabs = lines.map((line) => TAB + line).join(EOL);
   return withTabs;
 }

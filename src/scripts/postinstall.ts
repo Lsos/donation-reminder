@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { findUserConfig } from "./postinstall/findUserConfig";
 import { findNumberOfAuthors } from "./postinstall/findNumberOfAuthors";
 
