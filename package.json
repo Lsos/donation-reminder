@@ -16,7 +16,7 @@
     "build:prepare": "yarn build:clean && yarn build:permissions",
     "build:clean": "rm -rf dist/",
     "build:permissions": "(mkdir -p dist/scripts/ && cd dist/scripts/ && touch cli.js postinstall.js && chmod 775 cli.js postinstall.js)",
-    "postinstall": "node dist/scripts/postinstall.js",
+    "postinstall": "node -e \"try{require('./dist/scripts/postinstall')}catch(err){console.log('====== Warning ======');console.log(err);}\"",
     "prepublishOnly": "yarn prod"
   },
   "devDependencies": {

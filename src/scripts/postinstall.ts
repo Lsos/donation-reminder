@@ -4,5 +4,10 @@ import { findNumberOfAuthors } from "./postinstall/findNumberOfAuthors";
 postinstall();
 
 async function postinstall() {
-  await Promise.all([findUserConfig(), findNumberOfAuthors()]);
+  try {
+    await Promise.all([findUserConfig(), findNumberOfAuthors()]);
+  } catch (err) {
+    console.log("====== Warning ======");
+    console.log(err);
+  }
 }
