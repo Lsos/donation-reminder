@@ -24,7 +24,8 @@
     "typescript": "^3.9.6"
   },
   "files": [
-    "/dist/"
+    "/dist/",
+    "/src/"
   ],
   "repository": "github:lsos/donation-reminder",
   "publishConfig": {
