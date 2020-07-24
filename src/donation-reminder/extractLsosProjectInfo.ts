@@ -5,10 +5,10 @@ export { extractLsosProjectInfo };
 
 function extractLsosProjectInfo(packageJson: PackageJSON): LsosProject {
   const npmName = packageJson.name.split("/")[0];
-  const { projectName } = packageJson.lsos;
-  const donationText = packageJson.lsos.donationReminder.text;
+  const projectName = packageJson?.lsos?.projectName;
+  const donationText = packageJson?.lsos?.donationReminder?.text;
   const minNumberOfAuthors =
-    packageJson.lsos.donationReminder.minNumberOfAuthors || 0;
+    packageJson?.lsos?.donationReminder?.minNumberOfAuthors;
 
   const lsosProjectInfo: LsosProject = {
     npmName,
@@ -20,6 +20,7 @@ function extractLsosProjectInfo(packageJson: PackageJSON): LsosProject {
     npmName: "name",
     projectName: "lsos.projectName",
     donationText: "lsos.donationReminder.text",
+    minNumberOfAuthors: "lsos.donationReminder.minNumberOfAuthors",
   };
   validateLsosProject(lsosProjectInfo, propSources);
 

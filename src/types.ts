@@ -14,7 +14,7 @@ export type LsosProject = {
   npmName: NpmName;
   projectName: ProjectName;
   donationText: DonationText;
-  minNumberOfAuthors: MinNumberOfAuthors;
+  minNumberOfAuthors?: MinNumberOfAuthors;
 };
 
 export type PackageJSON = {

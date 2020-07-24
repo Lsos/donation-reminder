@@ -63,34 +63,47 @@ function isChromium() {
 }
 
 function hasEnoughAuthors(lsosProjects: LsosProject[]) {
-  if ([null, undefined].includes(numberOfAuthors)) {
+  console.assert(lsosProjects && lsosProjects.length >= 1);
+  const minNumberOfAuthors = Math.min.apply(
+    Math,
+    lsosProjects.map(({ minNumberOfAuthors }) => {
+      console.assert(
+        minNumberOfAuthors === undefined || minNumberOfAuthors >= 0,
+        { minNumberOfAuthors }
+      );
+      return minNumberOfAuthors || 0;
+    })
+  );
+  console.assert(minNumberOfAuthors >= 0);
+
+  if (minNumberOfAuthors === 0) {
     return true;
+  }
+
+  if ([null, undefined].includes(numberOfAuthors)) {
+    // postinstall script didn't run successfully
+    return false;
   }
   console.assert(numberOfAuthors >= 0);
-  if ([null, undefined].includes(lsosProjects)) {
-    return true;
-  }
-  console.assert(lsosProjects.constructor === Array);
 
-  return lsosProjects.some(({ minNumberOfAuthors }) => {
-    // console.assert(minNumberOfAuthors >= 0, { minNumberOfAuthors });
-    minNumberOfAuthors = minNumberOfAuthors || 0;
-    return numberOfAuthors >= minNumberOfAuthors;
-  });
+  return numberOfAuthors >= minNumberOfAuthors;
 }
 
 function userHasRemovedDonationReminder() {
-  // Postinstall script didn't run
+  // postinstall script didn't run successfully
   if (userConfig === undefined) {
     return false;
   }
+
   // There is no `~/.lsos.json`
   if (userConfig === null) {
     return false;
   }
+
   // User has removed the donation-reminder
   if (userConfig?.donationReminder?.remove) {
     return true;
   }
+
   return false;
 }
