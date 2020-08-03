@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { remove } from "./cli/remove";
-import { donate } from "./cli/donate";
 import { header } from "./cli/header";
 import {
   fgBold,
@@ -20,9 +19,6 @@ function cli() {
   const cmd = getCommand();
 
   switch (cmd) {
-    case "donate":
-      donate();
-      break;
     case "remove":
       remove();
       break;
@@ -41,7 +37,6 @@ function showHelp() {
       "Usage: lsos " + /*cmdColor*/ "<command>",
       "",
       "Commands:",
-      // `  ${cmdColor("donate")}       Donate to your open source dependencies`,
       `  ${cmdColor("remove")}       Remove donation-reminder`,
       `  ${cmdColor("help")}         Display this help information`,
       "",
