@@ -35,10 +35,15 @@ declare global {
     opr: any;
     opera: any;
     chrome: any;
+    __lsos_donation_reminder__show_in_production: boolean;
   }
 }
 
 function isDev() {
+  // Escape-hatch for the live demo
+  if (window.__lsos_donation_reminder__show_in_production) {
+    return true;
+  }
   if (window.location.hostname !== "localhost") {
     return false;
   }
