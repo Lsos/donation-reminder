@@ -1,1 +1,1 @@
-Code in `utils/` doesn't hold business logic and is mostly agnostic to the Lsos.
+Code in `utils/` don't hold business logic.
