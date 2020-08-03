@@ -6,8 +6,6 @@ const AUTHORIZED_PROJECTS = [
   "@goldpage",
   "@wildcard-api",
   "my-open-source-project",
-  "react-table",
-  "material-table",
 ];
 
 export { validateLsosProject };
@@ -56,6 +54,6 @@ function validateLsosProject(
 
   assertUsage(
     AUTHORIZED_PROJECTS.includes(npmName),
-    `Your project \`${npmName}\` has not been enabled yet, see https://lsos.org/join`
+    `Your project has not been enabled. Go to https://lsos.org/join to enable \`${npmName}\`.`
   );
 }

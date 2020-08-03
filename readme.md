@@ -59,16 +59,19 @@ We enjoy talking about anything OSS :).
 
 ## FAQ
 
-### [End-user] How do I make sure the donation-reminder is never shown in tests, staging and production?
+### [End-user] How do I make sure the donation-reminder is not shown in tests, staging and production?
 
-Make sure that `window.process?.env && !['dev', 'development'].includes(window.process.env.NODE_ENV)`.
-For example, if `['production', 'staging', 'test'].includes(window.process.env.NODE_ENV)` then the donation-reminder will not be shown.
+The donation-reminder is not shown if:
+- `window.location.hostname !== 'localhost'`, or if
+- `window.process?.env && !['dev', 'development'].includes(window.process.env.NODE_ENV)`.
 
-Most frameworks (CRA, Gatsby, ...) correctly set `window.process.env.NODE_ENV` and you don't have to do anything.
+For example,
+if `window.location.hostname === 'https://example.com'` or
+if `['production', 'staging', 'test'].includes(window.process.env.NODE_ENV)` then the donation-reminder will not be shown.
 
 ### [OSS-project] I don't see any donation-reminder, where is it?
 
-The donation-reminder currently only works in Chromium-based browsers.
+The donation-reminder currently only works on Chromium-based browsers.
 If you use Firefox, you won't see any donation-reminder.
 
 ### [OSS-project] Does it work only for browser-side open source projects?

@@ -13,7 +13,8 @@ export { isDisabled };
 
 function isDisabled(lsosProjects: LsosProject[]): boolean {
   if (
-    !userHasRemovedDonationReminder() &&
+    lsosProjects.length > 0 &&
+    !isRemoved() &&
     isBrowser() &&
     isChromium() &&
     isDev() &&
@@ -38,6 +39,9 @@ declare global {
 }
 
 function isDev() {
+  if (window.location.hostname !== "localhost") {
+    return false;
+  }
   if (!window?.process?.env) {
     return true;
   }
@@ -89,7 +93,9 @@ function hasEnoughAuthors(lsosProjects: LsosProject[]) {
   return numberOfAuthors >= minNumberOfAuthors;
 }
 
-function userHasRemovedDonationReminder() {
+// Whether the user has removed the donation-reminder,
+// that is whether the user ran `lsos remove`.
+function isRemoved() {
   // postinstall script didn't run successfully
   if (userConfig === undefined) {
     return false;
@@ -100,7 +106,8 @@ function userHasRemovedDonationReminder() {
     return false;
   }
 
-  // User has removed the donation-reminder
+  // `~/.lsos.json#donationReminder.remove == true` — the
+  // user ran `lsos remove`.
   if (userConfig?.donationReminder?.remove) {
     return true;
   }
