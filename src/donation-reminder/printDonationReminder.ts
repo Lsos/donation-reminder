@@ -6,10 +6,7 @@ import { shuffle } from "./utils/shuffle";
 
 import { getDonationReminderLog } from "./getDonationReminderLog";
 import { isDisabled } from "./isDisabled";
-import {
-  collectLsosProject,
-  getCollectedLsosProjects,
-} from "./collectLsosProjects";
+import { collectLsosProject, getCollectedLsosProjects } from "./collectCalls";
 import { extractLsosProjectInfo } from "./extractLsosProjectInfo";
 import { validateLsosProject } from "./validateLsosProject";
 

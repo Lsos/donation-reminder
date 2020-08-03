@@ -5,9 +5,9 @@ import { assertUsage } from "../utils/assertUsage";
 import { packageName } from "../../utils/packageName";
 import { getExportName } from "../utils/getExportName";
 
-export { Collector };
+export { CallCollector };
 
-class Collector {
+class CallCollector {
   private _collectionPhaseIsOver = false;
   async waitForCalls() {
     await Promise.resolve();

@@ -1,10 +1,10 @@
 import { LsosProject } from "../types";
 
-import { Collector } from "./utils/Collector";
+import { CallCollector } from "./utils/CallCollector";
 
 export { collectLsosProject, getCollectedLsosProjects };
 
-const collector = new Collector();
+const collector = new CallCollector();
 
 const lsosProjects: LsosProject[] = [];
 
