@@ -30,7 +30,7 @@ async function main() {
   const lsosProjects = await getCollectedLsosProjects();
 
   // Abort, if the donation-reminder is disabled,
-  // for example when the user has ran `yarn lsos remove` or
+  // for example when the user has run `yarn lsos remove` or
   // when run in production.
   if (isDisabled(lsosProjects)) {
     return;

@@ -1,15 +1,18 @@
 // Npm package name
 type NpmName = string & { _brand?: "NpmName" };
 
-// Human readable name
+// Human-readable name
 type ProjectName = string & { _brand?: "ProjectName" };
 
 // Text shown in the donation-reminder
 type DonationText = string & { _brand?: "DonationText" };
 
-// The donation-reminder is shown only if the number of git authors is `>= minNumberOfAuthors`
+// The donation-reminder is shown only if the number of
+// git authors is `>= minNumberOfAuthors`.
 type MinNumberOfAuthors = number & { _brand?: "MinNumberOfAuthors" };
 
+// We call "an Lsos project", a project that
+// calls `printDonationReminder()`.
 export type LsosProject = {
   npmName: NpmName;
   projectName: ProjectName;
