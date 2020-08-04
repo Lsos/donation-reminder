@@ -2,7 +2,7 @@
 
 The `@lsos/donation-reminder` package has no dependencies
 and all its source code is included in this `src/` directory.
-The only system dependency is that the user has `git` installed.
+The only system dependency is that the user has `npx` (or `yarn`) and `git` installed.
 
 The code revolves around following functionalities:
  1. Show a donation-reminder in the browser developer console.
@@ -26,14 +26,14 @@ Source code:
 [./env/](/src/env/).
 
 To achieve `2.` and `3.`, the `@lsos/donation-reminder` package runs a `postinstall` script that does two things:
- - Find the user config `~/lsos.json` and copies its content to `./env/userConfig.ts`.
+ - It finds the user config `~/lsos.json` and copies its content to `./env/userConfig.ts`.
    The browser-side code imports `./env/userConfig.ts`;
    this is how the browser-side business logic knows whether the user has run `lsos remove`.
    Source code:
    [./scripts/postinstall/findUserConfig](/src/scripts/postinstall/findUserConfig.ts),
    [./env/userConfig.ts](/src/env/userConfig.ts).
- - Find the number of Git authors of the user's Git repository.
-   To retrieve the number of Git authors we run and parse `git shortlog --summary --numbered --email --all`.
+ - It finds the number of Git authors of the user's Git repository.
+   To retrieve the number of Git authors it runs and parses `git shortlog --summary --numbered --email --all`.
    The number is saved in `./env/numberOfAuthors.ts` which is imported by the browser-side code.
    Source code:
    [./scripts/postinstall/findNumberOfAuthors](/src/scripts/postinstall/findNumberOfAuthors.ts),

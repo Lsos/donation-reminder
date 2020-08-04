@@ -1,6 +1,6 @@
 # Lsos Donation Reminder
 
-Shows a donation-reminder note in the browser developer console to kindly remind companies to donate.
+Show a (removable) donation-reminder in the browser developer console to kindly remind (large) companies to donate.
 
 <p align="center">
   <b><a href="https://lsos.org/reminder/demo" target="_blank">Live Demo</a></b>
@@ -29,7 +29,7 @@ printDonationReminder({
   npmName: "my-open-source-project",
   // Human-readable project name
   projectName: "My Open Source Project",
-  // Text to be shown
+  // Shown text
   donationText: "Hi :smile:, I'm Alice, I'm looking for a gold sponsor, thanks! :heart:",
   // Show the donation-reminder only to users working on projects with >=5 authors
   minNumberOfAuthors: 5,
@@ -58,6 +58,10 @@ for broad discussions about open source financing
 
 ## FAQ
 
+### [End-user] How can I remove the donation-reminder?
+
+Run `npx lsos remove` / `yarn lsos remove` in your project directory.
+
 ### [End-user] How do I make sure the donation-reminder is not shown in tests, staging and production?
 
 The donation-reminder is not shown if:
@@ -73,6 +77,8 @@ if `['production', 'staging', 'test'].includes(window.process.env.NODE_ENV)` the
 The donation-reminder is currently only shown on Chromium-based browsers.
 If you use Firefox, you won't see any donation-reminder.
 
+Also note that the `minNumberOfAuthors` parameter may hide the donation-reminder from you.
+
 ### [OSS-project] Does it work only for browser libraries?
 
 Yes, the donation-reminder is only meant to be shown in the browser developer console.
@@ -81,9 +87,9 @@ Yes, the donation-reminder is only meant to be shown in the browser developer co
 
 Yes, just set `minNumberOfAuthors: 0`.
 
-But note that most significant donations come from companies.
-It usually isn't worth it to show the donation-reminder to a user working on a single-author hobby project &mdash;
-you want money from companies, not hobbyists.
+But note that significant donations mostly come from companies.
+It usually isn't worth it to show a donation-reminder to a user working on a single-author hobby project &mdash;
+you may want money from companies, not hobbyists.
 
 ### How does it work?
 
