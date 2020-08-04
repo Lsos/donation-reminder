@@ -1,11 +1,13 @@
-import { UserConfig } from "../UserConfig";
+import { UserConfig, UserConfigData } from "../UserConfig";
 import { replaceFileContent } from "./utils/replaceFileContent";
 
 export { findUserConfig };
 
 function findUserConfig() {
   let userConfig = UserConfig.get();
+
   userConfig = extractInfo(userConfig);
+
   replaceFileContent(
     require.resolve("../../env/userConfig.js"),
     "userConfig",
@@ -13,14 +15,15 @@ function findUserConfig() {
   );
 }
 
-function extractInfo(userConfig) {
+function extractInfo(userConfig: UserConfigData): Partial<UserConfigData> {
   if (!userConfig) {
     return null;
   }
-  const userConfig__extract: any = {};
+
+  const userConfig__extracted: UserConfigData = {};
   if (userConfig?.donationReminder?.remove) {
-    userConfig__extract.donationReminder = { remove: true };
+    userConfig__extracted.donationReminder = { remove: true };
   }
 
-  return userConfig__extract;
+  return userConfig__extracted;
 }

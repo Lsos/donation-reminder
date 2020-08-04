@@ -8,7 +8,7 @@ import { findUserConfig } from "./postinstall/findUserConfig";
 
 export { UserConfig };
 
-type UserConfigData = {
+export type UserConfigData = {
   donationReminder?: {
     remove?: boolean;
   };

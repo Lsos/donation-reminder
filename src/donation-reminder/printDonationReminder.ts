@@ -14,8 +14,8 @@ export { printDonationReminder };
 
 main();
 
-// Entry point: projects who wish to show the donation-reminder
-// call the `printDonationReminder` function.
+// Entry point: libraries who wish to show the donation-reminder
+// to their users call the `printDonationReminder` function.
 // We internally call them "Lsos projects".
 function printDonationReminder(args: PackageJSON | LsosProject): void {
   const lsosProject: LsosProject = processArgs(args);
@@ -23,7 +23,7 @@ function printDonationReminder(args: PackageJSON | LsosProject): void {
 }
 
 async function main() {
-  // Retrieve all projects that called the `printDonationReminder` function
+  // Retrieve all projects that called the `printDonationReminder()` function
   const lsosProjects = await getCollectedLsosProjects();
 
   // Abort, if the donation-reminder is disabled,
@@ -42,12 +42,12 @@ function print(lsosProjects: LsosProject[]) {
   // where the same projects are shown first.
   lsosProjects = shuffle(lsosProjects);
 
-  // Compute the donation-reminder "render model" (render model = LogFragment[])
+  // Compute the donation-reminder
   const donationReminderLog: LogFragment[] = getDonationReminderLog(
     lsosProjects
   );
 
-  // Render the donation-reminder "render model"
+  // `console.log` the donation-reminder
   console.log(...getConsoleLogArguments(donationReminderLog));
 }
 

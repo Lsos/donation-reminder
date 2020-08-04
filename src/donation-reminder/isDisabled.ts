@@ -1,9 +1,9 @@
 // The donation-reminder is shown only under certain conditions.
 // - The donation-reminder is only shown in the browser developer console.
-// - The donation-reminder is only shown in chromium based browsers (Chrome, Edge Chromium, Opera, etc.).
-// - The donation-reminder is not shown in staging nor production environments.
+// - The donation-reminder is only shown in Chromium-based browsers (Chrome, Edge Chromium, Opera, etc.).
+// - The donation-reminder is not shown in staging, test, nor production environments.
 // - The donation-reminder is not shown for small projects (when there are only few git authors).
-// - The donation-reminder is not shown if the user has run `lsos remove`.
+// - The donation-reminder is not shown if the user ran `lsos remove`.
 
 import { userConfig } from "../env/userConfig";
 import { numberOfAuthors } from "../env/numberOfAuthors";
