@@ -19,6 +19,8 @@ to kindly remind (large) companies to donate.
 <br/>
 [FAQ](#faq)
 
+<br/>
+
 ## Getting Started
 
 ~~~js
