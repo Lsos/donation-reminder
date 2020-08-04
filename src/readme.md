@@ -2,13 +2,13 @@
 
 The `@lsos/donation-reminder` package has no dependencies
 and all its source code is included in this `src/` directory.
-The only system dependency is that the user has `npx` (or `yarn`) and `git` installed.
+The only system dependencies are that the user has `npx` (or `yarn`) and `git` installed.
 
 The code revolves around following functionalities:
  1. Show a donation-reminder in the browser developer console.
  2. Only show the donation-reminder if the user has not run `npx lsos remove` / `yarn lsos remove`.
  3. Only show the donation-reminder if the user's Git repository has at least `minNumberOfAuthors` authors.
- 4. Only show the donation-reminder in development and on chromium-based browsers.
+ 4. Only show the donation-reminder in development on Chromium-based browsers.
 
 That's it: the purpose of every single line of code are the functionalities listed above.
 

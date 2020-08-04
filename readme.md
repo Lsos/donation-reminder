@@ -1,6 +1,7 @@
 # Lsos Donation Reminder
 
-Show a (removable) donation-reminder in the browser developer console to kindly remind (large) companies to donate.
+Show a (removable) donation-reminder in the browser developer console,
+to kindly remind (large) companies to donate.
 
 <p align="center">
   <b><a href="https://lsos.org/reminder/demo" target="_blank">Live Demo</a></b>
@@ -46,6 +47,7 @@ You can use any emoji of the [Twemoji](https://github.com/twitter/twemoji) catal
 You can use [Discord](https://discord.com/) to find emoji codes
 such as `:smile:` and `:heart:`.
 
+<br/>
 
 ## Questions & Discussions
 
@@ -55,6 +57,7 @@ and
 for broad discussions about open source financing
 [open a ticket on github.com/Lsos/converse](https://github.com/Lsos/converse/issues/new).
 
+<br/>
 
 ## FAQ
 
@@ -66,7 +69,7 @@ Run `npx lsos remove` / `yarn lsos remove` in your project directory.
 
 The donation-reminder is not shown if:
 - `window.location.hostname !== 'localhost'`, or if
-- `!['dev', 'development'].includes(window.process.env.NODE_ENV)`.
+- `window.process.env.NODE_ENV && !['dev', 'development'].includes(window.process.env.NODE_ENV)`.
 
 For example,
 if `window.location.hostname === 'https://example.com'` or
@@ -87,7 +90,7 @@ Yes, the donation-reminder is only meant to be shown in the browser developer co
 
 Yes, just set `minNumberOfAuthors: 0`.
 
-But note that significant donations mostly come from companies.
+Note that significant donations mostly come from companies.
 It usually isn't worth it to show a donation-reminder to a user working on a single-author hobby project &mdash;
 you may want money from companies, not hobbyists.
 
