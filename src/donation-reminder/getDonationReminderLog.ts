@@ -4,7 +4,7 @@
 
 import { LsosProject } from "../types";
 import { LogFragment, Style } from "./utils/styled-log/types";
-import { getLsosProjectInfo } from "../utils/getLsosProjectInfo";
+import { getLsosProjectInfo, lsosIconUrl } from "../utils/getLsosProjectInfo";
 import {
   icon,
   verticalSpace,
@@ -55,7 +55,7 @@ function getDonationReminderLog(
       ? [
           ...verticalSpace(32),
           ...projectLine({
-            iconUrl: "https://lsos.org/logo.svg",
+            iconUrl: lsosIconUrl,
             title: "Lsos Donation Fund",
             description: "Support all your open source dependencies",
             link: "https://lsos.org/fund",

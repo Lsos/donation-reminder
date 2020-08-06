@@ -2,12 +2,6 @@ import { assertUsage } from "./utils/assertUsage";
 import { getExportName } from "./utils/getExportName";
 import { LsosProject } from "../types";
 
-const AUTHORIZED_PROJECTS = [
-  "@goldpage",
-  "@wildcard-api",
-  "my-open-source-project",
-];
-
 export { validateLsosProject };
 
 type PropSources = {
@@ -50,10 +44,5 @@ function validateLsosProject(
   assertUsage(
     minNumberOfAuthors === undefined || typeof minNumberOfAuthors === "number",
     errorPrefix + "`" + propSources.minNumberOfAuthors + "` should be a number"
-  );
-
-  assertUsage(
-    AUTHORIZED_PROJECTS.includes(npmName),
-    `Your project has not been enabled. Go to https://lsos.org/join to enable \`${npmName}\`.`
   );
 }

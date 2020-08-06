@@ -1,7 +1,9 @@
 import { LsosProject } from "../types";
 import { emojiRegex } from "../utils/emojiRegex";
+import { assertWarning } from "../donation-reminder/utils/assertUsage";
 
 export { getLsosProjectInfo };
+export const lsosIconUrl = "https://lsos.org/logo.svg";
 
 function getLsosProjectInfo({
   projectName,
@@ -12,6 +14,9 @@ function getLsosProjectInfo({
   const donatePageUrl = "https://lsos.org/npm/" + npmName;
   const donationTextWithEmojis = donationText;
   const donationTextWithoutEmojis = removeEmojis(donationText);
+
+  checkIfLsosProjectExists(npmName, iconUrl, donatePageUrl);
+
   return {
     projectName,
     iconUrl,
@@ -42,4 +47,55 @@ function removeEmojis(str: string): string {
   }
 
   return processed;
+}
+
+async function checkIfLsosProjectExists(
+  npmName: string,
+  iconUrl: string,
+  donatePageUrl: string
+) {
+  const projectIconExists = await imageExists(iconUrl);
+  if (projectIconExists === true) {
+    return;
+  }
+  const isOnline = await imageExists(lsosIconUrl);
+  if (isOnline === false) {
+    // No-op: browser is offline
+    return;
+  }
+  if (isOnline === null || projectIconExists === null) {
+    return;
+  }
+
+  console.assert(isOnline === true && projectIconExists === false);
+  assertWarning(
+    false,
+    `The project \`${npmName}\` is unknown to the Lsos. Contact your Lsos Manager or go to https://lsos.org/join if you don't have one. We will create your ${donatePageUrl} page and add your project icon to the donation-reminder.`
+  );
+}
+
+async function imageExists(imageUrl: string): Promise<boolean> {
+  const imgEl = document.createElement("img");
+
+  let resolve: (_: boolean) => void;
+  const promise = new Promise<boolean>((r) => {
+    resolve = r;
+  });
+
+  imgEl.onload = function () {
+    resolve(true);
+  };
+
+  imgEl.onerror = function () {
+    resolve(false);
+  };
+
+  const TIMEOUT = 5 * 1000;
+  setTimeout(() => {
+    resolve(null);
+  }, TIMEOUT);
+
+  imgEl.src = imageUrl;
+
+  return promise;
 }
