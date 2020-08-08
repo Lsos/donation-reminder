@@ -15,7 +15,7 @@ function getLsosProjectInfo({
   const donationTextWithEmojis = donationText;
   const donationTextWithoutEmojis = removeEmojis(donationText);
 
-  checkIfLsosProjectExists(npmName, iconUrl, donatePageUrl);
+  checkIfLsosProjectExists(npmName, iconUrl);
 
   return {
     projectName,
@@ -49,11 +49,7 @@ function removeEmojis(str: string): string {
   return processed;
 }
 
-async function checkIfLsosProjectExists(
-  npmName: string,
-  iconUrl: string,
-  donatePageUrl: string
-) {
+async function checkIfLsosProjectExists(npmName: string, iconUrl: string) {
   const projectIconExists = await imageExists(iconUrl);
   if (projectIconExists === true) {
     return;
@@ -70,7 +66,7 @@ async function checkIfLsosProjectExists(
   console.assert(isOnline === true && projectIconExists === false);
   assertWarning(
     false,
-    `The project \`${npmName}\` is unknown to the Lsos. Contact your Lsos Manager or go to https://lsos.org/join if you don't have one. We will create your ${donatePageUrl} page and add your project icon to the donation-reminder.`
+    `The project \`${npmName}\` is unknown to the Lsos. Contact your Lsos manager, or go to https://lsos.org/join if you don't have one yet.`
   );
 }
 
