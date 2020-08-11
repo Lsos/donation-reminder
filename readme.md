@@ -8,10 +8,7 @@ to kindly remind (large) companies to donate.
 </p>
 
 Live Demo: <a href="https://lsos.org/reminder/demo" target="_blank">lsos.org/reminder/demo</a>.
-
 The donation-reminder is removable.
-
-<br/>
 
 [Getting Started](#getting-started)
 <br/>
