@@ -34,13 +34,13 @@ printDonationReminder({
   // Shown text
   donationText: "Hi :smile:, I'm Alice, I'm looking for a gold sponsor, thanks! :heart:",
 
-  // Show the donation-reminder only to users working on projects with >=5 authors
+  // Show the donation-reminder only to developers working on projects with >=5 authors
   minNumberOfAuthors: 5,
 });
 ~~~
 
 When setting the option `minNumberOfAuthors` to `n`,
-the donation-reminder is only shown to users working in a Git repository that has `n` or more Git authors.
+the donation-reminder is only shown to developers working in a Git repository that has `n` or more Git authors.
 You can use this setting in order to show the donation-reminder only to large companies.
 (You may want money from companies, not hobbyists.)
 
