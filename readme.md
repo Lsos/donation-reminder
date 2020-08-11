@@ -27,10 +27,13 @@ import { printDonationReminder } from "@lsos/donation-reminder"; // npm i @lsos/
 printDonationReminder({
   // Npm package name
   npmName: "my-open-source-project",
+
   // Human-readable project name
   projectName: "My Open Source Project",
+
   // Shown text
   donationText: "Hi :smile:, I'm Alice, I'm looking for a gold sponsor, thanks! :heart:",
+
   // Show the donation-reminder only to users working on projects with >=5 authors
   minNumberOfAuthors: 5,
 });
