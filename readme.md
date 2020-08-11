@@ -1,15 +1,15 @@
 # Lsos Donation Reminder
 
-Show a (removable) donation-reminder in the browser developer console,
+Show a donation-reminder in the browser developer console,
 to kindly remind (large) companies to donate.
-
-<p align="center">
-  <b><a href="https://lsos.org/reminder/demo" target="_blank">Live Demo</a></b>
-</p>
 
 <p align="center">
   <img src="/donation-reminder.png" height="175"/>
 </p>
+
+Live Demo: <a href="https://lsos.org/reminder/demo" target="_blank">lsos.org/reminder/demo</a>.
+
+The donation-reminder is removable.
 
 <br/>
 
@@ -39,8 +39,6 @@ printDonationReminder({
 });
 ~~~
 
-Users can remove the donation-reminder by running `npx lsos remove`/`yarn lsos remove`.
-
 When setting the option `minNumberOfAuthors` to `n`,
 the donation-reminder is only shown to users working in a Git repository that has `n` or more Git authors.
 
@@ -48,6 +46,8 @@ You can use any emoji of the [Twemoji](https://github.com/twitter/twemoji) catal
 (These are the emojis you see on Twitter and Discord.)
 You can use [Discord](https://discord.com/) to find emoji codes
 such as `:smile:` and `:heart:`.
+
+Users can remove the donation-reminder by running `npx lsos remove`/`yarn lsos remove`.
 
 <br/>
 
