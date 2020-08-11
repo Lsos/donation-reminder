@@ -10,13 +10,13 @@ to kindly remind (large) companies to donate.
 Live Demo: <a href="https://lsos.org/reminder/demo" target="_blank">lsos.org/reminder/demo</a>.
 The donation-reminder is removable.
 
+<br/>
+
 [Getting Started](#getting-started)
 <br/>
 [Questions & Discussions](#questions--discussions)
 <br/>
 [FAQ](#faq)
-
-<br/>
 
 ## Getting Started
 
