@@ -10,7 +10,7 @@ function getLsosProjectInfo({
   npmName,
   donationText,
 }: LsosProject) {
-  const iconUrl = "https://lsos.org/npm/" + npmName + "/logo.svg";
+  const iconUrl = "https://lsos.org/npm/" + npmName + "/logo.png";
   const donatePageUrl = "https://lsos.org/npm/" + npmName;
   const donationTextWithEmojis = donationText;
   const donationTextWithoutEmojis = removeEmojis(donationText);
