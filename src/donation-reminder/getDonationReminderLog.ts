@@ -161,7 +161,7 @@ function getBorderStyle(): Style {
 
 function getNote(): LogFragment[] {
   const codeStyle = [
-    "background: rgb(236, 238, 240)",
+    "background: rgb(180, 180, 180, 0.2)",
     "padding: 2px 6px",
     "font-size: 0.99em",
     "border-radius: 4px",

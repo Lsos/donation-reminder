@@ -15,11 +15,9 @@ import { LogFragment, Style } from "./types";
 
 export { getConsoleLogArguments };
 
-const DEFAULT_STYLE = ["font-size: 1.3em", "color: #31343d"];
-
 function getConsoleLogArguments(
   logFragments: LogFragment[],
-  { defaultStyle = DEFAULT_STYLE }: { defaultStyle?: Style } = {}
+  { defaultStyle = ["font-size: 1.3em"] }: { defaultStyle?: Style } = {}
 ): string[] {
   logFragments = applyOptions(logFragments, { defaultStyle });
 
