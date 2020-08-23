@@ -1,6 +1,6 @@
 {
   "name": "@lsos/donation-reminder",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "//": "No dependencies.",
   "dependencies": {},
   "main": "dist/donation-reminder/printDonationReminder.js",
