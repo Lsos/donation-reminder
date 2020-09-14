@@ -73,6 +73,10 @@ async function retrieveNumberOfAuthors(): Promise<number | null> {
 
 async function getGitAuthorList(): Promise<string | null> {
   try {
+    // To get authors with commit dates:
+    //   git log --pretty=format:"%an %ae %ad" --date=short
+    // To get authors only in the last month:
+    //   git shortlog --after=2020-08-01
     return await execCmd("git shortlog --summary --numbered --email --all");
   } catch (_) {
     return null;
