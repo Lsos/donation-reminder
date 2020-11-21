@@ -1,14 +1,14 @@
 # Lsos Donation Reminder
 
 Show a donation-reminder in the browser developer console,
-to kindly remind (large) companies to donate.
+to kindly remind (larger) companies to donate.
 
 <p align="center">
   <img src="/donation-reminder.png" height="175"/>
 </p>
 
 Live Demo: <a href="https://lsos.org/reminder/demo" target="_blank">lsos.org/reminder/demo</a>.
-The donation-reminder is removable.
+The donation-reminder is removable. It is configurable to be shown to larger companies only or all your users.
 
 <br/>
 
@@ -41,7 +41,7 @@ printDonationReminder({
 
 When setting the option `minNumberOfAuthors` to `n`,
 the donation-reminder is only shown to developers working in a Git repository that has `n` or more Git authors.
-You can use this setting in order to show the donation-reminder only to large companies.
+You can use this setting in order to show the donation-reminder only to larger companies.
 (You may want money from companies, not hobbyists.)
 
 You can use any emoji of the [Twemoji](https://github.com/twitter/twemoji) catalog.
